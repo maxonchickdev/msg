@@ -9,18 +9,18 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    AuthModule,
-    UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
       port: 3306,
       username: 'root',
       password: '123987Maxondev!',
-      database: 'CRUD_WITH_NESTJS',
+      database: 'reg_log_app_nestjs',
       entities: [User],
       synchronize: true,
     }),
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController, UsersController, AuthController],
 

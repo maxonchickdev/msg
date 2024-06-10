@@ -23,6 +23,10 @@ export class UsersService {
     return await this.usersRespository.findOneBy({ id });
   }
 
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
+  }
+
   async createUser(userDetails: IUserData): Promise<IUser | null> {
     const checkIfExist = await this.findByUsername(userDetails.username);
     if (checkIfExist) {
@@ -30,7 +34,7 @@ export class UsersService {
     }
     const newUser = this.usersRespository.create({
       username: userDetails.username,
-      password: await bcrypt.hash(userDetails.password, 10),
+      password: await this.hashPassword(userDetails.password),
     });
     return await this.usersRespository.save(newUser);
   }
@@ -41,6 +45,11 @@ export class UsersService {
   ): Promise<UpdateResult | null> {
     const pickedUser = await this.findById(id);
     if (pickedUser) {
+      if (updateUserDetails.password) {
+        updateUserDetails.password = await this.hashPassword(
+          updateUserDetails.password,
+        );
+      }
       return await this.usersRespository.update(
         { id },
         { ...updateUserDetails },
