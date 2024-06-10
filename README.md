@@ -47,6 +47,76 @@ $ pnpm run start:dev
 $ pnpm run start:prod
 ```
 
+## Applying
+
+#### Database setup
+
+- navigate to app.module.ts file
+
+- change db configurations
+
+- open mysql in terminal
+
+```bash
+/usr/local/mysql/bin/mysql -u root -p
+```
+
+- create new database
+
+```bash
+create database <db_name>
+```
+
+#### Using
+
+- **get all exists users**
+
+```bash
+curl -X GET http://localhost:3000/users -H 'Content-Type: application/json'
+```
+
+- **create new user**
+
+```bash
+curl -X POST http://localhost:3000/users -H 'Content-Type: application/json' -d '{"username": "user1", "password": "111"}'
+```
+
+- **update username of an existing user**
+
+```bash
+curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"username": "new_username"}'
+```
+
+- **update password of an existing user**
+
+```bash
+curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"password": "new_password"}'
+```
+
+- **update username and password of an existing user**
+
+```bash
+curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"username": "new_username", "password": "new_password"}'
+```
+
+- **delete user by id**
+
+```bash
+curl -X DELETE http://localhost:3000/users/1 -H 'Content-Type: application/json'
+```
+
+- **login**
+
+```bash
+curl -X POST http://localhost:3000/auth/login -d '{"username": "user_username", "password": "user_password"}' -H 'Content-Type: application/json'
+```
+
+- **get profile**
+
+```bash
+curl -X GET http://localhost:8080/profile -H 'Content-Type: application/json' -H 'Authorization: Bearer <token>'
+```
+
 ## Test
 
 ```bash
