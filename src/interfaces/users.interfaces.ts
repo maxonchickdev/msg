@@ -1,12 +1,24 @@
-export interface IUser {
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class IUser {
+  @ApiProperty()
   id: number;
+  @ApiProperty()
   username: string;
+  @ApiProperty()
   password: string;
 }
 
-export interface IUpdateUser {
+export class IUpdateUser {
+  @ApiPropertyOptional()
   username?: string;
+  @ApiPropertyOptional()
   password?: string;
 }
 
-export interface IUserData extends Omit<IUser, 'id'> {}
+export class IUserData {
+  @ApiProperty()
+  username: string;
+  @ApiProperty()
+  password: string;
+}
