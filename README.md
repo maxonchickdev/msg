@@ -21,39 +21,20 @@
     <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
   <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Up server localy
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Modify _.env_
 
-## Installation
-
-```bash
-$ pnpm install
+```
+DB_HOST=                    # localhost
+DB_PORT=                    # 3306
+DB_USERNAME=                # root
+DB_PASSWORD=                # qwerty
+DB_NAME=                    # <database_name>
 ```
 
-## Running the app
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Applying
-
-#### Database setup
-
-- navigate to app.module.ts file
-
-- change db configurations
+### Database setup
 
 - open mysql in terminal
 
@@ -61,57 +42,122 @@ $ pnpm run start:prod
 /usr/local/mysql/bin/mysql -u root -p
 ```
 
-- create new database
-
 ```bash
-create database <db_name>
+create database <database_name>;
 ```
 
-#### Using
+### Next steps
 
-- **get all exists users**
+1. **Install dependencies**
+
+```bash
+pnpm i
+```
+
+2. **Run server in development mode**
+
+```bash
+pnpm run start:dev
+```
+
+**Check if server running** \
+Open `http://localhost:3000/users/`
+
+3. **Run production mode**
+
+1. **Building prossess**
+
+```bash
+pnpm run build
+```
+
+2. **Run server in production mode**
+
+```bash
+pnpm run start:prod
+```
+
+**Check if server running** \
+Open `http://localhost:3000/users/`
+
+## Up with docker (method 1)
+
+### Modify _docker-compose.yml_ file
+
+- define **<root_password>** to real MySQL root user password
+- define **<database_name>** to the same in file _app.module.ts_
+- define **<port>** to the same as **DB_PORT** in _.env_ file
+
+### Build docker image
+
+```bash
+docker build -t uas-image:0.0.1 .
+```
+
+### Run image in corresponding container
+
+```bash
+docker run -p 3000:3000 -t uas-image:0.0.1
+```
+
+## Up with docker (method 2)
+
+```bash
+git clone https://github.com/plinom/nest-reg-login.git
+```
+
+```bash
+docker-compose up -d
+```
+
+**Check if server running** \
+Open `http://localhost:3000/users/`
+
+## Curls
+
+1. **get all exists users**
 
 ```bash
 curl -X GET http://localhost:3000/users -H 'Content-Type: application/json'
 ```
 
-- **create new user**
+2. **create new user**
 
 ```bash
 curl -X POST http://localhost:3000/users -H 'Content-Type: application/json' -d '{"username": "user1", "password": "111"}'
 ```
 
-- **update username of an existing user**
+3. **update username of an existing user**
 
 ```bash
 curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"username": "new_username"}'
 ```
 
-- **update password of an existing user**
+4. **update password of an existing user**
 
 ```bash
 curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"password": "new_password"}'
 ```
 
-- **update username and password of an existing user**
+5. **update username and password of an existing user**
 
 ```bash
 curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"username": "new_username", "password": "new_password"}'
 ```
 
-- **delete user by id**
+6. **delete user by id**
 
 ```bash
 curl -X DELETE http://localhost:3000/users/1 -H 'Content-Type: application/json'
 ```
 
-- **login**
+7. **login**
 
 ```bash
 curl -X POST http://localhost:3000/auth/login -d '{"username": "user_username", "password": "user_password"}' -H 'Content-Type: application/json'
 ```
 
-- **get profile**
+8. **get profile**
 
 ```bash
 curl -X GET http://localhost:8080/profile -H 'Content-Type: application/json' -H 'Authorization: Bearer <token>'
