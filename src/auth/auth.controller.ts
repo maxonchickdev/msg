@@ -21,7 +21,7 @@ export class AuthController {
   @Post('login')
   @ApiBody({ type: IUserData })
   @ApiOperation({ summary: 'Login' })
-  async login(@Request() req) {
+  async login(@Request() req: any) {
     return this.authService.login(req.user);
   }
 
@@ -29,7 +29,7 @@ export class AuthController {
   @Get('profile')
   @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({ status: 200, description: 'User profile' })
-  async getProfile(@Request() req) {
+  async getProfile(@Request() req: any) {
     return req.user;
   }
 }

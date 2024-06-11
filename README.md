@@ -163,6 +163,10 @@ curl -X POST http://localhost:3000/auth/login -d '{"username": "user_username", 
 curl -X GET http://localhost:8080/profile -H 'Content-Type: application/json' -H 'Authorization: Bearer <token>'
 ```
 
+## Also you can using swagger documentation
+
+![swagger docs](https://github.com/plinom/nest-reg-login/preview/swagger.jpg)
+
 ## Test
 
 ```bash
