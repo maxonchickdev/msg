@@ -165,7 +165,7 @@ curl -X GET http://localhost:8080/profile -H 'Content-Type: application/json' -H
 
 ## Also you can using swagger documentation
 
-![swagger docs](https://github.com/plinom/nest-reg-login/preview/swagger.jpg)
+![swagger docs](https://github.com/plinom/nest-reg-login/blob/polinom/preview/swagger.jpg)
 
 ## Test
 
