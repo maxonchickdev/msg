@@ -32,6 +32,9 @@ DB_PORT=                    # 3306
 DB_USERNAME=                # root
 DB_PASSWORD=                # qwerty
 DB_NAME=                    # <database_name>
+MAIL_HOST=                  # sandbox.smtp.mailtrap.io
+MAIL_USER=                  # a78a82d1dd8581
+MAIL_PASS=                  # 5a9a376b35c299
 ```
 
 ### Database setup

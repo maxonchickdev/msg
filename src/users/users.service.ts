@@ -27,22 +27,22 @@ export class UsersService {
     return await bcrypt.hash(password, 10);
   }
 
-  async createUser(userDetails: IUserData): Promise<IUser | null> {
+  async createUser(userDetails: IUserData): Promise<[string, IUser | null]> {
     const checkIfExist = await this.findByUsername(userDetails.username);
     if (checkIfExist) {
-      return null;
+      return ['This user exist', null];
     }
     const newUser = this.usersRespository.create({
       username: userDetails.username,
       password: await this.hashPassword(userDetails.password),
     });
-    return await this.usersRespository.save(newUser);
+    return ['User created', await this.usersRespository.save(newUser)];
   }
 
   async updateUser(
     id: number,
     updateUserDetails: IUpdateUser,
-  ): Promise<UpdateResult | null> {
+  ): Promise<[string, UpdateResult | null]> {
     const pickedUser = await this.findById(id);
     if (pickedUser) {
       if (updateUserDetails.password) {
@@ -50,15 +50,20 @@ export class UsersService {
           updateUserDetails.password,
         );
       }
-      return await this.usersRespository.update(
-        { id },
-        { ...updateUserDetails },
-      );
+      return [
+        'User updated successfully',
+        await this.usersRespository.update({ id }, { ...updateUserDetails }),
+      ];
     }
-    return null;
+    return ['User not found', null];
   }
 
-  async deleteUser(id: number) {
-    return await this.usersRespository.delete({ id });
+  async deleteUser(id: number): Promise<string> {
+    const pickedUser = await this.findById(id);
+    if (pickedUser) {
+      await this.usersRespository.delete({ id });
+      return 'User deleted';
+    }
+    return 'User not found';
   }
 }

@@ -22,3 +22,12 @@ export class IUserData {
   @ApiProperty()
   password: string;
 }
+
+export class IEmailData {
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  subject: string;
+  @ApiProperty()
+  message: string;
+}
