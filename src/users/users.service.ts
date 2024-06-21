@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { IUpdateUser, IUser, IUserData } from '../interfaces/users.interfaces';
 import { User } from './user.entity';
 
@@ -27,22 +27,25 @@ export class UsersService {
     return await bcrypt.hash(password, 10);
   }
 
-  async createUser(userDetails: IUserData): Promise<[string, IUser | null]> {
+  async createUser(
+    userDetails: IUserData,
+  ): Promise<{ msg: string; status: number }> {
     const checkIfExist = await this.findByUsername(userDetails.username);
     if (checkIfExist) {
-      return ['This user exist', null];
+      return { msg: 'User exists', status: 409 };
     }
     const newUser = this.usersRespository.create({
       username: userDetails.username,
       password: await this.hashPassword(userDetails.password),
     });
-    return ['User created', await this.usersRespository.save(newUser)];
+    await this.usersRespository.save(newUser);
+    return { msg: 'User created successfully', status: 200 };
   }
 
   async updateUser(
     id: number,
     updateUserDetails: IUpdateUser,
-  ): Promise<[string, UpdateResult | null]> {
+  ): Promise<{ msg: string; status: number }> {
     const pickedUser = await this.findById(id);
     if (pickedUser) {
       if (updateUserDetails.password) {
@@ -50,20 +53,17 @@ export class UsersService {
           updateUserDetails.password,
         );
       }
-      return [
-        'User updated successfully',
-        await this.usersRespository.update({ id }, { ...updateUserDetails }),
-      ];
+      return { msg: 'User updated successfully', status: 200 };
     }
-    return ['User not found', null];
+    return { msg: 'User not found', status: 404 };
   }
 
-  async deleteUser(id: number): Promise<string> {
+  async deleteUser(id: number): Promise<{ msg: string; status: number }> {
     const pickedUser = await this.findById(id);
     if (pickedUser) {
       await this.usersRespository.delete({ id });
-      return 'User deleted';
+      return { msg: 'User deleted', status: 200 };
     }
-    return 'User not found';
+    return { msg: 'User not found', status: 404 };
   }
 }

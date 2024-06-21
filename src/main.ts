@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .setTitle('Users example')
+    .setTitle('Users API')
     .setDescription('Users management system with login logic')
     .setVersion('0.0.1')
     .addTag('users')
@@ -15,6 +15,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'UAS documentation',
   });
-  await app.listen(3000);
+  await app.listen(8080);
 }
 bootstrap();

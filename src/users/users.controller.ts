@@ -21,13 +21,14 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @Get()
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
   async getUsers(@Res() res: Response) {
     try {
-      const data = await this.userService.findAll();
-      return res.status(200).json({ msg: 'All users printed', data: data });
+      const response = await this.userService.findAll();
+      return res.status(200).json({ data: response });
     } catch (err) {
-      return res.status(500).json({ msg: 'Internal server error', data: null });
+      return res.json({ status: 500, data: 'Internal server error' });
     }
   }
 
@@ -37,14 +38,15 @@ export class UsersController {
   @ApiOperation({ summary: 'Create new user' })
   async createUser(@Body() user: IUserData, @Res() res: Response) {
     try {
-      const response = await this.userService.createUser(user);
-      return res.status(200).json({ msg: response[0], data: response[1] });
+      const { msg, status } = await this.userService.createUser(user);
+      return res.json({ status: status, msg: msg });
     } catch (err) {
-      return res.status(500).json({ msg: 'Internal server error', data: null });
+      return res.json({ status: 500, msg: 'Internal server error' });
     }
   }
 
   @Put(':id')
+  @HttpCode(200)
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: IUpdateUser })
   @ApiOperation({ summary: 'Update user' })
@@ -54,14 +56,15 @@ export class UsersController {
     @Res() res: Response,
   ) {
     try {
-      const response = await this.userService.updateUser(id, updateUser);
-      return res.status(200).json({ msg: response[0], data: response[1] });
+      const { msg, status } = await this.userService.updateUser(id, updateUser);
+      return res.json({ status: status, msg: msg });
     } catch (err) {
-      return res.status(200).json({ msg: 'Internal server error', data: null });
+      return res.json({ status: 500, msg: 'Internal server error' });
     }
   }
 
   @Delete(':id')
+  @HttpCode(200)
   @ApiParam({ name: 'id', type: Number })
   @ApiOperation({ summary: 'Delete user by id' })
   async deleteUser(
@@ -69,10 +72,10 @@ export class UsersController {
     @Res() res: Response,
   ) {
     try {
-      const response = await this.userService.deleteUser(id);
-      return res.status(200).json({ msg: response });
+      const { msg, status } = await this.userService.deleteUser(id);
+      return res.json({ status: status, msg: msg });
     } catch (err) {
-      return res.status(500).json({ msg: 'Internal server error' });
+      return res.json({ status: 500, msg: 'Internal server error' });
     }
   }
 }
