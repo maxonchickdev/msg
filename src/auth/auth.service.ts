@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { IUser } from 'src/interfaces/users.interfaces';
-import { UsersService } from 'src/users/users.service';
+import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import * as bcrypt from 'bcrypt'
+import { IUser, IUserData } from 'src/interfaces/users.interfaces'
+import { UsersService } from 'src/users/users.service'
 
 @Injectable()
 export class AuthService {
@@ -23,5 +23,13 @@ export class AuthService {
   async login(user: IUser) {
     const payload = { username: user.username, sub: user.id };
     return { access_token: this.jwtService.sign(payload) };
+  }
+
+  async sessionLogin(user: IUserData): Promise<{msg: string, status: number}> {
+    const findUser = this.usersService.findByUsername(user.username)
+    if(findUser && await bcrypt.compare(user.password, (await findUser).password)) {
+      return {msg: 'User exists', status: 200}
+    }
+    return {msg: 'User not found', status: 404}
   }
 }
