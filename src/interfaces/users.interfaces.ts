@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class IUser {
   @ApiProperty()
@@ -25,7 +25,9 @@ export class IUserData {
 
 export class IEmailData {
   @ApiProperty()
-  email: string;
+  to: string
+  @ApiProperty()
+  from: string;
   @ApiProperty()
   subject: string;
   @ApiProperty()

@@ -1,8 +1,6 @@
-import { MailerModule } from '@nestjs-modules/mailer'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { AppController } from './app.controller'
 import { AuthController } from './auth/auth.controller'
 import { AuthModule } from './auth/auth.module'
 import { MailController } from './mail/mail.controller'
@@ -29,19 +27,9 @@ import { UsersModule } from './users/users.module'
     }),
     AuthModule,
     UsersModule,
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.MAIL_HOST,
-        auth: {
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASS,
-        },
-      },
-    }),
     MailModule,
   ],
-  controllers: [AppController, UsersController, AuthController, MailController],
-
+  controllers: [UsersController, AuthController, MailController],
   providers: [MailService],
 })
 export class AppModule {}

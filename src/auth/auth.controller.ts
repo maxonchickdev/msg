@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { IUserData } from 'src/interfaces/users.interfaces';
-import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAuthGuard } from './local-auth.guard';
+} from '@nestjs/swagger'
+import { IUserData } from 'src/interfaces/users.interfaces'
+import { AuthService } from './auth.service'
+import { JwtAuthGuard } from './jwt-auth.guard'
+import { LocalAuthGuard } from './local-auth.guard'
 
 @ApiBearerAuth()
 @ApiTags('api')
@@ -21,6 +21,8 @@ export class AuthController {
   @Post('login')
   @ApiBody({ type: IUserData })
   @ApiOperation({ summary: 'Login' })
+  @ApiResponse({ status: 500, description: 'Save jwt token'})
+  @ApiResponse({ status: 401, description: 'Unauthorized'})
   async login(@Request() req: any) {
     return this.authService.login(req.user);
   }
@@ -29,6 +31,8 @@ export class AuthController {
   @Get('profile')
   @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({ status: 200, description: 'User profile' })
+  @ApiResponse({ status: 401, description: 'Unauthorized'})
+
   async getProfile(@Request() req: any) {
     return req.user;
   }

@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
-import { IUpdateUser, IUser, IUserData } from '../interfaces/users.interfaces';
-import { User } from './user.entity';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import * as bcrypt from 'bcrypt'
+import { Repository } from 'typeorm'
+import { IUpdateUser, IUser, IUserData } from '../interfaces/users.interfaces'
+import { User } from './user.entity'
 
 @Injectable()
 export class UsersService {
@@ -46,13 +46,9 @@ export class UsersService {
     id: number,
     updateUserDetails: IUpdateUser,
   ): Promise<{ msg: string; status: number }> {
-    const pickedUser = await this.findById(id);
-    if (pickedUser) {
-      if (updateUserDetails.password) {
-        updateUserDetails.password = await this.hashPassword(
-          updateUserDetails.password,
-        );
-      }
+    updateUserDetails.password = await this.hashPassword(updateUserDetails.password)
+    const updateUser = await this.usersRespository.update({id}, updateUserDetails)
+    if(updateUser.affected > 0) {
       return { msg: 'User updated successfully', status: 200 };
     }
     return { msg: 'User not found', status: 404 };
@@ -62,7 +58,7 @@ export class UsersService {
     const pickedUser = await this.findById(id);
     if (pickedUser) {
       await this.usersRespository.delete({ id });
-      return { msg: 'User deleted', status: 200 };
+      return { msg: 'User deleted successfully', status: 200 };
     }
     return { msg: 'User not found', status: 404 };
   }
