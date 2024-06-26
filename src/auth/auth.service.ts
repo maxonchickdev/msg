@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
-import { IUser, IUserData } from 'src/interfaces/users.interfaces'
+import { IUserData, IUserLogin } from 'src/classes/users.classes'
 import { UsersService } from 'src/users/users.service'
 
 @Injectable()
@@ -11,22 +11,24 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
-    const pickedUser = await this.usersService.findByUsername(username);
+  async jwtValidateUser(email: string, password: string): Promise<any> {
+    const pickedUser = await this.usersService.findByEmail(email);
     if (pickedUser && (await bcrypt.compare(password, pickedUser.password))) {
       const { password, ...result } = pickedUser;
+      console.log(result)
       return result;
     }
     return null;
   }
 
-  async login(user: IUser) {
-    const payload = { username: user.username, sub: user.id };
-    return { access_token: this.jwtService.sign(payload) };
+  async jwtLogin(data: IUserLogin) {
+    const pickedUser = await this.usersService.findByEmail(data.email)
+    const payload = { id: pickedUser.id,  username: pickedUser.username, email: pickedUser.email };
+    return { access_token: await this.jwtService.signAsync(payload) };
   }
 
   async sessionLogin(user: IUserData): Promise<{msg: string, status: number}> {
-    const findUser = this.usersService.findByUsername(user.username)
+    const findUser = this.usersService.findByEmail(user.email)
     if(findUser && await bcrypt.compare(user.password, (await findUser).password)) {
       return {msg: 'User exists', status: 200}
     }

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
-import { IUpdateUser, IUserData } from 'src/interfaces/users.interfaces'
+import { IUpdateUser, IUserData } from 'src/classes/users.classes'
 import { UsersService } from './users.service'
 
 @ApiTags('users')

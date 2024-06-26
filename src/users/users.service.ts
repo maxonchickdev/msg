@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { Repository } from 'typeorm'
-import { IUpdateUser, IUser, IUserData } from '../interfaces/users.interfaces'
+import { IUpdateUser, IUser, IUserData } from '../classes/users.classes'
 import { User } from './user.entity'
 
 @Injectable()
@@ -15,8 +15,8 @@ export class UsersService {
     return await this.usersRespository.find();
   }
 
-  async findByUsername(username: string): Promise<IUser | null> {
-    return await this.usersRespository.findOne({ where: { username } });
+  async findByEmail(email: string): Promise<IUser | null> {
+    return await this.usersRespository.findOne({ where: { email: email } });
   }
 
   async findById(id: number): Promise<IUser | null> {
@@ -30,12 +30,13 @@ export class UsersService {
   async createUser(
     userDetails: IUserData,
   ): Promise<{ msg: string; status: number }> {
-    const checkIfExist = await this.findByUsername(userDetails.username);
+    const checkIfExist = await this.findByEmail(userDetails.email);
     if (checkIfExist) {
       return { msg: 'User exists', status: 409 };
     }
     const newUser = this.usersRespository.create({
       username: userDetails.username,
+      email: userDetails.email,
       password: await this.hashPassword(userDetails.password),
     });
     await this.usersRespository.save(newUser);

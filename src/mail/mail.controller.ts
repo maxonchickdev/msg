@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
-import { IEmailData } from 'src/interfaces/users.interfaces'
+import { IEmailData } from 'src/classes/users.classes'
 import { MailService } from './mail.service'
 
 @ApiTags('mail')
