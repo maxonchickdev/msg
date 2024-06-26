@@ -1,21 +1,11 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
-import * as session from 'express-session'
-import * as passport from 'passport'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(session({
-    secret: 'thesecret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {maxAge: 24 * 60 * 60 * 1000}
-  }))
-  app.use(passport.initialize())
-  app.use(passport.session())
   app.use(cookieParser())
 
   const config = new DocumentBuilder()

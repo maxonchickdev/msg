@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-local'
-import { AuthService } from './auth.service'
+import { AuthService } from '../auth.service'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -12,14 +12,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(email: string, password: string) {
-    const pickedUser = await this.authService.jwtValidateUser(
-      email,
+  async validate(username: string, password: string): Promise<any> {
+    const user = await this.authService.jwtValidateUser(
+      username,
       password
     );
-    if (!pickedUser) {
+    if (!user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
     }
-    return pickedUser;
+    return user;
   }
 }
