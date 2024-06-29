@@ -4,195 +4,108 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 1. Setup .env
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-
-## Up server localy
-
-### Modify _.env_
+- create **.env** file in the root of the project
+- define **MAILER_USER**, **MAILER_HOST**, **MAILER_PORT**, **MAILER_PASS** for send mails
+- also create and define **MYSQLDB_HOST**, **MYSQLDB_LOCAL_PORT**, **MYSQLDB_USER**, **MYSQLDB_PASSWORD**, **MYSQLDB_DATABASE** vars for nestjs server
+- **MYSQLDB_ROOT_PASSWORD**, **MYSQLDB_DOCKER_PORT**, **NESTJS_APP_LOCAL_PORT**, **NESTJS_APP_DOCKER_PORT** for ports mapping in docker
 
 ```
-DB_HOST=                    # localhost
-DB_PORT=                    # 3306
-DB_USERNAME=                # root
-DB_PASSWORD=                # qwerty
-DB_NAME=                    # <database_name>
-MAIL_HOST=                  # sandbox.smtp.mailtrap.io
-MAIL_USER=                  # a78a82d1dd8581
-MAIL_PASS=                  # 5a9a376b35c299
+MAILER_USER=<your_mail>@gmail.com # define gmail
+MAILER_HOST=smtp.gmail.com
+MAILER_PORT=465
+MAILER_PASS=1111 2222 3333 4444   # define application password
+
+MYSQLDB_HOST=mysql-db
+MYSQLDB_LOCAL_PORT=3306
+MYSQLDB_USER=monty
+MYSQLDB_PASSWORD=reg-log-app
+MYSQLDB_DATABASE=users
+
+MYSQLDB_ROOT_PASSWORD=root
+MYSQLDB_DOCKER_PORT=3306
+
+NESTJS_APP_LOCAL_PORT=8080
+NESTJS_APP_DOCKER_PORT=8080
 ```
 
-### Database setup
+## 2. Up localy
 
-- open mysql in terminal
-
-```bash
-/usr/local/mysql/bin/mysql -u root -p
+#### Pull and run mysql-server [Click here](https://hub.docker.com/r/mysql/mysql-server/)
+#### Change **MYSQLDB_HOST**, **MYSQLDB_USER**, **MYSQLDB_PASSWORD** in .env file
 ```
-
-```bash
-create database <database_name>;
-```
-
-### Next steps
-
-1. **Install dependencies**
-
-```bash
 pnpm i
-```
-
-2. **Run server in development mode**
-
-```bash
 pnpm run start:dev
 ```
 
-**Check if server running** \
-Open `http://localhost:3000/users/`
+## 3. Up with docker-compose
 
-3. **Run production mode**
-
-1. **Building prossess**
-
+#### Pull images and uo containers
 ```bash
-pnpm run build
+docker-compose up
 ```
 
-2. **Run server in production mode**
-
+#### Show container logs
 ```bash
-pnpm run start:prod
+docker-compose logs mysql-db
+
+docker-compose logs nestjs-app
 ```
 
-**Check if server running** \
-Open `http://localhost:3000/users/`
-
-## Up with docker (method 1)
-
-### Modify _docker-compose.yml_ file
-
-- define **<root_password>** to real MySQL root user password
-- define **<database_name>** to the same in file _app.module.ts_
-- define **<port>** to the same as **DB_PORT** in _.env_ file
-
-### Build docker image
+#### Execute to container
 
 ```bash
-docker build -t uas-image:0.0.1 .
+docker-compose exec mysql-db bash
+
+docker-compose exec nestjs-app bash
 ```
 
-### Run image in corresponding container
+## 4. Tree
 
 ```bash
-docker run -p 3000:3000 -t uas-image:0.0.1
+src
+├── app.module.ts
+├── auth
+│   ├── auth.controller.ts
+│   ├── auth.module.ts
+│   ├── auth.service.ts
+│   ├── constants
+│   │   └── constants.ts
+│   ├── guards
+│   │   ├── jwt-auth.guard.ts
+│   │   └── local-auth.guard.ts
+│   └── strategies
+│       ├── jwt.strategy.ts
+│       └── local.strategy.ts
+├── classes
+│   └── users.classes.ts
+├── mail
+│   ├── mail.controller.spec.ts
+│   ├── mail.controller.ts
+│   ├── mail.module.ts
+│   ├── mail.service.spec.ts
+│   └── mail.service.ts
+├── main.ts
+├── user
+│   └── user.decorator.ts
+└── users
+    ├── user.entity.ts
+    ├── users.controller.ts
+    ├── users.module.ts
+    └── users.service.ts
 ```
 
-## Up with docker (method 2)
-
-```bash
-git clone https://github.com/plinom/nest-reg-login.git
-```
-
-```bash
-docker-compose up -d
-```
-
-**Check if server running** \
-Open `http://localhost:3000/users/`
-
-## Curls
-
-1. **get all exists users**
-
-```bash
-curl -X GET http://localhost:3000/users -H 'Content-Type: application/json'
-```
-
-2. **create new user**
-
-```bash
-curl -X POST http://localhost:3000/users -H 'Content-Type: application/json' -d '{"username": "user1", "password": "111"}'
-```
-
-3. **update username of an existing user**
-
-```bash
-curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"username": "new_username"}'
-```
-
-4. **update password of an existing user**
-
-```bash
-curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"password": "new_password"}'
-```
-
-5. **update username and password of an existing user**
-
-```bash
-curl -X PUT http://localhost:3000/users/1 -H 'Content-Type: application/json' -d '{"username": "new_username", "password": "new_password"}'
-```
-
-6. **delete user by id**
-
-```bash
-curl -X DELETE http://localhost:3000/users/1 -H 'Content-Type: application/json'
-```
-
-7. **login**
-
-```bash
-curl -X POST http://localhost:3000/auth/login -d '{"username": "user_username", "password": "user_password"}' -H 'Content-Type: application/json'
-```
-
-8. **get profile**
-
-```bash
-curl -X GET http://localhost:8080/profile -H 'Content-Type: application/json' -H 'Authorization: Bearer <token>'
-```
-
-## Also you can using swagger documentation
-
-![swagger docs](https://github.com/plinom/nest-reg-login/blob/polinom/preview/swagger.jpg)
-
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
+## 5. Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+## 6. Stay in touch
 
 - Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
 - Website - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+## 7. License
 
 Nest is [MIT licensed](LICENSE).

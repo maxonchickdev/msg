@@ -46,7 +46,6 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User profile' })
   @ApiResponse({ status: 401, description: 'Unauthorized'})
   async jwtGetProfile(@User() user: IUser) {
-    console.log(user)
     return user;
   }
 
