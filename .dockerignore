@@ -1,5 +1,14 @@
 ./server/Dockerfile
+./client/Dockerfile
+
 ./server/.dockerignore
+./client/.dockerignore
+
 ./server/node_modules
+./client/node_modules
+
 ./server/npm-debug.log
+./client/npm-debug.log
+
 ./server/dist
+./client/.next

@@ -1,0 +1,13 @@
+.err {
+  color: rgb(255, 0, 0);
+  font-weight: 700;
+  font-size: smaller;
+}
+
+.res_content {
+  color: black;
+}
+
+.wrapper {
+  margin-top: 10px;
+}

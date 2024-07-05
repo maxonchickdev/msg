@@ -3,7 +3,7 @@ import { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { ILogin } from '../../interfaces/interfaces'
 import style from './log.reg.input.module.css'
 
-export const LogRegInput = ({
+export const LogInput = ({
   type,
   label,
   placeholder,

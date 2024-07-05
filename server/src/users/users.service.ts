@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import * as bcrypt from 'bcrypt'
-import { Repository } from 'typeorm'
-import { IUpdateUser, IUser, IUserData } from '../classes/users.classes'
-import { User } from './user.entity'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+import { IUpdateUser, IUser, IUserData } from '../classes/users.classes';
+import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -29,10 +29,10 @@ export class UsersService {
 
   async createUser(
     userDetails: IUserData,
-  ): Promise<{ msg: string; status: number }> {
+  ): Promise<{ statusCode: number; message: string }> {
     const checkIfExist = await this.findByEmail(userDetails.email);
     if (checkIfExist) {
-      return { msg: 'User exists', status: 409 };
+      throw new HttpException('User exists', HttpStatus.CONFLICT);
     }
     const newUser = this.usersRespository.create({
       username: userDetails.username,
@@ -40,27 +40,34 @@ export class UsersService {
       password: await this.hashPassword(userDetails.password),
     });
     await this.usersRespository.save(newUser);
-    return { msg: 'User created successfully', status: 200 };
+    return { statusCode: 200, message: 'User created successfully' };
   }
 
   async updateUser(
     id: number,
     updateUserDetails: IUpdateUser,
-  ): Promise<{ msg: string; status: number }> {
-    updateUserDetails.password = await this.hashPassword(updateUserDetails.password)
-    const updateUser = await this.usersRespository.update({id}, updateUserDetails)
-    if(updateUser.affected > 0) {
-      return { msg: 'User updated successfully', status: 200 };
+  ): Promise<{ statusCode: number; message: string }> {
+    updateUserDetails.password = await this.hashPassword(
+      updateUserDetails.password,
+    );
+    const updateUser = await this.usersRespository.update(
+      { id },
+      updateUserDetails,
+    );
+    if (updateUser.affected > 0) {
+      return { statusCode: 200, message: 'User updated successfully' };
     }
-    return { msg: 'User not found', status: 404 };
+    return { statusCode: 404, message: 'User not found' };
   }
 
-  async deleteUser(id: number): Promise<{ msg: string; status: number }> {
+  async deleteUser(
+    id: number,
+  ): Promise<{ statusCode: number; message: string }> {
     const pickedUser = await this.findById(id);
     if (pickedUser) {
       await this.usersRespository.delete({ id });
-      return { msg: 'User deleted successfully', status: 200 };
+      return { statusCode: 200, message: 'User deleted successfully' };
     }
-    return { msg: 'User not found', status: 404 };
+    return { statusCode: 404, message: 'User not found' };
   }
 }

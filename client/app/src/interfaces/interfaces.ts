@@ -5,3 +5,8 @@ export interface IRegistrate {
 }
 
 export interface ILogin extends Omit<IRegistrate, 'username'> {}
+
+export interface IRegLogErr {
+  statusCode: number
+  message: string
+}

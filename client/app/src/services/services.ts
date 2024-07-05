@@ -6,15 +6,15 @@ export const LoginRegistrateService = {
     loginUser: ILogin
   ): Promise<{ statusCode: number; message: string }> => {
     try {
-      const res = await axios.post<{ statusCode: number; message: string }>(
-        'http://localhost:8080/api/login',
-        loginUser,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      const res = await axios<{ statusCode: number; message: string }>({
+        url: '/api/login',
+        method: 'post',
+        baseURL: 'http://localhost:8080',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: loginUser,
+      })
       return { statusCode: res.status, message: res.data.message }
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 401) {
@@ -29,24 +29,26 @@ export const LoginRegistrateService = {
 
   registrate: async (
     registrateUser: IRegistrate
-  ): Promise<{ status: number; msg: string }> => {
+  ): Promise<{ statusCode: number; message: string }> => {
     try {
-      const res = await axios.post<{ status: number; msg: string }>(
-        'http://localhost:8080/users',
-        registrateUser,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      console.log(res.config, res.data, res.headers, res.status)
-      return { status: res.status, msg: res.data.msg }
+      const res = await axios<{ statusCode: number; message: string }>({
+        url: '/users',
+        method: 'post',
+        baseURL: 'http://localhost:8080',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: registrateUser,
+      })
+      return { statusCode: res.data.statusCode, message: res.data.message }
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        return { status: 500, msg: 'Internal server error' }
+      if (err instanceof AxiosError && err.response?.status === 401) {
+        return {
+          statusCode: err.response?.status,
+          message: err.response?.data.message,
+        }
       }
-      return { status: 500, msg: 'Internal server erorr' }
+      return { statusCode: 500, message: 'Internal server error' }
     }
   },
 }
