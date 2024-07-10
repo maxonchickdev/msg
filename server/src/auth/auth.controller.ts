@@ -6,7 +6,7 @@ import {
   Post,
   Res,
   UseGuards,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiBody,
@@ -14,13 +14,13 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { Response } from 'express';
-import { IUser, IUserLogin } from 'src/classes/users.classes';
-import { User } from 'src/user/user.decorator';
-import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+} from '@nestjs/swagger'
+import { Response } from 'express'
+import { IUser, IUserLogin } from 'src/classes/users.classes'
+import { User } from 'src/user/user.decorator'
+import { AuthService } from './auth.service'
+import { JwtAuthGuard } from './guards/jwt-auth.guard'
+import { LocalAuthGuard } from './guards/local-auth.guard'
 
 @ApiBearerAuth()
 @ApiCookieAuth()
@@ -49,8 +49,8 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async jwtGetProfile(
     @User() user: IUser,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
-    return res.status(200).send(user);
+    return res.status(200).json({statusCode: 200, message: user});
   }
 }

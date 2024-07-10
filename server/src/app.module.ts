@@ -1,14 +1,14 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { AuthController } from './auth/auth.controller'
-import { AuthModule } from './auth/auth.module'
-import { MailController } from './mail/mail.controller'
-import { MailModule } from './mail/mail.module'
-import { MailService } from './mail/mail.service'
-import { User } from './users/user.entity'
-import { UsersController } from './users/users.controller'
-import { UsersModule } from './users/users.module'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
+import { MailController } from './mail/mail.controller';
+import { MailModule } from './mail/mail.module';
+import { MailService } from './mail/mail.service';
+import { User } from './users/user.entity';
+import { UsersController } from './users/users.controller';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [

@@ -12,12 +12,14 @@ export enum ButtonColor {
 export const SubmitButton = ({
   content,
   color = ButtonColor.Success,
+  onClick
 }: {
   content: string
   color?: ButtonColor
+  onClick?: () => void
 }) => {
   return (
-    <Button type='submit' color={color}>
+    <Button type='submit' color={color} onClick={onClick}>
       {content}
     </Button>
   )

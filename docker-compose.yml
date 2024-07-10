@@ -5,7 +5,8 @@ services:
     container_name: mysql-reg-log-app
     image: mysql:8.4.0
     restart: unless-stopped
-    env_file: ./server/.env
+    env_file:
+      - ./server/.env
     volumes:
       - mysql:/var/lib/mysql
     environment:
@@ -14,18 +15,19 @@ services:
       - MYSQL_PASSWORD=$MYSQLDB_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - 3306:3306
 
   nestjs-app:
-    container_name: nest-reg-log-app
+    container_name: nest-reg-log-app-server
     image: ghcr.io/plinom/nest-server:0.0.1
+    env_file:
+      - ./server/.env
     build:
       context: ./server/
       target: production
     restart: unless-stopped
-    env_file: ./server/.env
     ports:
-      - $NESTJS_APP_LOCAL_PORT:$NESTJS_APP_DOCKER_PORT
+      - 8080:8080
     environment:
       NODE_ENV: production
     stdin_open: true
@@ -34,16 +36,16 @@ services:
       - mysql-db
 
   nextjs-app:
-    container_name: next-reg-log-app
+    container_name: next-reg-log-app-client
     image: ghcr.io/plinom/nest-client:0.0.1
+    env_file:
+      - ./client/.env
     build:
       context: ./client/
       target: runner
     restart: unless-stopped
-    env_file:
-      - ./client/.env
     ports:
-      - $NEXTJS_APP_LOCAL_PORT:$NEXTJS_APP_DOCKER_PORT
+      - 3000:3000
     stdin_open: true
     tty: true
     depends_on:
