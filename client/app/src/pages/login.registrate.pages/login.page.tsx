@@ -33,7 +33,7 @@ export const LoginPage = () => {
     const res: { statusCode: number; message: string } =
       await LoginRegistrateService.login(data)
     if (res.statusCode === 200) {
-      setCookie('access_token', res.message)
+      setCookie('access_token', res.message, {secure: true, sameSite: 'none'})
       router.push('/profile')
       reset()
     } else {

@@ -1,29 +1,33 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthController } from './auth/auth.controller';
-import { AuthModule } from './auth/auth.module';
-import { MailController } from './mail/mail.controller';
-import { MailModule } from './mail/mail.module';
-import { MailService } from './mail/mail.service';
-import { User } from './users/user.entity';
-import { UsersController } from './users/users.controller';
-import { UsersModule } from './users/users.module';
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { AuthController } from './auth/auth.controller'
+import { AuthModule } from './auth/auth.module'
+import { MailController } from './mail/mail.controller'
+import { MailModule } from './mail/mail.module'
+import { MailService } from './mail/mail.service'
+import { User } from './users/user.entity'
+import { UsersController } from './users/users.controller'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQLDB_HOST,
-      port: parseInt(process.env.MYSQLDB_LOCAL_PORT, 10) || 3306,
-      username: process.env.MYSQLDB_USER,
-      password: process.env.MYSQLDB_PASSWORD,
-      database: process.env.MYSQLDB_DATABASE,
-      entities: [User],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: 'mysql-db',
+        port: configService.get<number>('MYSQL_LOCAL_PORT', 3306),
+        username: configService.get<string>('MYSQL_USER'),
+        password: configService.get<string>('MYSQL_PASSWORD'),
+        database: configService.get<string>('MYSQL_DATABASE'),
+        entities: [User],
+        synchronize: true,
+      })
     }),
     AuthModule,
     UsersModule,
