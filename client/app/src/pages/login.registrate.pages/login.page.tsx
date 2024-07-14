@@ -1,25 +1,20 @@
 'use client'
 
-import { ILogin, IRegLogErr } from '@/app/src/interfaces/interfaces'
+import { ILogin, INotify } from '@/app/src/interfaces/interfaces'
 import { setCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FlexWrapper } from '../../components/flex.wrapper/flex.wrapper'
 import { H1 } from '../../components/headlines/h1/h1'
 import { LogInput } from '../../components/input/log.input'
 import { LinkTo } from '../../components/link/link.to'
-import { LogRegErr } from '../../components/log.reg.err/log.reg.err'
+import { notify } from '../../components/notify/notify'
 import { SubmitButton } from '../../components/submit.button/submit.button'
 import { RegLogLayout } from '../../layouts/reg.log.layout/reg.log.layout'
 import { LoginRegistrateService } from '../../services/services'
 import style from './login.registrate.module.css'
 
 export const LoginPage = () => {
-  const [errResponse, setErrResponse] = useState<IRegLogErr>({
-    statusCode: 0,
-    message: '',
-  })
   const router = useRouter()
   const {
     register,
@@ -30,14 +25,20 @@ export const LoginPage = () => {
     mode: 'onChange',
   })
   const onSubmit: SubmitHandler<ILogin> = async data => {
-    const res: { statusCode: number; message: string } =
+    const res: { statusCode: number; token: string; message: string } =
       await LoginRegistrateService.login(data)
+    const notifyData: INotify = {
+      status: res.statusCode,
+      message: res.message,
+      icon: res.statusCode === 200 ? '✅' : '🚫',
+    }
     if (res.statusCode === 200) {
-      setCookie('access_token', res.message, {secure: true, sameSite: 'none'})
+      notify(notifyData)
+      setCookie('access_token', res.token, { secure: true, sameSite: 'none' })
       router.push('/profile')
       reset()
     } else {
-      setErrResponse(res)
+      notify(notifyData)
     }
   }
   return (
@@ -66,11 +67,6 @@ export const LoginPage = () => {
           />
           <SubmitButton content='Submit' />
         </form>
-        {errResponse.statusCode ? (
-          <>
-            <LogRegErr err={errResponse} />
-          </>
-        ) : null}
       </div>
     </RegLogLayout>
   )

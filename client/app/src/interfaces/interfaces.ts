@@ -8,7 +8,8 @@ export interface ILogin extends Omit<IRegistrate, 'username'> {}
 
 export interface IProfile extends Omit<IRegistrate, 'password'> {}
 
-export interface IRegLogErr {
-  statusCode: number
+export interface INotify {
+  status: number
   message: string
+  icon: string
 }

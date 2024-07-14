@@ -18,7 +18,9 @@
     "next": "14.2.4",
     "nextui-cli": "^0.3.2",
     "react": "^18",
+    "react-alert": "^7.0.3",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "tailwindcss": "^3.4.4"
   },
   "devDependencies": {

@@ -1,24 +1,19 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FlexWrapper } from '../../components/flex.wrapper/flex.wrapper'
 import { H1 } from '../../components/headlines/h1/h1'
 import { RegInput } from '../../components/input/reg.input'
 import { LinkTo } from '../../components/link/link.to'
-import { LogRegErr } from '../../components/log.reg.err/log.reg.err'
+import { notify } from '../../components/notify/notify'
 import { SubmitButton } from '../../components/submit.button/submit.button'
-import { IRegLogErr, IRegistrate } from '../../interfaces/interfaces'
+import { INotify, IRegistrate } from '../../interfaces/interfaces'
 import { RegLogLayout } from '../../layouts/reg.log.layout/reg.log.layout'
 import { LoginRegistrateService } from '../../services/services'
 import style from './login.registrate.module.css'
 
 export const RegistratePage = () => {
-  const [errResponse, setErrResponse] = useState<IRegLogErr>({
-    statusCode: 0,
-    message: '',
-  })
   const router = useRouter()
   const {
     register,
@@ -31,11 +26,17 @@ export const RegistratePage = () => {
   const onSubmit: SubmitHandler<IRegistrate> = async data => {
     const res: { statusCode: number; message: string } =
       await LoginRegistrateService.registrate(data)
+    const notifyData: INotify = {
+      status: res.statusCode,
+      message: res.message,
+      icon: res.statusCode === 200 ? '✅' : '🚫',
+    }
     if (res.statusCode === 200) {
+      notify(notifyData)
       router.push('/')
       reset()
     } else {
-      setErrResponse(res)
+      notify(notifyData)
     }
   }
   return (
@@ -72,11 +73,6 @@ export const RegistratePage = () => {
           />
           <SubmitButton content='Submit' />
         </form>
-        {errResponse.statusCode ? (
-          <>
-            <LogRegErr err={errResponse} />
-          </>
-        ) : null}
       </div>
     </RegLogLayout>
   )
