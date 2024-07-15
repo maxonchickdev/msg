@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { IUser, IUserLogin } from 'src/classes/users.classes';
-import { User } from 'src/user/user.decorator';
+import { User } from 'src/decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';

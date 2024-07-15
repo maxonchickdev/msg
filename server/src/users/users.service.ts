@@ -1,54 +1,89 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
-import { IUpdateUser, IUser, IUserData } from '../classes/users.classes';
+import { uuid } from 'uuidv4';
+import { IUpdateUser } from '../classes/users.classes';
 import { User } from './user.entity';
+import { ValidationCode } from './validation_code.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRespository: Repository<User>,
+    @InjectRepository(ValidationCode)
+    private validationRepository: Repository<ValidationCode>,
+    private mailService: MailService,
   ) {}
 
-  async findAll(): Promise<IUser[]> {
-    return await this.usersRespository.find();
+  async findAll(): Promise<User[]> {
+    return await this.usersRespository.find({ relations: ['validationCodes'] });
   }
 
-  async findByEmail(email: string): Promise<IUser | null> {
-    return await this.usersRespository.findOne({ where: { email: email } });
-  }
-
-  async findById(id: number): Promise<IUser | null> {
-    return await this.usersRespository.findOneBy({ id });
-  }
-
-  async hashPassword(password: string): Promise<string> {
-    return await bcrypt.hash(password, 10);
+  async findByEmail(email: string): Promise<User> {
+    return await this.usersRespository.findOne({
+      where: { email: email },
+      relations: ['validationCodes'],
+    });
   }
 
   async createUser(
-    userDetails: IUserData,
+    userDetails: User,
+    codes: ValidationCode[] = [],
   ): Promise<{ statusCode: number; message: string }> {
-    const checkIfExist = await this.findByEmail(userDetails.email);
-    if (checkIfExist) {
+    const user = await this.findByEmail(userDetails.email);
+    if (user) {
       throw new HttpException('User exists', HttpStatus.CONFLICT);
     }
+
+    const uuidCode = uuid();
+
     const newUser = this.usersRespository.create({
       username: userDetails.username,
       email: userDetails.email,
-      password: await this.hashPassword(userDetails.password),
+      password: await bcrypt.hash(userDetails.password, 10),
+      validationCodes: codes,
     });
     await this.usersRespository.save(newUser);
+
+    const validationCode = this.validationRepository.create({
+      code: uuidCode,
+      user: newUser,
+    });
+    await this.validationRepository.save(validationCode);
+
+    await this.mailService.sendMail({
+      to: newUser.email,
+      message: uuidCode,
+    });
+
     return { statusCode: 200, message: 'User created successfully' };
   }
 
+  async validateUser(
+    email: string,
+    code: string,
+  ): Promise<{ statusCode: number; message: string }> {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      throw new HttpException('User does not exists', HttpStatus.CONFLICT);
+    }
+    if (!(user.validationCodes.at(-1).code === code)) {
+      throw new HttpException('Invalid code', HttpStatus.NOT_FOUND);
+    }
+    user.isVerified = true;
+    await this.usersRespository.save(user);
+    return { statusCode: 200, message: 'Verification is successful' };
+  }
+
   async updateUser(
-    id: number,
+    id: string,
     updateUserDetails: IUpdateUser,
   ): Promise<{ statusCode: number; message: string }> {
-    updateUserDetails.password = await this.hashPassword(
+    updateUserDetails.password = await bcrypt.hash(
       updateUserDetails.password,
+      10,
     );
     const updateUser = await this.usersRespository.update(
       { id },
@@ -61,13 +96,17 @@ export class UsersService {
   }
 
   async deleteUser(
-    id: number,
+    id: string,
   ): Promise<{ statusCode: number; message: string }> {
-    const pickedUser = await this.findById(id);
-    if (pickedUser) {
-      await this.usersRespository.delete({ id });
-      return { statusCode: 200, message: 'User deleted successfully' };
+    const user = await this.usersRespository.findOne({
+      where: { id: id },
+      relations: ['validationCodes'],
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    return { statusCode: 404, message: 'User not found' };
+    await this.validationRepository.delete({ user: user });
+    await this.usersRespository.delete({ id: id });
+    return { statusCode: 200, message: 'User deleted successfully' };
   }
 }

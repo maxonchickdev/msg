@@ -1,51 +1,35 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Exclude } from 'class-transformer'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 export class IUser {
-  @ApiProperty({name: 'id'})
+  @ApiProperty({ name: 'id' })
   id: number;
-  @ApiProperty({name: 'username'})
+  @ApiProperty({ name: 'username' })
   username: string;
-  @ApiProperty({name: 'email'})
-  email: string
-  @ApiProperty({name: 'password'})
+  @ApiProperty({ name: 'email' })
+  email: string;
+  @ApiProperty({ name: 'password' })
   @Exclude()
   password: string;
 }
 
 export class IUpdateUser {
-  @ApiPropertyOptional({name: 'username'})
+  @ApiPropertyOptional({ name: 'username' })
   username?: string;
-  @ApiPropertyOptional({name: 'email'})
-  email?: string
-  @ApiPropertyOptional({name: 'password'})
+  @ApiPropertyOptional({ name: 'email' })
+  email?: string;
+  @ApiPropertyOptional({ name: 'password' })
   password?: string;
 }
 
-export class IUserData {
-  @ApiProperty({name: 'username'})
-  username: string;
-  @ApiProperty({name: 'email'})
-  email: string
-  @ApiProperty({name: 'password'})
-  password: string;
-}
-
 export class IEmailData {
-  @ApiProperty({name: 'to'})
-  to: string
-  @ApiProperty({name: 'from'})
-  from: string;
-  @ApiProperty({name: 'subject'})
-  subject: string;
-  @ApiProperty({name: 'message'})
+  to: string;
   message: string;
 }
 
 export class IUserLogin {
-  @ApiProperty({name: 'email'})
-  email: string
-  @ApiProperty({name: 'password'})
-  password: string
+  @ApiProperty({ name: 'email' })
+  email: string;
+  @ApiProperty({ name: 'password' })
+  password: string;
 }
-
