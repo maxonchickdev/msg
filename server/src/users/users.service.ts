@@ -18,19 +18,18 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return await this.usersRespository.find({ relations: ['validationCodes'] });
+    return await this.usersRespository.find({ relations: { code: true } });
   }
 
   async findByEmail(email: string): Promise<User> {
     return await this.usersRespository.findOne({
       where: { email: email },
-      relations: ['validationCodes'],
+      relations: { code: true },
     });
   }
 
   async createUser(
     userDetails: User,
-    codes: ValidationCode[] = [],
   ): Promise<{ statusCode: number; message: string }> {
     const user = await this.findByEmail(userDetails.email);
     if (user) {
@@ -39,26 +38,27 @@ export class UsersService {
 
     const uuidCode = uuid();
 
+    await this.mailService.sendMail({
+      to: userDetails.email,
+      message: uuidCode,
+    });
+
+    const validationCode = this.validationRepository.create({
+      code: uuidCode,
+    });
+
+    await this.validationRepository.save(validationCode);
+
     const newUser = this.usersRespository.create({
       username: userDetails.username,
       email: userDetails.email,
       password: await bcrypt.hash(userDetails.password, 10),
-      validationCodes: codes,
+      code: validationCode,
     });
+
     await this.usersRespository.save(newUser);
 
-    const validationCode = this.validationRepository.create({
-      code: uuidCode,
-      user: newUser,
-    });
-    await this.validationRepository.save(validationCode);
-
-    await this.mailService.sendMail({
-      to: newUser.email,
-      message: uuidCode,
-    });
-
-    return { statusCode: 200, message: 'User created successfully' };
+    return { statusCode: 200, message: 'Check email' };
   }
 
   async validateUser(
@@ -69,12 +69,12 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User does not exists', HttpStatus.CONFLICT);
     }
-    if (!(user.validationCodes.at(-1).code === code)) {
+    if (!(user.code.code === code)) {
       throw new HttpException('Invalid code', HttpStatus.NOT_FOUND);
     }
     user.isVerified = true;
     await this.usersRespository.save(user);
-    return { statusCode: 200, message: 'Verification is successful' };
+    return { statusCode: 200, message: 'Verification successfully' };
   }
 
   async updateUser(
@@ -95,18 +95,18 @@ export class UsersService {
     return { statusCode: 404, message: 'User not found' };
   }
 
-  async deleteUser(
-    id: string,
-  ): Promise<{ statusCode: number; message: string }> {
-    const user = await this.usersRespository.findOne({
-      where: { id: id },
-      relations: ['validationCodes'],
-    });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    await this.validationRepository.delete({ user: user });
-    await this.usersRespository.delete({ id: id });
-    return { statusCode: 200, message: 'User deleted successfully' };
-  }
+  // async deleteUser(
+  //   id: string,
+  // ): Promise<{ statusCode: number; message: string }> {
+  //   const user = await this.usersRespository.findOne({
+  //     where: { id: id },
+  //     relations: ['user_verified_code'],
+  //   });
+  //   if (!user) {
+  //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //   }
+  //   // await this.validationRepository.delete({ user: user });
+  //   await this.usersRespository.delete({ id: id });
+  //   return { statusCode: 200, message: 'User deleted successfully' };
+  // }
 }

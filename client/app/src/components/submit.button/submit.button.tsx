@@ -6,7 +6,7 @@ export enum ButtonColor {
   Primary = 'primary',
   Secondary = 'secondary',
   Warning = 'warning',
-  Danger = 'danger',
+  Danger = 'danger'
 }
 
 export const SubmitButton = ({
@@ -19,7 +19,7 @@ export const SubmitButton = ({
   onClick?: () => void
 }) => {
   return (
-    <Button type='submit' color={color} onClick={onClick}>
+    <Button type='submit' color={color} onClick={onClick} fullWidth>
       {content}
     </Button>
   )

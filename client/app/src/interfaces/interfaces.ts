@@ -13,3 +13,7 @@ export interface INotify {
   message: string
   icon: string
 }
+
+export interface IVerificationCode {
+  code: string
+}

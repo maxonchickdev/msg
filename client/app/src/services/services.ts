@@ -15,21 +15,22 @@ export const LoginRegistrateService = {
         method: 'post',
         baseURL: 'http://localhost:8080',
         headers: {
-          'Content-Type': 'application/json',
+          accept: '*/*',
+          'Content-Type': 'application/json'
         },
-        data: loginUser,
+        data: loginUser
       })
       return {
         statusCode: res.status,
         token: res.data.token,
-        message: res.data.message,
+        message: res.data.message
       }
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 401) {
         return {
           statusCode: err.response?.status,
           token: err.response?.data.token,
-          message: err.response?.data.message,
+          message: err.response?.data.message
         }
       }
       return { statusCode: 500, token: '', message: 'Internal server error' }
@@ -45,16 +46,17 @@ export const LoginRegistrateService = {
         method: 'post',
         baseURL: 'http://localhost:8080',
         headers: {
-          'Content-Type': 'application/json',
+          accept: '*/*',
+          'Content-Type': 'application/json'
         },
-        data: registrateUser,
+        data: registrateUser
       })
       return { statusCode: res.data.statusCode, message: res.data.message }
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 401) {
         return {
           statusCode: err.response?.status,
-          message: err.response?.data.message,
+          message: err.response?.data.message
         }
       }
       return { statusCode: 500, message: 'Internal server error' }
@@ -74,18 +76,44 @@ export const LoginRegistrateService = {
         baseURL: 'http://localhost:8080',
         headers: {
           accept: '*/*',
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       })
       return { statusCode: res.data.statusCode, message: res.data.message }
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 401) {
         return {
           statusCode: err.response?.status,
-          message: err.response?.data.message,
+          message: err.response?.data.message
         }
       }
       return { statusCode: 500, message: 'Internal server error' }
     }
   },
+
+  validateUser: async (
+    email: string,
+    code: string
+  ): Promise<{ statusCode: number; message: string }> => {
+    try {
+      const res = await axios<{ statusCode: number; message: string }>({
+        url: `/users/verified?email=${email}&code=${code}`,
+        method: 'post',
+        baseURL: 'http://localhost:8080',
+        headers: {
+          accept: '*/*',
+          'Content-Type': 'application/json'
+        }
+      })
+      return { statusCode: res.data.statusCode, message: res.data.message }
+    } catch (err) {
+      if (err instanceof AxiosError && err.response?.status === 401) {
+        return {
+          statusCode: err.response?.status,
+          message: err.response?.data.message
+        }
+      }
+      return { statusCode: 500, message: 'Internal server error' }
+    }
+  }
 }

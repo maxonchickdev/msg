@@ -1,12 +1,12 @@
 'use client'
 
 import { ILogin, INotify } from '@/app/src/interfaces/interfaces'
+import { Input } from '@nextui-org/input'
 import { setCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { FlexWrapper } from '../../components/flex.wrapper/flex.wrapper'
 import { H1 } from '../../components/headlines/h1/h1'
-import { LogInput } from '../../components/input/log.input'
 import { LinkTo } from '../../components/link/link.to'
 import { notify } from '../../components/notify/notify'
 import { SubmitButton } from '../../components/submit.button/submit.button'
@@ -21,16 +21,17 @@ export const LoginPage = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    control
   } = useForm<ILogin>({
-    mode: 'onChange',
+    mode: 'onChange'
   })
-  const onSubmit: SubmitHandler<ILogin> = async data => {
+  const onSubmitLogin: SubmitHandler<ILogin> = async data => {
     const res: { statusCode: number; token: string; message: string } =
       await LoginRegistrateService.login(data)
     const notifyData: INotify = {
       status: res.statusCode,
       message: res.message,
-      icon: res.statusCode === 200 ? '✅' : '🚫',
+      icon: res.statusCode === 200 ? '✅' : '🚫'
     }
     if (res.statusCode === 200) {
       notify(notifyData)
@@ -44,26 +45,38 @@ export const LoginPage = () => {
   return (
     <RegLogLayout>
       <div className={style.wrapper}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmitLogin)}>
           <FlexWrapper>
             <H1 content='Login' />
             <LinkTo content='Registrate' href='/registrate' />
           </FlexWrapper>
-          <LogInput
-            type='email'
-            label='Email'
-            placeholder='Enter email'
+          <Controller
+            control={control}
+            rules={{ required: true }}
             name='email'
-            register={register}
-            errors={errors}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                type='email'
+                label='Email'
+                placeholder='Enter email'
+                defaultValue={value}
+                onChange={onChange}
+              />
+            )}
           />
-          <LogInput
-            type='password'
-            label='Password'
-            placeholder='Enter password'
-            register={register}
+          <Controller
+            control={control}
+            rules={{ required: true }}
             name='password'
-            errors={errors}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                type='password'
+                label='Password'
+                placeholder='Enter password'
+                defaultValue={value}
+                onChange={onChange}
+              />
+            )}
           />
           <SubmitButton content='Submit' />
         </form>

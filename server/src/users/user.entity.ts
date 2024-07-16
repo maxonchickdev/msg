@@ -1,12 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ValidationCode } from 'src/users/validation_code.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ValidationCode } from './validation_code.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -39,6 +40,7 @@ export class User {
   @Column({ name: 'isVerified', nullable: false })
   isVerified: boolean = false;
 
-  @OneToMany(() => ValidationCode, (validationCode) => validationCode.user)
-  validationCodes: ValidationCode[];
+  @OneToOne(() => ValidationCode)
+  @JoinColumn()
+  code: ValidationCode;
 }

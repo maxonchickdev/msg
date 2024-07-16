@@ -20,7 +20,6 @@ services:
   nestjs-app:
     container_name: nest-reg-log-app-server
     image: ghcr.io/plinom/nest-server:0.0.1
-    # command: '/bin/sh -c "echo $MYSQL_HOST"'
     env_file:
       - ./server/.env
     build:

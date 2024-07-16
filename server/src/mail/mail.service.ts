@@ -18,7 +18,7 @@ export class MailService {
       });
       return { statusCode: 200, message: 'Mail sended successfully' };
     } catch (err) {
-      throw new HttpException('Incorrect email', HttpStatus.BAD_REQUEST);
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
   }
 }
