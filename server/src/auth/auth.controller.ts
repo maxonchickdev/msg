@@ -24,7 +24,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiBearerAuth()
 @ApiCookieAuth()
-@ApiTags('/api/login')
+@ApiTags('login')
 @Controller('api')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -51,7 +51,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Get user profile with' })
   @ApiResponse({ status: 200, description: 'User profile' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async jwtGetProfile(@User() user, @Res() res: Response) {
+  async jwtGetProfile(@User() user: typeof User, @Res() res: Response) {
     try {
       return res.status(200).json({ statusCode: 200, message: user });
     } catch (err) {

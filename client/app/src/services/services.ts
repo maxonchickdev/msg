@@ -11,9 +11,9 @@ export const LoginRegistrateService = {
         token: string
         message: string
       }>({
-        url: '/api/login',
+        url: '/login',
         method: 'post',
-        baseURL: 'http://localhost:8080',
+        baseURL: 'http://localhost:8080/api',
         headers: {
           accept: '*/*',
           'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ export const LoginRegistrateService = {
       const res = await axios<{ statusCode: number; message: string }>({
         url: '/users',
         method: 'post',
-        baseURL: 'http://localhost:8080',
+        baseURL: 'http://localhost:8080/api',
         headers: {
           accept: '*/*',
           'Content-Type': 'application/json'
@@ -71,9 +71,9 @@ export const LoginRegistrateService = {
         statusCode: number
         message: string | IProfile
       }>({
-        url: '/api/profile',
+        url: '/profile',
         method: 'get',
-        baseURL: 'http://localhost:8080',
+        baseURL: 'http://localhost:8080/api',
         headers: {
           accept: '*/*',
           Authorization: `Bearer ${token}`
@@ -99,7 +99,7 @@ export const LoginRegistrateService = {
       const res = await axios<{ statusCode: number; message: string }>({
         url: `/users/verified?email=${email}&code=${code}`,
         method: 'post',
-        baseURL: 'http://localhost:8080',
+        baseURL: 'http://localhost:8080/api',
         headers: {
           accept: '*/*',
           'Content-Type': 'application/json'
