@@ -21,8 +21,7 @@ export const ValidateCodeForm = () => {
   })
   const onSubmitUserInfo: SubmitHandler<IVerificationCode> = async data => {
     const res: { statusCode: number; message: string } =
-      await LoginRegistrateService.registrate(data.code)
-    localStorage.setItem()
+      await LoginRegistrateService.validateUser('max@gmail.com', data.code)
     const notifyData: INotify = {
       status: res.statusCode,
       message: res.message,

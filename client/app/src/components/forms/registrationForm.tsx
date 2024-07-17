@@ -22,12 +22,12 @@ export const RegistrationForm = () => {
   const onSubmitUserInfo: SubmitHandler<IRegistrate> = async data => {
     const res: { statusCode: number; message: string } =
       await LoginRegistrateService.registrate(data)
-    console.log(res)
     const notifyData: INotify = {
       status: res.statusCode,
       message: res.message,
       icon: res.statusCode === 200 ? '✅' : '🚫'
     }
+    localStorage.setItem('username', 'max')
     if (res.statusCode === 200) {
       console.log('ping')
       notify(notifyData)

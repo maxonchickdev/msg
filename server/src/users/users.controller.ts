@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -24,7 +25,7 @@ import { User } from './user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
-@Controller('users')
+@Controller('/api/users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -62,6 +63,7 @@ export class UsersController {
 
   @Post('/verified')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Validate user' })
   @ApiQuery({ name: 'email', type: String })
   @ApiQuery({ name: 'code', type: String })
   async validationUser(
@@ -104,19 +106,19 @@ export class UsersController {
     }
   }
 
-  // @Delete(':id')
-  // @HttpCode(200)
-  // @ApiParam({ name: 'id', type: String })
-  // @ApiOperation({ summary: 'Delete user by id' })
-  // @ApiResponse({ status: 200, description: 'User deleted successfully' })
-  // @ApiResponse({ status: 404, description: 'User not found' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async deleteUser(@Param('id') id: string, @Res() res: Response) {
-  //   try {
-  //     const { statusCode, message } = await this.userService.deleteUser(id);
-  //     return res.json({ statusCode: statusCode, message: message });
-  //   } catch (err) {
-  //     return res.json({ statusCode: err.status, message: err.message });
-  //   }
-  // }
+  @Delete(':id')
+  @HttpCode(200)
+  @ApiParam({ name: 'id', type: String })
+  @ApiOperation({ summary: 'Delete user by id' })
+  @ApiResponse({ status: 200, description: 'User deleted successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async deleteUser(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const { statusCode, message } = await this.userService.deleteUser(id);
+      return res.json({ statusCode: statusCode, message: message });
+    } catch (err) {
+      return res.json({ statusCode: err.status, message: err.message });
+    }
+  }
 }

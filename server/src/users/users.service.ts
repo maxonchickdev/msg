@@ -18,13 +18,15 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return await this.usersRespository.find({ relations: { code: true } });
+    return await this.usersRespository.find({
+      relations: { validationCode: true },
+    });
   }
 
   async findByEmail(email: string): Promise<User> {
     return await this.usersRespository.findOne({
       where: { email: email },
-      relations: { code: true },
+      relations: { validationCode: true },
     });
   }
 
@@ -38,10 +40,7 @@ export class UsersService {
 
     const uuidCode = uuid();
 
-    await this.mailService.sendMail({
-      to: userDetails.email,
-      message: uuidCode,
-    });
+    await this.mailService.sendMail(userDetails.email, uuidCode);
 
     const validationCode = this.validationRepository.create({
       code: uuidCode,
@@ -53,7 +52,7 @@ export class UsersService {
       username: userDetails.username,
       email: userDetails.email,
       password: await bcrypt.hash(userDetails.password, 10),
-      code: validationCode,
+      validationCode: validationCode,
     });
 
     await this.usersRespository.save(newUser);
@@ -69,7 +68,7 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User does not exists', HttpStatus.CONFLICT);
     }
-    if (!(user.code.code === code)) {
+    if (!(user.validationCode.code === code)) {
       throw new HttpException('Invalid code', HttpStatus.NOT_FOUND);
     }
     user.isVerified = true;
@@ -95,18 +94,21 @@ export class UsersService {
     return { statusCode: 404, message: 'User not found' };
   }
 
-  // async deleteUser(
-  //   id: string,
-  // ): Promise<{ statusCode: number; message: string }> {
-  //   const user = await this.usersRespository.findOne({
-  //     where: { id: id },
-  //     relations: ['user_verified_code'],
-  //   });
-  //   if (!user) {
-  //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-  //   }
-  //   // await this.validationRepository.delete({ user: user });
-  //   await this.usersRespository.delete({ id: id });
-  //   return { statusCode: 200, message: 'User deleted successfully' };
-  // }
+  async deleteUser(
+    id: string,
+  ): Promise<{ statusCode: number; message: string }> {
+    const user = await this.usersRespository.findOne({
+      where: { id: id },
+      relations: { validationCode: true },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    const validationCode = await this.validationRepository.findOne({
+      where: { id: user.validationCode.id },
+    });
+    await this.usersRespository.remove(user);
+    await this.validationRepository.remove(validationCode);
+    return { statusCode: 200, message: 'User deleted successfully' };
+  }
 }

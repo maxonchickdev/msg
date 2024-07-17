@@ -42,5 +42,5 @@ export class User {
 
   @OneToOne(() => ValidationCode)
   @JoinColumn()
-  code: ValidationCode;
+  validationCode: ValidationCode;
 }
