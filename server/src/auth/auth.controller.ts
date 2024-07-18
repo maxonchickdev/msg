@@ -10,7 +10,6 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiCookieAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -23,7 +22,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiBearerAuth()
-@ApiCookieAuth()
 @ApiTags('login')
 @Controller('api')
 export class AuthController {
@@ -38,9 +36,8 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async jwtLogin(@Body() data: IUserLogin, @Res() res: Response) {
     const { access_token } = await this.authService.login(data);
-    return res.json({
+    return res.setHeader('access_token', access_token).json({
       statusCode: 200,
-      token: access_token,
       message: 'Login success',
     });
   }

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { IUserLogin } from 'src/classes/users.classes';
+import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -11,19 +12,18 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async jwtValidateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findByEmail(username);
+  async validateUser(email: string, password: string): Promise<User> {
+    const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (user.isVerified === false) {
       throw new HttpException('Mail not confirmed', HttpStatus.UNAUTHORIZED);
     }
-    if (!(await bcrypt.compare(pass, user.password))) {
-      throw new HttpException('Incorrect password', HttpStatus.FORBIDDEN);
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new HttpException('Incorrect password', HttpStatus.NOT_FOUND);
     }
-    const { password, ...result } = user;
-    return result;
+    return user;
   }
 
   async login(data: IUserLogin) {

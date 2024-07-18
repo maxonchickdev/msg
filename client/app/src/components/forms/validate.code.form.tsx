@@ -28,6 +28,7 @@ export const ValidateCodeForm: FC<ValidationFormProps> = ({
             placeholder='Enter code'
             defaultValue={value}
             onChange={onChange}
+            className='my-2'
           />
         )}
       />
