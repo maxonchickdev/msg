@@ -1,8 +1,9 @@
+import { FC } from 'react'
 import toast from 'react-hot-toast'
-import { INotify } from '../../interfaces/interfaces'
+import { INotify } from '../../utils/interfaces/interfaces'
 
-export const notify = (notifyData: INotify) => {
-  toast.success(
+export const notify: FC<INotify> = notifyData => {
+  return toast.success(
     <p className='text-nowrap'>
       <span className='font-bold'>Status code: </span> {notifyData.status}{' '}
       <span className='font-bold'>Message: </span> {notifyData.message}

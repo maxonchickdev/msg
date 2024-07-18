@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { ILogin, IProfile, IRegistrate } from '../interfaces/interfaces'
+import { ILogin, IProfile, IRegistrate } from '../utils/interfaces/interfaces'
 
 export const LoginRegistrateService = {
   login: async (

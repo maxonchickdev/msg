@@ -1,32 +1,26 @@
-'use client'
-
 import { Input } from '@nextui-org/input'
 import { FC } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { IRegistrate } from '../../interfaces/interfaces'
+import { Controller, useForm } from 'react-hook-form'
+import {
+  IRegistrate,
+  RegistrationFormProps
+} from '../../utils/interfaces/interfaces'
 import { FlexWrapper } from '../flex.wrapper/flex.wrapper'
-import { H1 } from '../headlines/h1/h1'
 import { LinkTo } from '../link/link.to'
-import { SubmitButton } from '../submit.button/submit.button'
-
-interface RegistrationFormProps {
-  onSubmitUserInfo: SubmitHandler<IRegistrate>
-}
+import { ButtonColors, SubmitButton } from '../submit.button/submit.button'
 
 export const RegistrationForm: FC<RegistrationFormProps> = ({
-  onSubmitUserInfo
+  onSubmitUserInfo,
+  isLoading,
+  isDisabled
 }) => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors }
-  } = useForm<IRegistrate>({
+  const { handleSubmit, control } = useForm<IRegistrate>({
     mode: 'onChange'
   })
   return (
     <form onSubmit={handleSubmit(onSubmitUserInfo)}>
       <FlexWrapper>
-        <H1 content='Registrate' />
+        <h1 className='font-bold text-2xl'>Registrate</h1>
         <LinkTo content='Login' href='/' />
       </FlexWrapper>
       <Controller
@@ -40,6 +34,7 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
             placeholder='Enter username'
             defaultValue={value}
             onChange={onChange}
+            className='my-2'
           />
         )}
       />
@@ -54,6 +49,7 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
             placeholder='Enter email'
             defaultValue={value}
             onChange={onChange}
+            className='my-2'
           />
         )}
       />
@@ -68,10 +64,16 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
             placeholder='Enter password'
             defaultValue={value}
             onChange={onChange}
+            className='my-2'
           />
         )}
       />
-      <SubmitButton content='Submit' />
+      <SubmitButton
+        isDisabled={isDisabled}
+        isLoading={isLoading}
+        content='Submit'
+        color={ButtonColors.Primary}
+      />
     </form>
   )
 }

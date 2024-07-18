@@ -66,10 +66,10 @@ export class UsersService {
   ): Promise<{ statusCode: number; message: string }> {
     const user = await this.findByEmail(email);
     if (!user) {
-      throw new HttpException('User does not exists', HttpStatus.CONFLICT);
+      throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
     }
     if (!(user.validationCode.code === code)) {
-      throw new HttpException('Invalid code', HttpStatus.NOT_FOUND);
+      throw new HttpException('Invalid code', HttpStatus.CONFLICT);
     }
     user.isVerified = true;
     await this.usersRespository.save(user);

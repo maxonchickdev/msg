@@ -1,14 +1,10 @@
 'use client'
 
-import { deleteCookie, getCookie } from 'cookies-next'
+import { getCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import {
-  ButtonColor,
-  SubmitButton,
-} from '../../components/submit.button/submit.button'
-import { IProfile } from '../../interfaces/interfaces'
 import { LoginRegistrateService } from '../../services/services'
+import { IProfile } from '../../utils/interfaces/interfaces'
 
 export const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState<IProfile | undefined>(
@@ -40,14 +36,14 @@ export const ProfilePage = () => {
     <>
       <p>{userDetails?.username}</p>
       <p>{userDetails?.email}</p>
-      <SubmitButton
+      {/* <SubmitButton
         content='Logout'
-        color={ButtonColor.Default}
+        color={ButtonColors.Default}
         onClick={() => {
           deleteCookie('access_token')
           router.push('/')
         }}
-      />
+      /> */}
     </>
   )
 }
