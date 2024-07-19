@@ -4,66 +4,64 @@ import { ILogin, IProfile, IRegistrate } from '../utils/interfaces/interfaces'
 export const LoginRegistrateService = {
   login: async (
     loginUser: ILogin
-  ): Promise<{ statusCode: number; message: string }> => {
+  ): Promise<{ status: number; message: string }> => {
     try {
       const res = await axios<{
-        statusCode: number
         message: string
       }>({
         url: '/login',
         method: 'post',
         baseURL: 'http://localhost:8080/api',
         headers: {
-          accept: '*/*',
           'Content-Type': 'application/json'
         },
-        data: loginUser
+        data: loginUser,
+        withCredentials: true
       })
-      console.log(res)
       return {
-        statusCode: res.status,
+        status: res.status,
         message: res.data.message
       }
     } catch (err) {
-      if (err instanceof AxiosError && err.response?.status === 401) {
+      if (err instanceof AxiosError) {
         return {
-          statusCode: err.response?.status,
+          status: err.response?.status!,
           message: err.response?.data.message
         }
       }
-      return { statusCode: 500, message: 'Internal server error' }
+      return { status: 500, message: 'Internal server error' }
     }
   },
 
   registrate: async (
     registrateUser: IRegistrate
-  ): Promise<{ statusCode: number; message: string }> => {
+  ): Promise<{ status: number; message: string }> => {
     try {
-      const res = await axios<{ statusCode: number; message: string }>({
+      const res = await axios<{ message: string }>({
         url: '/users',
         method: 'post',
         baseURL: 'http://localhost:8080/api',
         headers: {
-          accept: '*/*',
           'Content-Type': 'application/json'
         },
         data: registrateUser
       })
-      return { statusCode: res.data.statusCode, message: res.data.message }
+      return { status: res.status, message: res.data.message }
     } catch (err) {
-      if (err instanceof AxiosError && err.response?.status === 401) {
+      if (err instanceof AxiosError) {
         return {
-          statusCode: err.response?.status,
+          status: err.response?.status!,
           message: err.response?.data.message
         }
       }
-      return { statusCode: 500, message: 'Internal server error' }
+      return { status: 500, message: 'Internal server error' }
     }
   },
 
-  profile: async (
-    token: string
-  ): Promise<{ statusCode: number; message: string | IProfile }> => {
+  profile: async (): Promise<{
+    status: number
+    message: string | IProfile
+  }> => {
     try {
       const res = await axios<{
         statusCode: number
@@ -73,28 +71,27 @@ export const LoginRegistrateService = {
         method: 'get',
         baseURL: 'http://localhost:8080/api',
         headers: {
-          accept: '*/*',
-          Authorization: `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
-      return { statusCode: res.data.statusCode, message: res.data.message }
+      return { status: res.status, message: res.data.message }
     } catch (err) {
-      if (err instanceof AxiosError && err.response?.status === 401) {
+      if (err instanceof AxiosError) {
         return {
-          statusCode: err.response?.status,
+          status: err.response?.status!,
           message: err.response?.data.message
         }
       }
-      return { statusCode: 500, message: 'Internal server error' }
+      return { status: 500, message: 'Internal server error' }
     }
   },
 
-  validateUser: async (
+  validate: async (
     email: string,
     code: string
-  ): Promise<{ statusCode: number; message: string }> => {
+  ): Promise<{ status: number; message: string }> => {
     try {
-      const res = await axios<{ statusCode: number; message: string }>({
+      const res = await axios<{ message: string }>({
         url: `/users/verified?email=${email}&code=${code}`,
         method: 'post',
         baseURL: 'http://localhost:8080/api',
@@ -103,15 +100,15 @@ export const LoginRegistrateService = {
           'Content-Type': 'application/json'
         }
       })
-      return { statusCode: res.data.statusCode, message: res.data.message }
+      return { status: res.status, message: res.data.message }
     } catch (err) {
-      if (err instanceof AxiosError && err.response?.status === 401) {
+      if (err instanceof AxiosError) {
         return {
-          statusCode: err.response?.status,
+          status: err.response?.status!,
           message: err.response?.data.message
         }
       }
-      return { statusCode: 500, message: 'Internal server error' }
+      return { status: 500, message: 'Internal server error' }
     }
   }
 }

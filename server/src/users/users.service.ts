@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
 import { uuid } from 'uuidv4';
-import { IUpdateUser } from '../classes/users.classes';
 import { User } from './user.entity';
 import { ValidationCode } from './validation_code.entity';
 
@@ -30,9 +29,7 @@ export class UsersService {
     });
   }
 
-  async createUser(
-    userDetails: User,
-  ): Promise<{ statusCode: number; message: string }> {
+  async createUser(userDetails: User): Promise<{ message: string }> {
     const user = await this.findByEmail(userDetails.email);
     if (user) {
       throw new HttpException('User exists', HttpStatus.CONFLICT);
@@ -57,13 +54,13 @@ export class UsersService {
 
     await this.usersRespository.save(newUser);
 
-    return { statusCode: 200, message: 'Check email' };
+    return { message: 'Check email' };
   }
 
   async validateUser(
     email: string,
     code: string,
-  ): Promise<{ statusCode: number; message: string }> {
+  ): Promise<{ message: string }> {
     const user = await this.findByEmail(email);
     if (!user) {
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
@@ -73,30 +70,28 @@ export class UsersService {
     }
     user.isVerified = true;
     await this.usersRespository.save(user);
-    return { statusCode: 200, message: 'Verification successfully' };
+    return { message: 'Verification successfully' };
   }
 
-  async updateUser(
-    id: string,
-    updateUserDetails: IUpdateUser,
-  ): Promise<{ statusCode: number; message: string }> {
-    updateUserDetails.password = await bcrypt.hash(
-      updateUserDetails.password,
-      10,
-    );
-    const updateUser = await this.usersRespository.update(
-      { id },
-      updateUserDetails,
-    );
-    if (updateUser.affected > 0) {
-      return { statusCode: 200, message: 'User updated successfully' };
-    }
-    return { statusCode: 404, message: 'User not found' };
-  }
+  // async updateUser(
+  //   id: string,
+  //   updateUserDetails: IUpdateUser,
+  // ): Promise<{ statusCode: number; message: string }> {
+  //   updateUserDetails.password = await bcrypt.hash(
+  //     updateUserDetails.password,
+  //     10,
+  //   );
+  //   const updateUser = await this.usersRespository.update(
+  //     { id },
+  //     updateUserDetails,
+  //   );
+  //   if (updateUser.affected > 0) {
+  //     return { statusCode: 200, message: 'User updated successfully' };
+  //   }
+  //   return { message: 'User not found' };
+  // }
 
-  async deleteUser(
-    id: string,
-  ): Promise<{ statusCode: number; message: string }> {
+  async deleteUser(id: string): Promise<{ message: string }> {
     const user = await this.usersRespository.findOne({
       where: { id: id },
       relations: { validationCode: true },
@@ -109,6 +104,6 @@ export class UsersService {
     });
     await this.usersRespository.remove(user);
     await this.validationRepository.remove(validationCode);
-    return { statusCode: 200, message: 'User deleted successfully' };
+    return { message: 'User deleted successfully' };
   }
 }

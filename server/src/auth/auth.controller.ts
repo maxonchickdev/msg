@@ -31,15 +31,21 @@ export class AuthController {
   @Post('/login')
   @HttpCode(200)
   @ApiBody({ type: IUserLogin })
-  @ApiOperation({ summary: 'Login with JWT strategy' })
-  @ApiResponse({ status: 500, description: 'Save jwt token' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiOperation({ summary: 'Login JWT strategy' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Mail not confirmed' })
+  @ApiResponse({ status: 404, description: 'Permission denied' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiResponse({ status: 200, description: 'Login success' })
   async jwtLogin(@Body() data: IUserLogin, @Res() res: Response) {
-    const { access_token } = await this.authService.login(data);
-    return res.setHeader('access_token', access_token).json({
-      statusCode: 200,
-      message: 'Login success',
-    });
+    try {
+      const { access_token } = await this.authService.login(data);
+      return res.cookie('access_token', access_token, { httpOnly: true }).json({
+        message: 'Login success',
+      });
+    } catch (err) {
+      return res.status(err.status).json({ message: err.response });
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -47,12 +53,12 @@ export class AuthController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user profile with' })
   @ApiResponse({ status: 200, description: 'User profile' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Access token not found' })
   async jwtGetProfile(@User() user: typeof User, @Res() res: Response) {
     try {
-      return res.status(200).json({ statusCode: 200, message: user });
+      return res.json({ message: user });
     } catch (err) {
-      return res.json({ statusCode: err.status, message: err.response });
+      return res.status(err.status).json({ message: err.response });
     }
   }
 }

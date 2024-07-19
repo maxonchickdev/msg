@@ -27,15 +27,14 @@ export const RegistratePage = () => {
 
   const onSubmitUserInfo: SubmitHandler<IRegistrate> = async data => {
     setIsLoadinDetails(true)
-    const res: { statusCode: number; message: string } =
-      await LoginRegistrateService.registrate(data)
+    const { status, message } = await LoginRegistrateService.registrate(data)
     setIsLoadinDetails(false)
     const notifyData: INotify = {
-      status: res.statusCode,
-      message: res.message,
-      icon: getNotifyIcon(res.statusCode)
+      status: status,
+      message: message,
+      icon: getNotifyIcon(status)
     }
-    if (res.statusCode === 200) {
+    if (status === 200) {
       secureLocalStorage.setItem('email', data.email)
       setIsDisabledDetails(true)
       setIsSent(true)
@@ -48,15 +47,17 @@ export const RegistratePage = () => {
   const onSubmitCode: SubmitHandler<IVerificationCode> = async data => {
     const email = secureLocalStorage.getItem('email')
     setIsLoadinCode(true)
-    const res: { statusCode: number; message: string } =
-      await LoginRegistrateService.validateUser(email as string, data.code)
+    const { status, message } = await LoginRegistrateService.validate(
+      email as string,
+      data.code
+    )
     setIsLoadinCode(false)
     const notifyData: INotify = {
-      status: res.statusCode,
-      message: res.message,
-      icon: getNotifyIcon(res.statusCode)
+      status: status,
+      message: message,
+      icon: getNotifyIcon(status)
     }
-    if (res.statusCode === 200) {
+    if (status === 200) {
       setIsDisabledCode(true)
       notify(notifyData)
       router.push('/')

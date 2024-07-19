@@ -19,23 +19,20 @@ export const LoginPage = () => {
   })
   const onSubmitLogin: SubmitHandler<ILogin> = async data => {
     setIsLoading(true)
-    const res: { statusCode: number; message: string } =
-      await LoginRegistrateService.login(data)
+    const { status, message } = await LoginRegistrateService.login(data)
     setIsLoading(false)
     const notifyData: INotify = {
-      status: res.statusCode,
-      message: res.message,
-      icon: getNotifyIcon(res.statusCode)
+      status: status,
+      message: message,
+      icon: getNotifyIcon(status)
     }
-    notify(notifyData)
-    // if (res.statusCode === 200) {
-    //   notify(notifyData)
-    // setCookie('access_token', res, { secure: true, sameSite: 'none' })
-    //   router.push('/profile')
-    //   reset()
-    // } else {
-    //   notify(notifyData)
-    // }
+    if (status === 200) {
+      notify(notifyData)
+      router.push('/profile')
+      reset()
+    } else {
+      notify(notifyData)
+    }
   }
   return (
     <RegLogLayout>

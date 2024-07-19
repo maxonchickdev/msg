@@ -1,49 +1,35 @@
 'use client'
 
-import { getCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { notify } from '../../components/notify/notify'
 import { LoginRegistrateService } from '../../services/services'
-import { IProfile } from '../../utils/interfaces/interfaces'
+import { INotify, IProfile } from '../../utils/interfaces/interfaces'
+import { getNotifyIcon } from '../../utils/notifications/notifications'
 
 export const ProfilePage = () => {
-  const [userDetails, setUserDetails] = useState<IProfile | undefined>(
-    undefined
-  )
+  const [userDetails, setUserDetails] = useState<IProfile>()
   const router = useRouter()
   useEffect(() => {
     const getProfileDetails = async () => {
-      const token = getCookie('access_token')
-      if (!token) {
-        router.push('/')
-        return null
-      }
-      const res = await LoginRegistrateService.profile(token as string)
-      if (res.statusCode === 200) {
-        setUserDetails(res.message as IProfile)
+      const { status, message } = await LoginRegistrateService.profile()
+      if (status === 200) {
+        setUserDetails(message as IProfile)
       } else {
+        console.log(status, message)
+        const notifyData: INotify = {
+          status: status,
+          message: message as string,
+          icon: getNotifyIcon(status)
+        }
+        notify(notifyData)
         router.push('/')
       }
     }
     getProfileDetails()
-  }, [])
+  }, [userDetails])
 
-  if (!userDetails) {
-    return null
-  }
+  console.log(userDetails)
 
-  return (
-    <>
-      <p>{userDetails?.username}</p>
-      <p>{userDetails?.email}</p>
-      {/* <SubmitButton
-        content='Logout'
-        color={ButtonColors.Default}
-        onClick={() => {
-          deleteCookie('access_token')
-          router.push('/')
-        }}
-      /> */}
-    </>
-  )
+  return <>Hi</>
 }

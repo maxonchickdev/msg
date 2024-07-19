@@ -1,10 +1,13 @@
 import { StatusCodes } from '../../utils/status.codes/status.codes'
 
 export const getNotifyIcon = (statusCode: number) => {
-  return statusCode === StatusCodes.SUCCESSFUL_STATUS_CODE
+  return statusCode === StatusCodes.OK
     ? '✅'
-    : statusCode ===
-      (StatusCodes.CONFLICT_STATUS_CODE || StatusCodes.NOT_FOUND_STATUS_CODE)
+    : statusCode === StatusCodes.CONFLICT
+    ? '⚠️'
+    : statusCode === StatusCodes.NOT_FOUND
+    ? '⚠️'
+    : statusCode === StatusCodes.NOT_CONFIRMED
     ? '⚠️'
     : '🚫'
 }

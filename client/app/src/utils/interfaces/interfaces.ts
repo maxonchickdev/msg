@@ -8,7 +8,11 @@ export interface IRegistrate {
 
 export interface ILogin extends Omit<IRegistrate, 'username'> {}
 
-export interface IProfile extends Omit<IRegistrate, 'password'> {}
+export interface IProfile {
+  username: string
+  email: string
+  createdAt: Date
+}
 
 export interface INotify {
   status: number
