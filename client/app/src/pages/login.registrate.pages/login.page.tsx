@@ -21,16 +21,16 @@ export const LoginPage = () => {
     setIsLoading(true)
     const { status, message } = await LoginRegistrateService.login(data)
     setIsLoading(false)
-    const notifyData: INotify = {
-      status: status,
-      message: message,
-      icon: getNotifyIcon(status)
-    }
     if (status === 200) {
-      notify(notifyData)
+      // notify(notifyData)
       router.push('/profile')
-      reset()
+      // reset()
     } else {
+      const notifyData: INotify = {
+        status: status,
+        message: message,
+        icon: getNotifyIcon(status)
+      }
       notify(notifyData)
     }
   }

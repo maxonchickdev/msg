@@ -40,9 +40,17 @@ export class AuthController {
   async jwtLogin(@Body() data: IUserLogin, @Res() res: Response) {
     try {
       const { access_token } = await this.authService.login(data);
-      return res.cookie('access_token', access_token, { httpOnly: true }).json({
-        message: 'Login success',
-      });
+      return res
+        .cookie('access_token', access_token, {
+          httpOnly: true,
+          maxAge: 30000,
+          secure: false,
+          path: '/',
+          sameSite: 'lax',
+        })
+        .json({
+          message: 'Login success',
+        });
     } catch (err) {
       return res.status(err.status).json({ message: err.response });
     }

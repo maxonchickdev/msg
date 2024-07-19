@@ -72,7 +72,8 @@ export const LoginRegistrateService = {
         baseURL: 'http://localhost:8080/api',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        withCredentials: true
       })
       return { status: res.status, message: res.data.message }
     } catch (err) {
