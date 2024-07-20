@@ -43,16 +43,15 @@ export class AuthController {
       return res
         .cookie('access_token', access_token, {
           httpOnly: true,
-          maxAge: 30000,
           secure: false,
           path: '/',
           sameSite: 'lax',
         })
-        .json({
-          message: 'Login success',
-        });
+        .send('Login success');
     } catch (err) {
-      return res.status(err.status).json({ message: err.response });
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
     }
   }
 
@@ -62,11 +61,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Get user profile with' })
   @ApiResponse({ status: 200, description: 'User profile' })
   @ApiResponse({ status: 404, description: 'Access token not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async jwtGetProfile(@User() user: typeof User, @Res() res: Response) {
     try {
-      return res.json({ message: user });
+      return res.send(user);
     } catch (err) {
-      return res.status(err.status).json({ message: err.response });
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
     }
   }
 }

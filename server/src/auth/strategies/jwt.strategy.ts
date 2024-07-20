@@ -11,18 +11,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           let token = null;
-          if (req && req.cookies) {
-            console.log(req.cookies);
-            console.log(req.signedCookies);
-            token = req.cookies['access_token'];
-            console.log(token);
-            return token;
+          if (!req || !req.cookies) {
+            throw new HttpException(
+              'Access token not found',
+              HttpStatus.NOT_FOUND,
+            );
           }
-          console.log('hi');
-          throw new HttpException(
-            'Access token not found',
-            HttpStatus.NOT_FOUND,
-          );
+          token = req.cookies['access_token'];
+          return token;
         },
       ]),
       ignoreExpiration: true,

@@ -34,7 +34,7 @@ export class UsersController {
   async getUsers(@Res() res: Response) {
     try {
       const response = await this.userService.findAll();
-      return res.json({ message: response });
+      return res.send(response);
     } catch (err) {
       return res.status(err.status).json({ message: err.response });
     }
@@ -50,10 +50,12 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Check mail' })
   async createUser(@Body() user: User, @Res() res: Response) {
     try {
-      const { message } = await this.userService.createUser(user);
-      return res.json({ message: message });
+      const response = await this.userService.createUser(user);
+      return res.send(response);
     } catch (err) {
-      return res.status(err.status).json({ message: err.response });
+      return res
+        .status(err.status)
+        .send({ status: err.status, message: err.response });
     }
   }
 
@@ -72,8 +74,8 @@ export class UsersController {
     @Res() res: Response,
   ) {
     try {
-      const { message } = await this.userService.validateUser(email, code);
-      return res.json({ message: message });
+      const response = await this.userService.validateUser(email, code);
+      return res.send(response);
     } catch (err) {
       return res.status(err.status).json({ message: err.response });
     }
@@ -109,8 +111,8 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   async deleteUser(@Param('id') id: string, @Res() res: Response) {
     try {
-      const { message } = await this.userService.deleteUser(id);
-      return res.json({ message: message });
+      const response = await this.userService.deleteUser(id);
+      return res.send(response);
     } catch (err) {
       return res.status(err.status).json({ message: err.response });
     }

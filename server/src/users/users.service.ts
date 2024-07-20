@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 import { User } from './user.entity';
 import { ValidationCode } from './validation_code.entity';
 
@@ -29,13 +29,13 @@ export class UsersService {
     });
   }
 
-  async createUser(userDetails: User): Promise<{ message: string }> {
+  async createUser(userDetails: User): Promise<User> {
     const user = await this.findByEmail(userDetails.email);
     if (user) {
       throw new HttpException('User exists', HttpStatus.CONFLICT);
     }
 
-    const uuidCode = uuid();
+    const uuidCode = uuidv4();
 
     await this.mailService.sendMail(userDetails.email, uuidCode);
 
@@ -54,13 +54,10 @@ export class UsersService {
 
     await this.usersRespository.save(newUser);
 
-    return { message: 'Check email' };
+    return newUser;
   }
 
-  async validateUser(
-    email: string,
-    code: string,
-  ): Promise<{ message: string }> {
+  async validateUser(email: string, code: string): Promise<User> {
     const user = await this.findByEmail(email);
     if (!user) {
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
@@ -70,7 +67,7 @@ export class UsersService {
     }
     user.isVerified = true;
     await this.usersRespository.save(user);
-    return { message: 'Verification successfully' };
+    return user;
   }
 
   // async updateUser(
@@ -91,7 +88,7 @@ export class UsersService {
   //   return { message: 'User not found' };
   // }
 
-  async deleteUser(id: string): Promise<{ message: string }> {
+  async deleteUser(id: string): Promise<User> {
     const user = await this.usersRespository.findOne({
       where: { id: id },
       relations: { validationCode: true },
@@ -104,6 +101,6 @@ export class UsersService {
     });
     await this.usersRespository.remove(user);
     await this.validationRepository.remove(validationCode);
-    return { message: 'User deleted successfully' };
+    return user;
   }
 }
