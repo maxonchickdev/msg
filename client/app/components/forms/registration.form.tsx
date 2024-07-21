@@ -1,4 +1,3 @@
-import { Input } from "@nextui-org/input";
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -6,8 +5,10 @@ import {
     RegistrationFormProps,
 } from "../../utils/interfaces/interfaces";
 import { FlexWrapper } from "../flex.wrapper/flex.wrapper";
-import { LinkTo } from "../link/link.to";
-import { ButtonColors, SubmitButton } from "../submit.button/submit.button";
+import { CustomLink } from "../custom/link/link";
+import { CustomButton } from "../custom/button/button";
+import SendIcon from "@mui/icons-material/Send";
+import TextField from "@mui/material/TextField";
 
 export const RegistrationForm: FC<RegistrationFormProps> = ({
     onSubmitUserInfo,
@@ -20,20 +21,23 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
         <form onSubmit={handleSubmit(onSubmitUserInfo)}>
             <FlexWrapper>
                 <h1 className="font-bold text-2xl">Registrate</h1>
-                <LinkTo content="Login" href="/" />
+                <CustomLink content="Login" href="/" />
             </FlexWrapper>
             <Controller
                 control={control}
                 rules={{ required: true }}
                 name="username"
                 render={({ field: { value, onChange } }) => (
-                    <Input
-                        type="text"
+                    <TextField
+                        id="outlined-password-input"
                         label="Username"
+                        type="text"
                         placeholder="Enter username"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-2"
+                        className="my-1"
+                        fullWidth
+                        size="small"
                     />
                 )}
             />
@@ -42,13 +46,16 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
                 rules={{ required: true }}
                 name="email"
                 render={({ field: { value, onChange } }) => (
-                    <Input
-                        type="email"
+                    <TextField
+                        id="outlined-password-input"
                         label="Email"
+                        type="email"
                         placeholder="Enter email"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-2"
+                        className="my-1"
+                        fullWidth
+                        size="small"
                     />
                 )}
             />
@@ -57,20 +64,23 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
                 rules={{ required: true }}
                 name="password"
                 render={({ field: { value, onChange } }) => (
-                    <Input
-                        type="password"
+                    <TextField
+                        id="outlined-password-input"
                         label="Password"
+                        type="password"
                         placeholder="Enter password"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-2"
+                        className="my-1"
+                        fullWidth
+                        size="small"
                     />
                 )}
             />
-            <SubmitButton
+            <CustomButton
                 isDisabled={isDisabled}
                 content="Submit"
-                color={ButtonColors.Primary}
+                endIcon={<SendIcon />}
             />
         </form>
     );

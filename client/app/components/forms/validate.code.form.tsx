@@ -1,11 +1,12 @@
-import { Input } from "@nextui-org/input";
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
     IVerificationCode,
     ValidationFormProps,
 } from "../../utils/interfaces/interfaces";
-import { ButtonColors, SubmitButton } from "../submit.button/submit.button";
+import { CustomButton } from "../custom/button/button";
+import SendIcon from "@mui/icons-material/Send";
+import TextField from "@mui/material/TextField";
 
 export const ValidateCodeForm: FC<ValidationFormProps> = ({
     onSubmitCode,
@@ -21,20 +22,23 @@ export const ValidateCodeForm: FC<ValidationFormProps> = ({
                 rules={{ required: true }}
                 name="code"
                 render={({ field: { value, onChange } }) => (
-                    <Input
-                        type="text"
+                    <TextField
+                        id="outlined-password-input"
                         label="Validation code"
+                        type="text"
                         placeholder="Enter code"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-2"
+                        className="my-1"
+                        fullWidth
+                        size="small"
                     />
                 )}
             />
-            <SubmitButton
+            <CustomButton
                 isDisabled={isDisabled}
                 content="Submit"
-                color={ButtonColors.Primary}
+                endIcon={<SendIcon />}
             />
         </form>
     );

@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 export interface IRegistrate {
@@ -36,11 +37,18 @@ export interface LoginFormProps {
     onSubmitLogin: SubmitHandler<ILogin>;
 }
 
-export interface ILinkTo {
+export interface ILink {
     content: string;
     href: string;
 }
 
 export interface IError {
     message: string;
+}
+
+export interface IButton {
+    content: string;
+    onClick?: () => void;
+    isDisabled?: boolean;
+    endIcon: ReactNode;
 }
