@@ -42,13 +42,14 @@ export interface ILink {
     href: string;
 }
 
-export interface IError {
-    message: string;
-}
-
 export interface IButton {
     content: string;
     onClick?: () => void;
     isDisabled?: boolean;
     endIcon: ReactNode;
+}
+
+export interface IError {
+    content: string;
+    href: string;
 }

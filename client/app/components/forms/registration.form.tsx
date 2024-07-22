@@ -4,11 +4,11 @@ import {
     IRegistrate,
     RegistrationFormProps,
 } from "../../utils/interfaces/interfaces";
-import { FlexWrapper } from "../flex.wrapper/flex.wrapper";
 import { CustomLink } from "../custom/link/link";
 import { CustomButton } from "../custom/button/button";
 import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 export const RegistrationForm: FC<RegistrationFormProps> = ({
     onSubmitUserInfo,
@@ -19,10 +19,17 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
     });
     return (
         <form onSubmit={handleSubmit(onSubmitUserInfo)}>
-            <FlexWrapper>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "12px",
+                    alignItems: "center",
+                }}
+            >
                 <h1 className="font-bold text-2xl">Registrate</h1>
                 <CustomLink content="Login" href="/" />
-            </FlexWrapper>
+            </Box>
             <Controller
                 control={control}
                 rules={{ required: true }}

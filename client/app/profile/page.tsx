@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { IProfile } from "../utils/interfaces/interfaces";
-import { useRouter } from "next/navigation";
-import { LoginRegistrateService } from "../services/services";
+import { LoginRegistrateService } from "../utils/services/services";
+import { CustomError } from "@/app/components/custom/error/error";
 
 export default function Registrate() {
     const [message, setMessage] = useState<string>("");
     const [profile, setProfile] = useState<IProfile>();
-    const router = useRouter();
     useEffect(() => {
         const getProfileDetails = async () => {
             try {
@@ -21,7 +20,7 @@ export default function Registrate() {
         getProfileDetails();
     }, []);
 
-    if (!profile) return <p>{message}</p>;
+    if (!profile) return <CustomError href="/" content={message} />;
 
     return (
         <>

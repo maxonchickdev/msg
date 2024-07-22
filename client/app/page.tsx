@@ -1,40 +1,42 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { RegLogLayout } from "./utils/layouts/reg.log.layout/reg.log.layout";
 import { LoginForm } from "./components/forms/login.form";
 import { ILogin } from "./utils/interfaces/interfaces";
 import { SubmitHandler } from "react-hook-form";
-import { LoginRegistrateService } from "./services/services";
+import { LoginRegistrateService } from "./utils/services/services";
 import { useForm } from "react-hook-form";
-import { notify } from "./components/notify/notify";
-import { INotify } from "./utils/interfaces/interfaces";
+import { CustomError } from "@/app/components/custom/error/error";
+import { useState } from "react";
+import Stack from "@mui/material/Stack";
 
 export default function Login() {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const router = useRouter();
+    const [error, setError] = useState<string>("");
     const { reset } = useForm<ILogin>({
         mode: "onChange",
     });
     const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
         try {
-            const { status } = await LoginRegistrateService.login(data);
+            await LoginRegistrateService.login(data);
             router.push("/profile");
             reset();
         } catch (err) {
-            const notifyData: INotify = {
-                message: err as string,
-            };
-            notify(notifyData);
+            setError(err as string);
         }
     };
+
+    if (error) return <CustomError href="/" content={error} />;
     return (
-        <RegLogLayout>
+        <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ width: 1, height: "100vh" }}
+        >
             <div className="max-w-[700px] w-full">
                 <LoginForm onSubmitLogin={onSubmitLogin} />
             </div>
-        </RegLogLayout>
+        </Stack>
     );
 }
