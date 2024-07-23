@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from './user.entity';
-import { ValidationCode } from './validation_code.entity';
+import { User } from '../entities/user.entity';
+import { ValidationCode } from '../entities/validation_code.entity';
 
 @Injectable()
 export class UsersService {

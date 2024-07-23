@@ -16,7 +16,7 @@ export const CustomButton: FC<IButton> = ({
             fullWidth
             endIcon={endIcon}
             variant="contained"
-            className="my-1"
+            sx={{ margin: "4px 0" }}
         >
             {content}
         </Button>

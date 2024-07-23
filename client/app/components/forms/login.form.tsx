@@ -31,12 +31,11 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
                         id="outlined-password-input"
                         label="Email"
                         type="email"
-                        placeholder="Enter email"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-1"
                         fullWidth
                         size="small"
+                        sx={{ margin: "4px 0" }}
                     />
                 )}
             />
@@ -49,12 +48,11 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
                         id="outlined-password-input"
                         label="Password"
                         type="password"
-                        placeholder="Enter password"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-1"
                         fullWidth
                         size="small"
+                        sx={{ margin: "4px 0" }}
                     />
                 )}
             />

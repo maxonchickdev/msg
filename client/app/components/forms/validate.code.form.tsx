@@ -26,10 +26,9 @@ export const ValidateCodeForm: FC<ValidationFormProps> = ({
                         id="outlined-password-input"
                         label="Validation code"
                         type="text"
-                        placeholder="Enter code"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-1"
+                        sx={{ margin: "4px 0" }}
                         fullWidth
                         size="small"
                     />

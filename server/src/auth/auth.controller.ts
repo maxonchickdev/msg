@@ -15,8 +15,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { IUserLogin } from 'src/classes/users.classes';
-import { User } from 'src/decorators/user.decorator';
+import { IUserLogin } from '../classes/users.classes';
+import { User } from '../decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';

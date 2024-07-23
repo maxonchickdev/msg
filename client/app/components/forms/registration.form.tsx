@@ -39,10 +39,9 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
                         id="outlined-password-input"
                         label="Username"
                         type="text"
-                        placeholder="Enter username"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-1"
+                        sx={{ margin: "4px 0" }}
                         fullWidth
                         size="small"
                     />
@@ -57,10 +56,9 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
                         id="outlined-password-input"
                         label="Email"
                         type="email"
-                        placeholder="Enter email"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-1"
+                        sx={{ margin: "4px 0" }}
                         fullWidth
                         size="small"
                     />
@@ -75,10 +73,9 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
                         id="outlined-password-input"
                         label="Password"
                         type="password"
-                        placeholder="Enter password"
                         defaultValue={value}
                         onChange={onChange}
-                        className="my-1"
+                        sx={{ margin: "4px 0" }}
                         fullWidth
                         size="small"
                     />

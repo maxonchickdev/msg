@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { User } from './user.entity';
+import { User } from '../entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('users')

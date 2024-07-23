@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MailService } from 'src/mail/mail.service';
-import { User } from './user.entity';
+import { MailService } from '../mail/mail.service';
+import { User } from '../entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { ValidationCode } from './validation_code.entity';
+import { ValidationCode } from '../entities/validation_code.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, ValidationCode])],
