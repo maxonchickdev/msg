@@ -53,3 +53,9 @@ export interface IError {
     content: string;
     href: string;
 }
+
+export interface ISnackbar {
+    handleClose: () => void;
+    message: string;
+    open: boolean;
+}

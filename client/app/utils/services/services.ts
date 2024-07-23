@@ -1,10 +1,14 @@
 import axios, { AxiosError } from "axios";
-import { ILogin, IProfile, IRegistrate } from "../utils/interfaces/interfaces";
+import {
+    ILogin,
+    IProfile,
+    IRegistrate,
+} from "../../utils/interfaces/interfaces";
 
 export const LoginRegistrateService = {
-    login: async (loginUser: ILogin) => {
+    login: async (loginUser: ILogin): Promise<{ status: number }> => {
         try {
-            await axios({
+            const res = await axios({
                 url: "/login",
                 method: "post",
                 baseURL: "http://localhost:8080/api",
@@ -14,8 +18,8 @@ export const LoginRegistrateService = {
                 data: loginUser,
                 withCredentials: true,
             });
+            return { status: res.status };
         } catch (err) {
-            console.log(err);
             if (err instanceof AxiosError && err.response) {
                 throw new Error(err.response.data.message).message;
             }
@@ -23,9 +27,11 @@ export const LoginRegistrateService = {
         }
     },
 
-    registrate: async (registrateUser: IRegistrate) => {
+    registrate: async (
+        registrateUser: IRegistrate,
+    ): Promise<{ status: number }> => {
         try {
-            await axios({
+            const res = await axios({
                 url: "/users",
                 method: "post",
                 baseURL: "http://localhost:8080/api",
@@ -34,6 +40,7 @@ export const LoginRegistrateService = {
                 },
                 data: registrateUser,
             });
+            return { status: res.status };
         } catch (err) {
             if (err instanceof AxiosError && err.response) {
                 throw new Error(err.response.data.message).message;
@@ -42,9 +49,12 @@ export const LoginRegistrateService = {
         }
     },
 
-    validate: async (email: string, code: string) => {
+    validate: async (
+        email: string,
+        code: string,
+    ): Promise<{ status: number }> => {
         try {
-            await axios({
+            const res = await axios({
                 url: `/users/verified?email=${email}&code=${code}`,
                 method: "post",
                 baseURL: "http://localhost:8080/api",
@@ -52,6 +62,7 @@ export const LoginRegistrateService = {
                     "Content-Type": "application/json",
                 },
             });
+            return { status: res.status };
         } catch (err) {
             if (err instanceof AxiosError && err.response) {
                 throw new Error(err.response.data.message).message;
