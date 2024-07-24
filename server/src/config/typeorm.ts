@@ -11,14 +11,11 @@ const typeormConfig = {
   username: `${process.env.MYSQL_USER}`,
   password: `${process.env.MYSQL_PASSWORD}`,
   database: `${process.env.MYSQL_DATABASE}`,
-  entities: ['src/entities/**/*.entity{.ts,.js}'],
-  migrations: ['src/migrations/**/*{.js,.ts}'],
+  entities: ['dist/entities/*.entity.js'],
+  migrations: ['dist/migrations/*{.js,.ts}'],
   synchronize: false,
   autoLoadEntities: true,
-  cli: {
-    entitiesDir: 'src/entities',
-    migrationsDir: 'src/migrations',
-  },
+  migrationsRun: true,
 };
 
 export default registerAs('typeorm', () => typeormConfig);
