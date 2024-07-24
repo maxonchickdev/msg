@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../entities/user.entity';
 import { ValidationCode } from '../entities/validation_code.entity';
+import { CreateUserDto, EmailValidationDto } from 'src/dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -29,15 +30,15 @@ export class UsersService {
     });
   }
 
-  async createUser(userDetails: User): Promise<User> {
-    const user = await this.findByEmail(userDetails.email);
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const user = await this.findByEmail(createUserDto.email);
     if (user) {
       throw new HttpException('User exists', HttpStatus.CONFLICT);
     }
 
     const uuidCode = uuidv4();
 
-    await this.mailService.sendMail(userDetails.email, uuidCode);
+    await this.mailService.sendMail(createUserDto.email, uuidCode);
 
     const validationCode = this.validationRepository.create({
       code: uuidCode,
@@ -46,9 +47,9 @@ export class UsersService {
     await this.validationRepository.save(validationCode);
 
     const newUser = this.usersRespository.create({
-      username: userDetails.username,
-      email: userDetails.email,
-      password: await bcrypt.hash(userDetails.password, 10),
+      username: createUserDto.username,
+      email: createUserDto.email,
+      password: await bcrypt.hash(createUserDto.password, 10),
       validationCode: validationCode,
     });
 
@@ -57,12 +58,12 @@ export class UsersService {
     return newUser;
   }
 
-  async validateUser(email: string, code: string): Promise<User> {
-    const user = await this.findByEmail(email);
+  async validateUser(emailValidationDto: EmailValidationDto): Promise<User> {
+    const user = await this.findByEmail(emailValidationDto.email);
     if (!user) {
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
     }
-    if (!(user.validationCode.code === code)) {
+    if (!(user.validationCode.code === emailValidationDto.code)) {
       throw new HttpException('Invalid code', HttpStatus.CONFLICT);
     }
     user.isVerified = true;

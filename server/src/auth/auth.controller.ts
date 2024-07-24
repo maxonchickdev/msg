@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { IUserLogin } from '../classes/users.classes';
+import { LoginUserDto } from '../dto/user.dto';
 import { User } from '../decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -30,16 +30,16 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @HttpCode(200)
-  @ApiBody({ type: IUserLogin })
+  @ApiBody({ type: LoginUserDto })
   @ApiOperation({ summary: 'Login JWT strategy' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Mail not confirmed' })
   @ApiResponse({ status: 404, description: 'Permission denied' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiResponse({ status: 200, description: 'Login success' })
-  async jwtLogin(@Body() data: IUserLogin, @Res() res: Response) {
+  async jwtLogin(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
     try {
-      const { access_token } = await this.authService.login(data);
+      const { access_token } = await this.authService.login(loginUserDto);
       return res
         .cookie('access_token', access_token, {
           httpOnly: true,

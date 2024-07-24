@@ -51,7 +51,7 @@ export interface IButton {
 
 export interface IError {
     content: string;
-    href: string;
+    href?: string;
 }
 
 export interface ISnackbar {
