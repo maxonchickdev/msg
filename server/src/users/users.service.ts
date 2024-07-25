@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../entities/user.entity';
 import { ValidationCode } from '../entities/validation_code.entity';
-import { CreateUserDto, EmailValidationDto } from 'src/dto/user.dto';
+import { CreateUserDto, EmailValidationDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -59,11 +59,13 @@ export class UsersService {
   }
 
   async validateUser(emailValidationDto: EmailValidationDto): Promise<User> {
+    console.log(emailValidationDto.email, emailValidationDto.code);
+    console.log('ping2');
     const user = await this.findByEmail(emailValidationDto.email);
     if (!user) {
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
     }
-    if (!(user.validationCode.code === emailValidationDto.code)) {
+    if (user.validationCode.code !== emailValidationDto.code) {
       throw new HttpException('Invalid code', HttpStatus.CONFLICT);
     }
     user.isVerified = true;

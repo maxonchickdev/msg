@@ -6,19 +6,24 @@ import { LoginRegistrateService } from "../utils/services/services";
 import { CustomError } from "@/app/components/custom/error/error";
 
 export default function Registrate() {
+    const [loading, setLoading] = useState<boolean>(true);
     const [message, setMessage] = useState<string>("");
     const [profile, setProfile] = useState<IProfile>();
+    const getProfileDetails = async () => {
+        try {
+            const { data } = await LoginRegistrateService.profile();
+            setProfile(data);
+        } catch (err) {
+            setMessage(err as string);
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const getProfileDetails = async () => {
-            try {
-                const { data } = await LoginRegistrateService.profile();
-                setProfile(data);
-            } catch (err) {
-                setMessage(err as string);
-            }
-        };
         getProfileDetails();
     }, []);
+
+    if (loading) return <>Loading...</>;
 
     if (!profile) return <CustomError href="/" content={message} />;
 

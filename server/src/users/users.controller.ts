@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { UsersService } from './users.service';
-import { CreateUserDto, EmailValidationDto } from 'src/dto/user.dto';
+import { CreateUserDto, EmailValidationDto } from './dto/user.dto';
 
 @ApiTags('users')
 @Controller('/api/users')
@@ -66,6 +66,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Verification successfully' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async validationUser(
+    @Body()
     emailValidationDto: EmailValidationDto,
     @Res() res: Response,
   ) {
@@ -73,7 +74,7 @@ export class UsersController {
       const response = await this.userService.validateUser(emailValidationDto);
       return res.send(response);
     } catch (err) {
-      return res.status(err.status).json({ message: err.response });
+      return res.send({ status: 200, message: 'Internal server error' });
     }
   }
 

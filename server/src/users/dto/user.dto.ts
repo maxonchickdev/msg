@@ -17,14 +17,14 @@ export class CreateUserDto {
 }
 
 export class EmailValidationDto {
-  @ApiProperty({ name: 'code' })
-  @IsNotEmpty()
-  code: string;
-
   @ApiProperty({ name: 'email' })
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @ApiProperty({ name: 'code' })
+  @IsNotEmpty()
+  code: string;
 }
 
 export class LoginUserDto {
