@@ -53,7 +53,11 @@ export class UsersService {
       validationCode: validationCode,
     });
 
-    await this.usersRespository.save(newUser);
+    try {
+      await this.usersRespository.save(newUser);
+    } catch (err) {
+      throw err;
+    }
 
     return newUser;
   }

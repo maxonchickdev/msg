@@ -6,29 +6,24 @@ import {
   Post,
   Res,
   UseGuards,
+  Req,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { Response } from 'express';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginUserDto } from '../users/dto/user.dto';
 import { User } from '../decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { GoogleOAuthGuard } from './guards/google-oauth.guard';
+import { Request, Response } from 'express';
 
-@ApiBearerAuth()
 @ApiTags('login')
-@Controller('api')
+@Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @Post('/login')
+  @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @ApiBody({ type: LoginUserDto })
   @ApiOperation({ summary: 'Login JWT strategy' })
@@ -55,8 +50,8 @@ export class AuthController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/profile')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user profile with' })
   @ApiResponse({ status: 200, description: 'User profile' })
@@ -70,5 +65,15 @@ export class AuthController {
         .status(err.status)
         .json({ status: err.status, message: err.response });
     }
+  }
+
+  @Get()
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuth() {}
+
+  @Get('google-redirect')
+  @UseGuards(GoogleOAuthGuard)
+  googleAuthRedirect(@Req() req: Request) {
+    return this.authService.googleLogin(req);
   }
 }
