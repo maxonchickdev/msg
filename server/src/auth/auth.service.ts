@@ -24,7 +24,6 @@ export class AuthService {
   }
 
   googleLogin(req: Request) {
-    console.log(req);
     if (!req.user)
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     // const user = await this.usersService.findByEmail();

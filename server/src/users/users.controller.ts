@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -18,6 +19,8 @@ import {
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto, EmailValidationDto } from './dto/user.dto';
+import { ValidationUserGuard } from './guards/validate-new-user.guard';
+import { ValidationEmailGuard } from './guards/validate-email.guard';
 
 @ApiTags('users')
 @Controller('/api/users')
@@ -39,6 +42,7 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(ValidationUserGuard)
   @HttpCode(200)
   @ApiBody({ type: CreateUserDto })
   @ApiOperation({ summary: 'Create new user' })
@@ -58,6 +62,7 @@ export class UsersController {
   }
 
   @Post('/verified')
+  @UseGuards(ValidationEmailGuard)
   @HttpCode(200)
   @ApiBody({ type: EmailValidationDto })
   @ApiOperation({ summary: 'Validate user' })

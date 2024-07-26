@@ -31,11 +31,6 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.findByEmail(createUserDto.email);
-    if (user) {
-      throw new HttpException('User exists', HttpStatus.CONFLICT);
-    }
-
     const uuidCode = uuidv4();
 
     await this.mailService.sendMail(createUserDto.email, uuidCode);
@@ -53,25 +48,13 @@ export class UsersService {
       validationCode: validationCode,
     });
 
-    try {
-      await this.usersRespository.save(newUser);
-    } catch (err) {
-      throw err;
-    }
+    await this.usersRespository.save(newUser);
 
     return newUser;
   }
 
   async validateUser(emailValidationDto: EmailValidationDto): Promise<User> {
-    console.log(emailValidationDto.email, emailValidationDto.code);
-    console.log('ping2');
     const user = await this.findByEmail(emailValidationDto.email);
-    if (!user) {
-      throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
-    }
-    if (user.validationCode.code !== emailValidationDto.code) {
-      throw new HttpException('Invalid code', HttpStatus.CONFLICT);
-    }
     user.isVerified = true;
     await this.usersRespository.save(user);
     return user;
