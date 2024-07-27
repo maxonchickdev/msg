@@ -1,19 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginUserDto } from '../users/dto/user.dto';
+import { LoginUserDto, UserEmailFromRequestDto } from '../users/dto/user.dto';
 import { UsersService } from '../users/users.service';
-import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginUserDto: LoginUserDto) {
+  async loginBasic(loginUserDto: LoginUserDto) {
     const user = await this.usersService.findByEmail(loginUserDto.email);
     const payload = {
+      id: user.id,
       username: user.username,
       email: user.email,
       createdAt: user.createdAt,
@@ -23,13 +23,18 @@ export class AuthService {
     };
   }
 
-  googleLogin(req: Request) {
-    if (!req.user)
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    // const user = await this.usersService.findByEmail();
+  async loginGoogle(userEmailFromRequestDto: UserEmailFromRequestDto) {
+    const user = await this.usersService.findByEmail(
+      userEmailFromRequestDto.email,
+    );
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      createdAt: user.createdAt,
+    };
     return {
-      message: 'User information from google',
-      user: req.user,
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 }

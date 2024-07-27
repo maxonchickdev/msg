@@ -21,7 +21,11 @@ export class ValidationUserGuard implements CanActivate {
 
   async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
     const user = await this.usersService.findByEmail(createUserDto.email);
-    if (user) throw new HttpException('User exists', HttpStatus.CONFLICT);
+    if (user)
+      throw new HttpException(
+        'User with the same email exists',
+        HttpStatus.CONFLICT,
+      );
     return true;
   }
 }

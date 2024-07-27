@@ -12,7 +12,7 @@ const typeormConfig = {
   password: `${process.env.MYSQL_PASSWORD}`,
   database: `${process.env.MYSQL_DATABASE}`,
   entities: ['dist/entities/*.entity.js'],
-  migrations: ['dist/migrations/*{.js,.ts}'],
+  migrations: ['dist/migrations/*.js'],
   synchronize: false,
   autoLoadEntities: true,
   migrationsRun: true,

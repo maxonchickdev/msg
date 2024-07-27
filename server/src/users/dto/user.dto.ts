@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({ name: 'username' })
@@ -37,4 +36,22 @@ export class LoginUserDto {
   @ApiProperty({ name: 'password' })
   @IsNotEmpty()
   password: string;
+}
+
+export class UserProfileDto {
+  @IsNotEmpty()
+  username: string;
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+  @IsNotEmpty()
+  createdAt: Date;
+  @IsNotEmpty()
+  exp: number;
+}
+
+export class UserEmailFromRequestDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 }

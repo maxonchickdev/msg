@@ -19,7 +19,6 @@ async function bootstrap() {
     .setDescription('Users management system with login logic')
     .setVersion('0.0.1')
     .addTag('users')
-    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
