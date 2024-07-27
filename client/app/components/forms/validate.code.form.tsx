@@ -5,7 +5,7 @@ import {
     ValidationFormProps,
 } from "../../utils/interfaces/interfaces";
 import { CustomButton } from "../custom/button/button";
-import SendIcon from "@mui/icons-material/Send";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import TextField from "@mui/material/TextField";
 
 export const ValidateCodeForm: FC<ValidationFormProps> = ({
@@ -37,7 +37,7 @@ export const ValidateCodeForm: FC<ValidationFormProps> = ({
             <CustomButton
                 isDisabled={isDisabled}
                 content="Submit"
-                endIcon={<SendIcon />}
+                endIcon={<KeyboardArrowUpIcon color="info" />}
             />
         </form>
     );

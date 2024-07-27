@@ -15,7 +15,7 @@ export const CustomButton: FC<IButton> = ({
             onClick={onClick}
             fullWidth
             endIcon={endIcon}
-            variant="contained"
+            variant="outlined"
             sx={{ margin: "4px 0" }}
         >
             {content}

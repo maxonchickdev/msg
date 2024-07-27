@@ -46,7 +46,8 @@ export interface IButton {
     content: string;
     onClick?: () => void;
     isDisabled?: boolean;
-    endIcon: ReactNode;
+    endIcon?: ReactNode;
+    startIcon?: ReactNode;
 }
 
 export interface IError {

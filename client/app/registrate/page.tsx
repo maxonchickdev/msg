@@ -13,6 +13,11 @@ import secureLocalStorage from "react-secure-storage";
 import Stack from "@mui/material/Stack";
 import { SyntheticEvent } from "react";
 import { CustomSnackbar } from "../components/custom/snackbar/snackbar";
+import Divider from "@mui/material/Divider";
+import { CustomButton } from "../components/custom/button/button";
+import GoogleIcon from "@mui/icons-material/Google";
+import { Box } from "@mui/material";
+import { CustomLink } from "../components/custom/link/link";
 
 export default function Registrate() {
     const [open, setOpen] = useState<boolean>(false);
@@ -67,6 +72,14 @@ export default function Registrate() {
             sx={{ width: 1, height: "100vh" }}
         >
             <div className="max-w-[700px] w-full">
+                <h1 className="font-bold text-2xl text-center pb-4">
+                    Join to <span className="text-green-700">MESSANGER</span>
+                </h1>
+                <CustomButton
+                    content="Continue with Google"
+                    endIcon={<GoogleIcon color="info" />}
+                />
+                <Divider sx={{ padding: "10px 0" }}>Or</Divider>
                 <RegistrationForm
                     isDisabled={isDisabledDetails}
                     onSubmitUserInfo={onSubmitUserInfo}
@@ -93,6 +106,19 @@ export default function Registrate() {
                         open={open}
                     />
                 ) : null}
+                <Box
+                    sx={{
+                        textAlign: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        justifyContent: "center",
+                        marginTop: "10px",
+                    }}
+                >
+                    <p className="">Already have an account?</p>
+                    <CustomLink content="Log in." href="/" />
+                </Box>
             </div>
         </Stack>
     );

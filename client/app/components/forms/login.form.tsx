@@ -3,25 +3,14 @@ import { Controller, useForm } from "react-hook-form";
 import { ILogin, LoginFormProps } from "../../utils/interfaces/interfaces";
 import { CustomLink } from "../custom/link/link";
 import { CustomButton } from "../custom/button/button";
-import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
     const { handleSubmit, control } = useForm<ILogin>({ mode: "onChange" });
     return (
         <form onSubmit={handleSubmit(onSubmitLogin)}>
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "12px",
-                    alignItems: "center",
-                }}
-            >
-                <h1 className="font-bold text-2xl">Login</h1>
-                <CustomLink content="Registrate" href="/registrate" />
-            </Box>
             <Controller
                 control={control}
                 rules={{ required: true }}
@@ -56,7 +45,10 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
                     />
                 )}
             />
-            <CustomButton content="Submit" endIcon={<SendIcon />} />
+            <CustomButton
+                content="Submit"
+                endIcon={<KeyboardArrowUpIcon color="info" />}
+            />
         </form>
     );
 };

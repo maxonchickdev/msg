@@ -18,11 +18,11 @@ import { Response } from 'express';
 import { UserEmailFromRequestDto } from '../users/dto/user.dto';
 
 @ApiTags('login')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/login')
+  @Post('basic/login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @ApiBody({ type: LoginUserDto })
@@ -50,7 +50,7 @@ export class AuthController {
     }
   }
 
-  @Get('/profile')
+  @Get('basic/profile')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user profile with' })
@@ -70,7 +70,7 @@ export class AuthController {
     }
   }
 
-  @Get()
+  @Get('google/login')
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Try to login with google provider' })
