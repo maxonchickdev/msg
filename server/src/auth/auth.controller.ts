@@ -18,11 +18,11 @@ import { Response } from 'express';
 import { UserEmailFromRequestDto } from '../users/dto/user.dto';
 
 @ApiTags('login')
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('basic/login')
+  @Post('basic')
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @ApiBody({ type: LoginUserDto })
@@ -70,7 +70,7 @@ export class AuthController {
     }
   }
 
-  @Get('google/login')
+  @Get()
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Try to login with google provider' })
@@ -98,7 +98,7 @@ export class AuthController {
           path: '/',
           sameSite: 'lax',
         })
-        .send('Login success');
+        .redirect('http://localhost:3000/profile');
     } catch (err) {
       return res
         .status(err.status)

@@ -74,9 +74,9 @@ export const LoginRegistrateService = {
     profile: async (): Promise<{ data: IProfile }> => {
         try {
             const res = await axios<IProfile>({
-                url: "/profile",
+                url: "/basic/profile",
                 method: "get",
-                baseURL: "http://localhost:8080/api",
+                baseURL: "http://localhost:8080/auth",
                 headers: {
                     "Content-Type": "application/json",
                 },

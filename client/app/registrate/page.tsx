@@ -78,6 +78,7 @@ export default function Registrate() {
                 <CustomButton
                     content="Continue with Google"
                     endIcon={<GoogleIcon color="info" />}
+                    onClick={() => router.push("http://localhost:8080/auth")}
                 />
                 <Divider sx={{ padding: "10px 0" }}>Or</Divider>
                 <RegistrationForm
