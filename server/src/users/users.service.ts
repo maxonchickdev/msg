@@ -1,20 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
-import { MailService } from '../mail/mail.service';
 import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { User } from '../entities/user.entity';
 import { ValidationCode } from '../entities/validation_code.entity';
-import { CreateUserDto, EmailValidationDto } from './dto/user.dto';
+import { EmailValidationDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRespository: Repository<User>,
+    @InjectRepository(User) private readonly usersRespository: Repository<User>,
     @InjectRepository(ValidationCode)
-    private validationRepository: Repository<ValidationCode>,
-    private mailService: MailService,
+    private readonly validationRepository: Repository<ValidationCode>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -30,53 +26,12 @@ export class UsersService {
     });
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const uuidCode = uuidv4();
-
-    await this.mailService.sendMail(createUserDto.email, uuidCode);
-
-    const validationCode = this.validationRepository.create({
-      code: uuidCode,
-    });
-
-    await this.validationRepository.save(validationCode);
-
-    const newUser = this.usersRespository.create({
-      username: createUserDto.username,
-      email: createUserDto.email,
-      password: await bcrypt.hash(createUserDto.password, 10),
-      validationCode: validationCode,
-    });
-
-    await this.usersRespository.save(newUser);
-
-    return newUser;
-  }
-
   async validateUser(emailValidationDto: EmailValidationDto): Promise<User> {
     const user = await this.findByEmail(emailValidationDto.email);
     user.isVerified = true;
     await this.usersRespository.save(user);
     return user;
   }
-
-  // async updateUser(
-  //   id: string,
-  //   updateUserDetails: IUpdateUser,
-  // ): Promise<{ statusCode: number; message: string }> {
-  //   updateUserDetails.password = await bcrypt.hash(
-  //     updateUserDetails.password,
-  //     10,
-  //   );
-  //   const updateUser = await this.usersRespository.update(
-  //     { id },
-  //     updateUserDetails,
-  //   );
-  //   if (updateUser.affected > 0) {
-  //     return { statusCode: 200, message: 'User updated successfully' };
-  //   }
-  //   return { message: 'User not found' };
-  // }
 
   async deleteUser(id: string): Promise<User> {
     const user = await this.usersRespository.findOne({

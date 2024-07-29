@@ -1,0 +1,30 @@
+import { HttpCode, Res, UseGuards, Get, Controller } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ParseRequest } from 'src/decorators/parse_request.decorator';
+import { UserProfileDto } from 'src/users/dto/user.dto';
+import { Response } from 'express';
+
+@ApiTags('profile')
+@Controller('profile')
+export class ProfileController {
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get user profile with' })
+  @ApiResponse({ status: 200, description: 'User profile' })
+  @ApiResponse({ status: 404, description: 'Access token not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async jwtGetProfile(
+    @ParseRequest() user: UserProfileDto,
+    @Res() res: Response,
+  ) {
+    try {
+      return res.send(user);
+    } catch (err) {
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
+    }
+  }
+}
