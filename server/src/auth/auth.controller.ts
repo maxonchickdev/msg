@@ -8,20 +8,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ParseRequest } from '../decorators/parse.request.decorator';
+import { ParseRequest } from '../utils/decorators/parse.request.decorator';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 import { Response } from 'express';
-import {
-  UserEmailFromRequestDto,
-  LoginUserDto,
-} from '../registration/dto/user.dto';
+import { UserEmailFromRequestDto } from './dto/google-info.dto';
+import { LoginUserDto } from './dto/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('basic')
   @UseGuards(LocalAuthGuard)
@@ -71,8 +73,8 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
+      console.log('From controller: ', email);
       const { access_token } = await this.authService.loginGoogle(email);
-      console.log('ok )))');
       return res
         .cookie('access_token', access_token, {
           httpOnly: true,
@@ -80,12 +82,21 @@ export class AuthController {
           path: '/',
           sameSite: 'lax',
         })
-        .redirect('http://localhost:3000/profile');
+        .json({ token: access_token });
+      // .redirect(
+      //   this.configService
+      //     .get<string>('CLIENT_ORIGIN')
+      //     .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
+      // );
     } catch (err) {
-      console.log('error (((');
       return res
         .status(err.status)
         .json({ status: err.status, message: err.response });
+      // .redirect(
+      //   this.configService
+      //     .get<string>('CLIENT_ORIGIN')
+      //     .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
+      // );
     }
   }
 }

@@ -51,7 +51,7 @@ export default function Registrate() {
     const onSubmitCode: SubmitHandler<IVerificationCode> = async (data) => {
         try {
             const email = secureLocalStorage.getItem("email");
-            const { status } = await LoginRegistrateService.validate(
+            const { status } = await LoginRegistrateService.confirm(
                 email as string,
                 data.code,
             );
@@ -78,7 +78,9 @@ export default function Registrate() {
                 <CustomButton
                     content="Continue with Google"
                     endIcon={<GoogleIcon color="info" />}
-                    onClick={() => router.push("http://localhost:8080/auth")}
+                    onClick={() =>
+                        router.push("http://localhost:8080/auth/google")
+                    }
                 />
                 <Divider sx={{ padding: "10px 0" }}>Or</Divider>
                 <RegistrationForm

@@ -9,9 +9,9 @@ export const LoginRegistrateService = {
     login: async (loginUser: ILogin): Promise<{ status: number }> => {
         try {
             const res = await axios({
-                url: "/login",
+                url: "auth/basic",
                 method: "post",
-                baseURL: "http://localhost:8080/api",
+                baseURL: "http://localhost:8080/",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -32,9 +32,9 @@ export const LoginRegistrateService = {
     ): Promise<{ status: number }> => {
         try {
             const res = await axios({
-                url: "/users",
+                url: "reg/basic",
                 method: "post",
-                baseURL: "http://localhost:8080/api",
+                baseURL: "http://localhost:8080/",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -49,15 +49,15 @@ export const LoginRegistrateService = {
         }
     },
 
-    validate: async (
+    confirm: async (
         email: string,
         code: string,
     ): Promise<{ status: number }> => {
         try {
             const res = await axios({
-                url: `/users/verified?email=${email}&code=${code}`,
+                url: `/reg/confirmation?email=${email}&code=${code}`,
                 method: "post",
-                baseURL: "http://localhost:8080/api",
+                baseURL: "http://localhost:8080/",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -74,9 +74,9 @@ export const LoginRegistrateService = {
     profile: async (): Promise<{ data: IProfile }> => {
         try {
             const res = await axios<IProfile>({
-                url: "/basic/profile",
+                url: "profile",
                 method: "get",
-                baseURL: "http://localhost:8080/auth",
+                baseURL: "http://localhost:8080/",
                 headers: {
                     "Content-Type": "application/json",
                 },

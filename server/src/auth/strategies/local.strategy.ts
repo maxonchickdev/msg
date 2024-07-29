@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 import { Strategy } from 'passport-local';
-import { User } from '../../entities/user.entity';
+import { User } from '../../utils/entities/user.entity';
 import { RegistrationService } from '../../registration/registration.service';
 
 @Injectable()

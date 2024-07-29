@@ -14,14 +14,10 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  const config = new DocumentBuilder()
-    .setTitle('Users API')
-    .setDescription('Users management system with login logic')
-    .setVersion('0.0.1')
-    .build();
+  const config = new DocumentBuilder().setTitle('MESSANGER api').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'UAS documentation',
+    customSiteTitle: 'MESSANGER api',
   });
 
   await app.listen(8080);

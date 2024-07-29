@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
-import { ValidationCode } from '../entities/validation.code.entity';
+import { User } from '../utils/entities/user.entity';
+import { ValidationCode } from '../utils/entities/validation.code.entity';
 import { CreateUserDto } from './dto/user.dto';
 import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { take } from 'rxjs';
 
 @Injectable()
 export class RegistrationService {
@@ -38,7 +39,24 @@ export class RegistrationService {
 
     return newUser;
   }
+
   async findByEmail(email: string): Promise<User> {
-    return this.usersRespository.findOne({ where: { email: email } });
+    console.log('From searcher: ', email);
+    const user = await this.usersRespository.findOne({
+      where: { email: email },
+      relations: { validationCode: true },
+    });
+    console.log('User from searcher: ', user);
+    return user;
+  }
+
+  async findByUsername(username: string): Promise<User> {
+    return await this.usersRespository.findOne({
+      where: { username: username },
+    });
+  }
+
+  async saveUser(user: CreateUserDto): Promise<User> {
+    return await this.usersRespository.save(user);
   }
 }

@@ -6,8 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { RegistrationModule } from './registration/registration.module';
 import { MailModule } from './mail/mail.module';
-import typeormConfig from './config/typeorm';
-import mailerConfig from './config/mailer';
+import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
+import typeormConfig from './utils/config/typeorm';
+import mailerConfig from './utils/config/mailer';
 
 @Module({
   imports: [
@@ -31,6 +32,8 @@ import mailerConfig from './config/mailer';
     RegistrationModule,
     AuthModule,
     ProfileModule,
+    EmailConfirmationModule,
   ],
+  controllers: [],
 })
 export class AppModule {}
