@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ValidationCode } from './validation_code.entity';
+import { ValidationCode } from './validation.code.entity';
 
 @Entity({ name: 'users' })
 export class User {

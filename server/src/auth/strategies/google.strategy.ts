@@ -2,13 +2,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from 'src/users/users.service';
+import { RegistrationService } from 'src/registration/registration.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly usersService: UsersService,
+    private readonly registrationService: RegistrationService,
   ) {
     super({
       clientID: configService.get<string>('GOOGLE_CLIENT_ID'),
@@ -25,7 +25,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   ) {
     const { _json } = profile;
 
-    const user = await this.usersService.findByEmail(_json.email);
+    const user = await this.registrationService.findByEmail(_json.email);
 
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 

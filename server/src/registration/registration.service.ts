@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { ValidationCode } from '../entities/validation_code.entity';
-import { CreateUserDto } from '../users/dto/user.dto';
+import { ValidationCode } from '../entities/validation.code.entity';
+import { CreateUserDto } from './dto/user.dto';
 import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,5 +37,8 @@ export class RegistrationService {
     await this.usersRespository.save(newUser);
 
     return newUser;
+  }
+  async findByEmail(email: string): Promise<User> {
+    return this.usersRespository.findOne({ where: { email: email } });
   }
 }

@@ -8,15 +8,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginUserDto } from '../users/dto/user.dto';
-import { ParseRequest } from '../decorators/parse_request.decorator';
+import { ParseRequest } from '../decorators/parse.request.decorator';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 import { Response } from 'express';
-import { UserEmailFromRequestDto } from '../users/dto/user.dto';
+import {
+  UserEmailFromRequestDto,
+  LoginUserDto,
+} from '../registration/dto/user.dto';
 
-@ApiTags('auth')
+@ApiTags('authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -49,7 +51,7 @@ export class AuthController {
     }
   }
 
-  @Get()
+  @Get('google')
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Try to login with google provider' })

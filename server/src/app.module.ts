@@ -3,9 +3,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 import { ProfileModule } from './profile/profile.module';
 import { RegistrationModule } from './registration/registration.module';
+import { MailModule } from './mail/mail.module';
 import typeormConfig from './config/typeorm';
 import mailerConfig from './config/mailer';
 
@@ -27,10 +27,10 @@ import mailerConfig from './config/mailer';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => configService.get('mailer'),
     }),
-    UsersModule,
+    MailModule,
+    RegistrationModule,
     AuthModule,
     ProfileModule,
-    RegistrationModule,
   ],
 })
 export class AppModule {}

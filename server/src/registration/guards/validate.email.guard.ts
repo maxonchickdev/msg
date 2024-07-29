@@ -5,12 +5,12 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { UsersService } from '../users.service';
 import { EmailValidationDto } from '../dto/user.dto';
+import { RegistrationService } from '../registration.service';
 
 @Injectable()
 export class ValidationEmailGuard implements CanActivate {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly registrationService: RegistrationService) {}
 
   canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
@@ -22,7 +22,9 @@ export class ValidationEmailGuard implements CanActivate {
   async validateEmail(
     emailValidationDto: EmailValidationDto,
   ): Promise<boolean> {
-    const user = await this.usersService.findByEmail(emailValidationDto.email);
+    const user = await this.registrationService.findByEmail(
+      emailValidationDto.email,
+    );
     if (!user)
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
 
