@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { take } from 'rxjs';
 
 @Injectable()
 export class RegistrationService {
@@ -41,13 +40,10 @@ export class RegistrationService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    console.log('From searcher: ', email);
-    const user = await this.usersRespository.findOne({
+    return await this.usersRespository.findOne({
       where: { email: email },
       relations: { validationCode: true },
     });
-    console.log('User from searcher: ', user);
-    return user;
   }
 
   async findByUsername(username: string): Promise<User> {

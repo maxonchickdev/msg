@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEmailFromRequestDto } from './dto/google-info.dto';
 import { LoginUserDto } from './dto/login.dto';
 import { RegistrationService } from 'src/registration/registration.service';
 
@@ -24,11 +23,8 @@ export class AuthService {
     };
   }
 
-  async loginGoogle(userEmailFromRequestDto: UserEmailFromRequestDto) {
-    console.log('From service: ', userEmailFromRequestDto.email);
-    const user = await this.registrationService.findByEmail(
-      userEmailFromRequestDto.email,
-    );
+  async loginGoogle(email: string) {
+    const user = await this.registrationService.findByEmail(email);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     user.isVerified = true;
     await this.registrationService.saveUser(user);

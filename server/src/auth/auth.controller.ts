@@ -13,7 +13,6 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 import { Response } from 'express';
-import { UserEmailFromRequestDto } from './dto/google-info.dto';
 import { LoginUserDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 
@@ -69,11 +68,10 @@ export class AuthController {
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async googleAuthRedirect(
-    @ParseRequest() email: UserEmailFromRequestDto,
+    @ParseRequest() email: string,
     @Res() res: Response,
   ) {
     try {
-      console.log('From controller: ', email);
       const { access_token } = await this.authService.loginGoogle(email);
       return res
         .cookie('access_token', access_token, {
@@ -82,21 +80,17 @@ export class AuthController {
           path: '/',
           sameSite: 'lax',
         })
-        .json({ token: access_token });
-      // .redirect(
-      //   this.configService
-      //     .get<string>('CLIENT_ORIGIN')
-      //     .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
-      // );
+        .redirect(
+          this.configService
+            .get<string>('CLIENT_ORIGIN')
+            .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
+        );
     } catch (err) {
-      return res
-        .status(err.status)
-        .json({ status: err.status, message: err.response });
-      // .redirect(
-      //   this.configService
-      //     .get<string>('CLIENT_ORIGIN')
-      //     .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
-      // );
+      return res.redirect(
+        this.configService
+          .get<string>('CLIENT_ORIGIN')
+          .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
+      );
     }
   }
 }
