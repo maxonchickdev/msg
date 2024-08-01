@@ -6,11 +6,11 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
-import { RegistrationService } from '../registration.service';
+import { UsersService } from 'src/repositories/users/users.service';
 
 @Injectable()
 export class ValidationUserGuard implements CanActivate {
-  constructor(private readonly registrationService: RegistrationService) {}
+  constructor(private readonly usersSerice: UsersService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
@@ -20,7 +20,7 @@ export class ValidationUserGuard implements CanActivate {
   }
 
   async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
-    const isSameUsername = await this.registrationService.findByUsername(
+    const isSameUsername = await this.usersSerice.findByUsername(
       createUserDto.username,
     );
     if (isSameUsername)
@@ -28,9 +28,7 @@ export class ValidationUserGuard implements CanActivate {
         'User with the same username exists',
         HttpStatus.CONFLICT,
       );
-    const isSameEmail = await this.registrationService.findByEmail(
-      createUserDto.email,
-    );
+    const isSameEmail = await this.usersSerice.findByEmail(createUserDto.email);
     if (isSameEmail)
       throw new HttpException(
         'User with the same email exists',

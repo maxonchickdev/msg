@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'validation_codes' })
-export class ValidationCode {
+@Entity({ name: 'confirmation_codes' })
+export class ConfirmationCode {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
-  @Column({ name: 'code', nullable: false })
+  @Column({ name: 'code', nullable: true })
   code: string;
 }

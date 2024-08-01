@@ -23,7 +23,7 @@ export default function Login() {
     const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
         try {
             const { status } = await LoginRegistrateService.login(data);
-            router.push("/profile");
+            router.push(process.env.NEXT_PUBLIC_SERVER_BASIC_PROFILE!);
             reset();
         } catch (err) {
             setError(err as string);
@@ -47,11 +47,18 @@ export default function Login() {
         >
             <div className="max-w-[700px] w-full">
                 <h1 className="font-bold text-2xl text-center pb-4">
-                    Join to <span className="text-green-700">MESSANGER</span>
+                    Login to <span className="text-green-700">MESSANGER</span>
                 </h1>
                 <CustomButton
                     content="Continue with Google"
                     endIcon={<GoogleIcon color="info" />}
+                    onClick={() =>
+                        router.push(
+                            process.env.NEXT_PUBLIC_SERVER_BASE!.concat(
+                                process.env.NEXT_PUBLIC_SERVER_GOOGLE_AUTH!,
+                            ),
+                        )
+                    }
                 />
                 <Divider sx={{ padding: "10px 0" }}>Or</Divider>
                 <LoginForm onSubmitLogin={onSubmitLogin} />

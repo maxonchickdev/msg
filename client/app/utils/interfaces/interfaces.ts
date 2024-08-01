@@ -9,6 +9,11 @@ export interface IRegistrate {
 
 export interface ILogin extends Omit<IRegistrate, "username"> {}
 
+export interface IConfirmation {
+    email: string;
+    code: string;
+}
+
 export interface IProfile {
     username: string;
     email: string;

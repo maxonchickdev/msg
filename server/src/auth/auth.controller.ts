@@ -8,12 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ParseRequest } from '../utils/decorators/parse.request.decorator';
+import { ParseRequest } from '../utils/decorators/parse-request.decorator';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { GoogleOAuthGuard } from './guards/google-oauth.guard';
+import { LocalAuthGuard } from 'src/utils/guards/local-auth.guard';
+import { GoogleOAuthGuard } from 'src/utils/guards/google-oauth.guard';
 import { Response } from 'express';
-import { LoginUserDto } from './dto/login.dto';
+import { LoginUserDto } from 'src/utils/dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('authentication')
@@ -31,7 +31,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login JWT strategy' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Mail not confirmed' })
-  @ApiResponse({ status: 404, description: 'Permission denied' })
+  @ApiResponse({ status: 404, description: 'Email or password incorrected' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiResponse({ status: 200, description: 'Login success' })
   async jwtLogin(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
@@ -86,6 +86,7 @@ export class AuthController {
             .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
         );
     } catch (err) {
+      console.log(err);
       return res.redirect(
         this.configService
           .get<string>('CLIENT_ORIGIN')

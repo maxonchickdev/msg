@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { RegistrationController } from './registration.controller';
 import { RegistrationService } from './registration.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../utils/entities/user.entity';
-import { ValidationCode } from '../utils//entities/validation.code.entity';
+import { UsersModule } from 'src/repositories/users/users.module';
 import { MailModule } from 'src/mail/mail.module';
+import { GoogleStrategy } from 'src/utils/strategies/google.strategy';
+import { ConfirmationCodeModule } from 'src/repositories/confirmation-code/confirmation-code.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, ValidationCode]), MailModule],
-  providers: [RegistrationService],
+  imports: [UsersModule, MailModule, ConfirmationCodeModule],
+  providers: [RegistrationService, GoogleStrategy],
   controllers: [RegistrationController],
   exports: [RegistrationService],
 })

@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ValidationCode } from './validation.code.entity';
+import { ConfirmationCode } from './confirmation.code.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -33,7 +33,7 @@ export class User {
   @Column({ name: 'isVerified', nullable: false })
   isVerified: boolean = false;
 
-  @OneToOne(() => ValidationCode)
+  @OneToOne(() => ConfirmationCode)
   @JoinColumn()
-  validationCode: ValidationCode;
+  confirmationCode: ConfirmationCode;
 }

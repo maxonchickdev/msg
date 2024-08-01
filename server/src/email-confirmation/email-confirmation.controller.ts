@@ -7,8 +7,8 @@ import {
   Body,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { EmailConfirmationDto } from './dto/email-confirmation.dto';
-import { ConfirmationEmailGuard } from './guards/confirmation-email.guard';
+import { EmailConfirmationDto } from 'src/utils/dto/email-confirmation.dto';
+import { ConfirmationEmailGuard } from 'src/utils/guards/confirmation-email.guard';
 import { Response } from 'express';
 import { EmailConfirmationService } from './email-confirmation.service';
 
@@ -18,6 +18,7 @@ export class EmailConfirmationController {
   constructor(
     private readonly emailConfirmationService: EmailConfirmationService,
   ) {}
+
   @Post('confirmation')
   @UseGuards(ConfirmationEmailGuard)
   @HttpCode(200)

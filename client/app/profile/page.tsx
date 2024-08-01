@@ -25,7 +25,13 @@ export default function Registrate() {
 
     if (loading) return <>Loading...</>;
 
-    if (!profile) return <CustomError href="/" content={message} />;
+    if (!profile)
+        return (
+            <CustomError
+                href={process.env.NEXT_PUBLIC_CLIENT_ROOT}
+                content={message}
+            />
+        );
 
     return (
         <>

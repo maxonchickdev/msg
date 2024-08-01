@@ -7,15 +7,19 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ValidationUserGuard } from './guards/validate.new.user.guard';
+import { ValidationUserGuard } from 'src/utils/guards/validate.new.user.guard';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto } from 'src/utils/dto/user.dto';
 import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('registration')
 @Controller('reg')
 export class RegistrationController {
-  constructor(private readonly registrationService: RegistrationService) {}
+  constructor(
+    private readonly registrationService: RegistrationService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('basic')
   @UseGuards(ValidationUserGuard)

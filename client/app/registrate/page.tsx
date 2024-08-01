@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { IRegistrate } from "../utils/interfaces/interfaces";
+import { IConfirmation, IRegistrate } from "../utils/interfaces/interfaces";
 import { SubmitHandler } from "react-hook-form";
 import { LoginRegistrateService } from "../utils/services/services";
 import { IVerificationCode } from "../utils/interfaces/interfaces";
@@ -51,12 +51,14 @@ export default function Registrate() {
     const onSubmitCode: SubmitHandler<IVerificationCode> = async (data) => {
         try {
             const email = secureLocalStorage.getItem("email");
-            const { status } = await LoginRegistrateService.confirm(
-                email as string,
-                data.code,
-            );
+            const confirmationData: IConfirmation = {
+                email: email as string,
+                code: data.code,
+            };
+            const { status } =
+                await LoginRegistrateService.confirm(confirmationData);
             setIsDisabledCode(true);
-            router.push("/");
+            router.push(process.env.NEXT_PUBLIC_CLIENT_ROOT!);
             reset();
         } catch (err) {
             setValidateError(err as string);
@@ -78,9 +80,6 @@ export default function Registrate() {
                 <CustomButton
                     content="Continue with Google"
                     endIcon={<GoogleIcon color="info" />}
-                    onClick={() =>
-                        router.push("http://localhost:8080/auth/google")
-                    }
                 />
                 <Divider sx={{ padding: "10px 0" }}>Or</Divider>
                 <RegistrationForm

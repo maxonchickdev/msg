@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import {
+    IConfirmation,
     ILogin,
     IProfile,
     IRegistrate,
@@ -9,9 +10,9 @@ export const LoginRegistrateService = {
     login: async (loginUser: ILogin): Promise<{ status: number }> => {
         try {
             const res = await axios({
-                url: "auth/basic",
+                url: process.env.NEXT_PUBLIC_SERVER_BASIC_AUTH,
                 method: "post",
-                baseURL: "http://localhost:8080/",
+                baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -32,9 +33,9 @@ export const LoginRegistrateService = {
     ): Promise<{ status: number }> => {
         try {
             const res = await axios({
-                url: "reg/basic",
+                url: process.env.NEXT_PUBLIC_SERVER_BASIC_REG,
                 method: "post",
-                baseURL: "http://localhost:8080/",
+                baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -50,17 +51,17 @@ export const LoginRegistrateService = {
     },
 
     confirm: async (
-        email: string,
-        code: string,
+        confirmationData: IConfirmation,
     ): Promise<{ status: number }> => {
         try {
             const res = await axios({
-                url: `/reg/confirmation?email=${email}&code=${code}`,
+                url: process.env.NEXT_PUBLIC_SERVER_BASIC_REG_CONFIRM,
                 method: "post",
-                baseURL: "http://localhost:8080/",
+                baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
                 headers: {
                     "Content-Type": "application/json",
                 },
+                data: confirmationData,
             });
             return { status: res.status };
         } catch (err) {
@@ -74,9 +75,9 @@ export const LoginRegistrateService = {
     profile: async (): Promise<{ data: IProfile }> => {
         try {
             const res = await axios<IProfile>({
-                url: "profile",
+                url: process.env.NEXT_PUBLIC_SERVER_BASIC_PROFILE,
                 method: "get",
-                baseURL: "http://localhost:8080/",
+                baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
                 headers: {
                     "Content-Type": "application/json",
                 },

@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { RegistrationService } from 'src/registration/registration.service';
-import { EmailConfirmationDto } from './dto/email-confirmation.dto';
+import { EmailConfirmationDto } from 'src/utils/dto/email-confirmation.dto';
+import { UsersService } from 'src/repositories/users/users.service';
 
 @Injectable()
 export class EmailConfirmationService {
-  constructor(private readonly registrationService: RegistrationService) {}
+  constructor(private readonly usersSerice: UsersService) {}
 
   async confirmEmail(emailConfirmationDto: EmailConfirmationDto) {
-    const user = await this.registrationService.findByEmail(
-      emailConfirmationDto.email,
-    );
+    const user = await this.usersSerice.findByEmail(emailConfirmationDto.email);
     user.isVerified = true;
-    await this.registrationService.saveUser(user);
+    await this.usersSerice.saveUser(user);
     return user;
   }
 }

@@ -1,8 +1,8 @@
 import { HttpCode, Res, UseGuards, Get, Controller } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ParseRequest } from '../utils/decorators/parse.request.decorator';
-import { UserProfileDto } from './dto/profile.dto';
+import { JwtAuthGuard } from 'src/utils/guards/jwt-auth.guard';
+import { ParseRequest } from '../utils/decorators/parse-request.decorator';
+import { UserProfileDto } from 'src/utils/dto/profile.dto';
 import { Response } from 'express';
 
 @ApiTags('profile')

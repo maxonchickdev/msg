@@ -1,58 +1,74 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../utils/entities/user.entity';
-import { ValidationCode } from '../utils/entities/validation.code.entity';
-import { CreateUserDto } from './dto/user.dto';
-import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from 'src/repositories/users/users.service';
+import { ConfirmationCodeService } from 'src/repositories/confirmation-code/confirmation-code.service';
+import { CreateUserDto } from 'src/utils/dto/user.dto';
+import { PayloadDto } from 'src/utils/dto/payload.dto';
 
 @Injectable()
 export class RegistrationService {
   constructor(
-    @InjectRepository(User) private readonly usersRespository: Repository<User>,
-    @InjectRepository(ValidationCode)
-    private readonly validationRepository: Repository<ValidationCode>,
+    private readonly usersService: UsersService,
+    private readonly confirmationCodeService: ConfirmationCodeService,
     private readonly mailService: MailService,
   ) {}
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const uuidCode = uuidv4();
+    const code = uuidv4();
 
-    await this.mailService.sendMail(createUserDto.email, uuidCode);
-
-    const validationCode = this.validationRepository.create({
-      code: uuidCode,
+    await this.mailService.sendMail({
+      to: createUserDto.email,
+      subject: 'Email from MESSANGER',
+      text: 'Your email confirmation code',
+      value: code,
     });
 
-    await this.validationRepository.save(validationCode);
+    const confirmationCode =
+      await this.confirmationCodeService.createConfirmationCode(code);
 
-    const newUser = this.usersRespository.create({
-      username: createUserDto.username,
-      email: createUserDto.email,
-      password: await bcrypt.hash(createUserDto.password, 10),
-      validationCode: validationCode,
-    });
+    await this.confirmationCodeService.saveConfirmationCode(confirmationCode);
 
-    await this.usersRespository.save(newUser);
+    const newUser = await this.usersService.createUser(
+      {
+        username: createUserDto.username,
+        email: createUserDto.email,
+        password: createUserDto.password,
+      },
+      confirmationCode,
+    );
+
+    await this.usersService.saveUser(newUser);
 
     return newUser;
   }
 
-  async findByEmail(email: string): Promise<User> {
-    return await this.usersRespository.findOne({
-      where: { email: email },
-      relations: { validationCode: true },
-    });
-  }
+  async createGoogleUser(email: string): Promise<PayloadDto> {
+    const pass = uuidv4();
 
-  async findByUsername(username: string): Promise<User> {
-    return await this.usersRespository.findOne({
-      where: { username: username },
+    await this.mailService.sendMail({
+      to: email,
+      subject: 'Email from MESSANGER',
+      text: 'Your temporary password',
+      value: pass,
     });
-  }
 
-  async saveUser(user: CreateUserDto): Promise<User> {
-    return await this.usersRespository.save(user);
+    const user = await this.usersService.createUser({
+      username: email.split('@')[0],
+      email: email,
+      password: await bcrypt.hash(pass, 10),
+    });
+
+    user.isVerified = true;
+
+    await this.usersService.saveUser(user);
+
+    const payload: PayloadDto = {
+      id: user.id,
+      email: user.email,
+    };
+
+    return payload;
   }
 }
