@@ -4,10 +4,10 @@ import { RegistrationService } from './registration.service';
 import { UsersModule } from 'src/repositories/users/users.module';
 import { MailModule } from 'src/mail/mail.module';
 import { GoogleStrategy } from 'src/utils/strategies/google.strategy';
-import { ConfirmationCodeModule } from 'src/repositories/confirmation-code/confirmation-code.module';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
-  imports: [UsersModule, MailModule, ConfirmationCodeModule],
+  imports: [UsersModule, MailModule, RedisModule],
   providers: [RegistrationService, GoogleStrategy],
   controllers: [RegistrationController],
   exports: [RegistrationService],

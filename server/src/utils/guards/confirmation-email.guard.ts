@@ -7,10 +7,14 @@ import {
 } from '@nestjs/common';
 import { EmailConfirmationDto } from '../dto/email-confirmation.dto';
 import { UsersService } from 'src/repositories/users/users.service';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class ConfirmationEmailGuard implements CanActivate {
-  constructor(private readonly usersSerice: UsersService) {}
+  constructor(
+    private readonly usersSerice: UsersService,
+    private readonly redisService: RedisService,
+  ) {}
 
   canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
@@ -26,8 +30,16 @@ export class ConfirmationEmailGuard implements CanActivate {
     if (!user)
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
 
-    if (user.confirmationCode.code !== emailConfirmationDto.code)
+    const confirmationCode = await this.redisService.getValue(
+      `confirmation-code-${emailConfirmationDto.email}`,
+    );
+
+    if (confirmationCode !== emailConfirmationDto.code)
       throw new HttpException('Invalid code', HttpStatus.CONFLICT);
+
+    await this.redisService.deleteValue(
+      `confirmation-code-${emailConfirmationDto.email}`,
+    );
 
     return true;
   }

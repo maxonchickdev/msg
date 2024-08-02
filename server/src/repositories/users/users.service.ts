@@ -4,22 +4,17 @@ import { CreateUserDto } from 'src/utils/dto/user.dto';
 import { User } from 'src/utils/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { ConfirmationCode } from 'src/utils/entities/confirmation.code.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
-  async createUser(
-    user: CreateUserDto,
-    confirmationCode?: ConfirmationCode,
-  ): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<User> {
     return this.usersRepository.create({
       username: user.username,
       email: user.email,
       password: await bcrypt.hash(user.password, 10),
-      confirmationCode: confirmationCode,
     });
   }
 
@@ -30,7 +25,6 @@ export class UsersService {
   async findByEmail(email: string): Promise<User> {
     return this.usersRepository.findOne({
       where: { email: email },
-      relations: { confirmationCode: true },
     });
   }
 

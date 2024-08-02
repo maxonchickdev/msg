@@ -9,6 +9,7 @@ import { MailModule } from './mail/mail.module';
 import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
 import typeormConfig from './utils/config/typeorm';
 import mailerConfig from './utils/config/mailer';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import mailerConfig from './utils/config/mailer';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => configService.get('mailer'),
     }),
+    RedisModule,
     MailModule,
     RegistrationModule,
     AuthModule,

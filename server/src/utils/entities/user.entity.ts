@@ -2,11 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { ConfirmationCode } from './confirmation.code.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -30,10 +28,14 @@ export class User {
   })
   createdAt: Date;
 
+  @UpdateDateColumn({
+    name: 'updatedAt',
+    nullable: false,
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
+
   @Column({ name: 'isVerified', nullable: false })
   isVerified: boolean = false;
-
-  @OneToOne(() => ConfirmationCode)
-  @JoinColumn()
-  confirmationCode: ConfirmationCode;
 }
