@@ -33,6 +33,10 @@ CLIENT_ORIGIN=
 CLIENT_TO_LOGIN=
 CLIENT_TO_REGISTRATE=
 CLIENT_TO_PROFILE=
+
+REDIS_HOST=
+REDIS_PORT=
+
 ```
 
 - create **.env** file of the server directory
@@ -43,17 +47,16 @@ NEXTJS_APP_DOCKER_PORT=
 NEXT_PUBLIC_SECURE_LOCAL_STORAGE_HASH_KEY=
 NEXT_PUBLIC_SECURE_LOCAL_STORAGE_PREFIX=
 
-NEXT_PUBLIC_SERVER_BASE=
-NEXT_PUBLIC_CLIENT_ROOT=
+NEST_PUBLIC_SERVER_BASE=
+NEST_PUBLIC_CLIENT_ROOT=
 
-NEXT_PUBLIC_SERVER_BASIC_AUTH=
-NEXT_PUBLIC_SERVER_GOOGLE_AUTH=
+NEST_PUBLIC_SERVER_BASIC_AUTH=
+NEST_PUBLIC_SERVER_GOOGLE_AUTH=
 
-NEXT_PUBLIC_SERVER_BASIC_REG=
-NEXT_PUBLIC_SERVER_BASIC_REG_CONFIRM=
+NEST_PUBLIC_SERVER_BASIC_REG=
+NEST_PUBLIC_SERVER_BASIC_REG_CONFIRM=
 
-NEXT_PUBLIC_SERVER_BASIC_PROFILE=
-
+NEST_PUBLIC_SERVER_BASIC_PROFILE=
 ```
 
 ## 2. Up with docker-compose
@@ -86,56 +89,59 @@ src
 ├── auth
 │   ├── auth.controller.ts
 │   ├── auth.module.ts
-│   ├── auth.service.ts
-│   ├── constants
-│   │   └── constants.ts
-│   ├── dto
-│   │   ├── login.dto.ts
-│   │   └── payload.dto.ts
-│   ├── guards
-│   │   ├── google-oauth.guard.ts
-│   │   ├── jwt-auth.guard.ts
-│   │   └── local-auth.guard.ts
-│   └── strategies
-│       ├── google.strategy.ts
-│       ├── jwt.strategy.ts
-│       └── local.strategy.ts
+│   └── auth.service.ts
 ├── email-confirmation
-│   ├── dto
-│   │   └── email-confirmation.dto.ts
 │   ├── email-confirmation.controller.ts
 │   ├── email-confirmation.module.ts
-│   ├── email-confirmation.service.ts
-│   └── guards
-│       └── confirmation-email.guard.ts
+│   └── email-confirmation.service.ts
 ├── mail
 │   ├── mail.module.ts
 │   └── mail.service.ts
 ├── main.ts
 ├── profile
-│   ├── dto
-│   │   └── profile.dto.ts
 │   ├── profile.controller.ts
-│   └── profile.module.ts
+│   ├── profile.module.ts
+│   └── profile.service.ts
+├── redis
+│   ├── redis.module.ts
+│   └── redis.service.ts
 ├── registration
-│   ├── dto
-│   │   └── user.dto.ts
-│   ├── guards
-│   │   └── validate.new.user.guard.ts
 │   ├── registration.controller.ts
 │   ├── registration.module.ts
 │   └── registration.service.ts
+├── repositories
+│   └── users
+│       ├── users.module.ts
+│       └── users.service.ts
 └── utils
     ├── config
     │   ├── mailer.ts
     │   └── typeorm.ts
+    ├── constants
+    │   └── constants.ts
     ├── decorators
-    │   └── parse.request.decorator.ts
+    │   └── parse-request.decorator.ts
+    ├── dto
+    │   ├── email-confirmation.dto.ts
+    │   ├── login.dto.ts
+    │   ├── mail.dto.ts
+    │   ├── payload.dto.ts
+    │   ├── profile.dto.ts
+    │   └── user.dto.ts
     ├── entities
-    │   ├── user.entity.ts
-    │   └── validation.code.entity.ts
-    └── migrations
-        └── 1722090787235-User.ts
+    │   └── user.entity.ts
+    ├── guards
+    │   ├── confirmation-email.guard.ts
+    │   ├── google-oauth.guard.ts
+    │   ├── jwt-auth.guard.ts
+    │   ├── local-auth.guard.ts
+    │   └── validate.new.user.guard.ts
+    ├── migrations
+    │   └── 1722589444444-User.ts
+    └── strategies
+        ├── google.strategy.ts
+        ├── jwt.strategy.ts
+        └── local.strategy.ts
 ```
 
 ## 4. Client tree
