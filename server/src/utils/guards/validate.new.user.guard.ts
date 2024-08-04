@@ -7,10 +7,14 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/user.dto';
 import { UsersService } from 'src/repositories/users/users.service';
+import { PasswordValidationService } from 'src/passvord-validation/password-validation.service';
 
 @Injectable()
 export class ValidationUserGuard implements CanActivate {
-  constructor(private readonly usersSerice: UsersService) {}
+  constructor(
+    private readonly usersSerice: UsersService,
+    private readonly passwordValidationService: PasswordValidationService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
@@ -20,6 +24,9 @@ export class ValidationUserGuard implements CanActivate {
   }
 
   async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
+    await this.passwordValidationService.validatePassword(
+      createUserDto.password,
+    );
     const isSameUsername = await this.usersSerice.findByUsername(
       createUserDto.username,
     );
