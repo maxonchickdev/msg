@@ -7,16 +7,19 @@ import { ProfileModule } from './profile/profile.module';
 import { RegistrationModule } from './registration/registration.module';
 import { MailModule } from './mail/mail.module';
 import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
-import typeormConfig from './utils/config/typeorm';
-import mailerConfig from './utils/config/mailer';
 import { RedisModule } from './redis/redis.module';
+import typeormConfig from './utils/config/typeorm.config';
+import mailerConfig from './utils/config/mailer.config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-store';
+import { CacheModuleAsyncOptions } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeormConfig, mailerConfig],
-      envFilePath: '.env',
+      envFilePath: `${process.env.NODE_ENV}.env`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,6 +32,23 @@ import { RedisModule } from './redis/redis.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => configService.get('mailer'),
     }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          store: await redisStore({
+            socket: {
+              host: configService.get<string>('REDIS_HOST'),
+              port: configService.get<number>('REDIS_PORT'),
+            },
+          }),
+          ttl: 5000,
+          max: 10,
+        } as CacheModuleAsyncOptions;
+      },
+    }),
     RedisModule,
     MailModule,
     RegistrationModule,
@@ -36,6 +56,5 @@ import { RedisModule } from './redis/redis.module';
     ProfileModule,
     EmailConfirmationModule,
   ],
-  controllers: [],
 })
 export class AppModule {}
