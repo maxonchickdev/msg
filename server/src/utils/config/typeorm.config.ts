@@ -4,8 +4,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
-console.log(process.env.MYSQL_HOST, process.env.NODE_ENV);
-
 const typeormConfig = {
   type: 'mysql',
   host: process.env.MYSQL_HOST,

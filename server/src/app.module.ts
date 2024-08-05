@@ -41,7 +41,7 @@ import { CacheModuleAsyncOptions } from '@nestjs/cache-manager';
           store: await redisStore({
             socket: {
               host: configService.get<string>('REDIS_HOST'),
-              port: configService.get<number>('REDIS_PORT'),
+              port: configService.get<number>('REDIS_LOCAL_PORT'),
             },
           }),
           ttl: 5000,
