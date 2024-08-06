@@ -24,9 +24,6 @@ export class ValidationUserGuard implements CanActivate {
   }
 
   async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
-    await this.passwordValidationService.validatePassword(
-      createUserDto.password,
-    );
     const isSameUsername = await this.usersSerice.findByUsername(
       createUserDto.username,
     );
@@ -41,6 +38,9 @@ export class ValidationUserGuard implements CanActivate {
         'User with the same email exists',
         HttpStatus.CONFLICT,
       );
+    await this.passwordValidationService.validatePassword(
+      createUserDto.password,
+    );
     return true;
   }
 }

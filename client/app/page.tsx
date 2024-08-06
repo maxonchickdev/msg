@@ -16,76 +16,74 @@ import { CustomLink } from "./components/custom/link/link";
 import Box from "@mui/material/Box";
 
 export default function Login() {
-    const router = useRouter();
-    const [error, setError] = useState<string>("");
-    const [open, setOpen] = useState(false);
-    const { reset } = useForm<ILogin>();
-    const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
-        try {
-            const { status } = await LoginRegistrateService.login(data);
-            router.push(process.env.NEXT_PUBLIC_SERVER_BASIC_PROFILE!);
-            reset();
-        } catch (err) {
-            setError(err as string);
-            setOpen(true);
-        }
-    };
+  const router = useRouter();
+  const [error, setError] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const { reset } = useForm<ILogin>();
+  const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
+    try {
+      const { status } = await LoginRegistrateService.login(data);
+      router.push(process.env.NEXT_PUBLIC_CLIENT_PROFILE as string);
+      reset();
+    } catch (err) {
+      setError(err as string);
+      setOpen(true);
+    }
+  };
 
-    const handleClose = (event?: SyntheticEvent | Event, reason?: string) => {
-        if (reason === "clickaway") {
-            return;
-        }
-        setOpen(false);
-    };
+  const handleClose = (event?: SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
-    return (
-        <Stack
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ width: 1, height: "100vh" }}
+  return (
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      sx={{ width: 1, height: "100vh" }}
+    >
+      <div className="max-w-[700px] w-full">
+        <h1 className="font-bold text-2xl text-center pb-4">
+          Login to <span className="text-green-700">MESSANGER</span>
+        </h1>
+        <CustomButton
+          content="Continue with Google"
+          endIcon={<GoogleIcon color="info" />}
+          onClick={() =>
+            router.push(
+              (process.env.NEXT_PUBLIC_SERVER_BASE as string).concat(
+                process.env.NEXT_PUBLIC_SERVER_GOOGLE_AUTH as string,
+              ),
+            )
+          }
+        />
+        <Divider sx={{ padding: "10px 0" }}>Or</Divider>
+        <LoginForm onSubmitLogin={onSubmitLogin} />
+        <Box
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            justifyContent: "center",
+            marginTop: "10px",
+          }}
         >
-            <div className="max-w-[700px] w-full">
-                <h1 className="font-bold text-2xl text-center pb-4">
-                    Login to <span className="text-green-700">MESSANGER</span>
-                </h1>
-                <CustomButton
-                    content="Continue with Google"
-                    endIcon={<GoogleIcon color="info" />}
-                    onClick={() =>
-                        router.push(
-                            process.env.NEXT_PUBLIC_SERVER_BASE!.concat(
-                                process.env.NEXT_PUBLIC_SERVER_GOOGLE_AUTH!,
-                            ),
-                        )
-                    }
-                />
-                <Divider sx={{ padding: "10px 0" }}>Or</Divider>
-                <LoginForm onSubmitLogin={onSubmitLogin} />
-                <Box
-                    sx={{
-                        textAlign: "center",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        justifyContent: "center",
-                        marginTop: "10px",
-                    }}
-                >
-                    <p className="">
-                        New to <span className="text-green-700">MESSANGER</span>
-                        ?
-                    </p>
-                    <CustomLink content="Create account." href="/registrate" />
-                </Box>
-            </div>
-            {error ? (
-                <CustomSnackbar
-                    handleClose={handleClose}
-                    message={error}
-                    open={open}
-                />
-            ) : null}
-        </Stack>
-    );
+          <p className="">
+            New to <span className="text-green-700">MESSANGER</span>?
+          </p>
+          <CustomLink
+            content="Create account."
+            href={process.env.NEXT_PUBLIC_CLIENT_REG as string}
+          />
+        </Box>
+      </div>
+      {error ? (
+        <CustomSnackbar handleClose={handleClose} message={error} open={open} />
+      ) : null}
+    </Stack>
+  );
 }
