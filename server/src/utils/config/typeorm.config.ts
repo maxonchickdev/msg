@@ -13,7 +13,7 @@ const typeormConfig = {
   database: process.env.MYSQL_DATABASE,
   entities: ['dist/utils/entities/*.entity.js'],
   migrations: ['dist/utils/migrations/*.js'],
-  synchronize: false,
+  synchronize: true,
   autoLoadEntities: true,
   migrationsRun: true,
 };

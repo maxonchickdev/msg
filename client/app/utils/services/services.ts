@@ -6,15 +6,13 @@ import {
   IRegistrate,
 } from "../../utils/interfaces/interfaces";
 
-console.log(process.env["NEST_PUBLIC_SERVER_BASE"]);
-
 export const LoginRegistrateService = {
   login: async (loginUser: ILogin): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.NEXT_PUBLIC_SERVER_BASIC_AUTH,
+        url: process.env.SERVER_BASIC_AUTH,
         method: "post",
-        baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
+        baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },
@@ -35,9 +33,9 @@ export const LoginRegistrateService = {
   ): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.NEST_PUBLIC_SERVER_BASIC_REG,
+        url: process.env.SERVER_BASIC_REG,
         method: "post",
-        baseURL: process.env.NEST_PUBLIC_SERVER_BASE,
+        baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },
@@ -45,8 +43,6 @@ export const LoginRegistrateService = {
       });
       return { status: res.status };
     } catch (err) {
-      console.log(process.env["NEST_PUBLIC_SERVER_BASE"]);
-      console.log(err);
       if (err instanceof AxiosError && err.response) {
         throw new Error(err.response.data.message).message;
       }
@@ -59,9 +55,9 @@ export const LoginRegistrateService = {
   ): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.NEXT_PUBLIC_SERVER_BASIC_REG_CONFIRM,
+        url: process.env.SERVER_BASIC_REG_CONFIRM,
         method: "post",
-        baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
+        baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },
@@ -79,9 +75,9 @@ export const LoginRegistrateService = {
   profile: async (): Promise<{ data: IProfile }> => {
     try {
       const res = await axios<IProfile>({
-        url: process.env.NEXT_PUBLIC_SERVER_BASIC_PROFILE,
+        url: process.env.SERVER_PROFILE,
         method: "get",
-        baseURL: process.env.NEXT_PUBLIC_SERVER_BASE,
+        baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },

@@ -32,8 +32,8 @@ export default function Registrate() {
       const { status } = await LoginRegistrateService.registrate(data);
       secureLocalStorage.setItem("email", data.email);
       router.push(
-        (process.env.NEXT_PUBLIC_CLIENT_REG as string).concat(
-          "/" + process.env.NEXT_PUBLIC_CLIENT_REG_CONFIRMATION,
+        (process.env.CLIENT_REG as string).concat(
+          "/" + process.env.CLIENT_CONF,
         ),
       );
       reset();

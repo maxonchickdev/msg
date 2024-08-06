@@ -11,15 +11,11 @@ import { ValidationUserGuard } from 'src/utils/guards/validate.new.user.guard';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/utils/dto/user.dto';
 import { Response } from 'express';
-import { ConfigService } from '@nestjs/config';
 
 @ApiTags('registration')
 @Controller('reg')
 export class RegistrationController {
-  constructor(
-    private readonly registrationService: RegistrationService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly registrationService: RegistrationService) {}
 
   @Post('basic')
   @UseGuards(ValidationUserGuard)

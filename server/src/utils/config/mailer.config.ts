@@ -3,8 +3,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
-console.log(process.env.MAILER_HOST);
-
 const mailerConfig = {
   transport: {
     secure: false,

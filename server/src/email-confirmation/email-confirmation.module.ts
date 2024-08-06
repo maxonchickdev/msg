@@ -8,6 +8,5 @@ import { RedisModule } from 'src/redis/redis.module';
   imports: [UsersModule, RedisModule],
   controllers: [EmailConfirmationController],
   providers: [EmailConfirmationService],
-  exports: [],
 })
 export class EmailConfirmationModule {}

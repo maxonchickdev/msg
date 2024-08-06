@@ -4,20 +4,20 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 export const CustomSnackbar: FC<ISnackbar> = ({
-    handleClose,
-    message,
-    open,
+  handleClose,
+  message,
+  open,
 }) => {
-    return (
-        <Snackbar open={open} onClose={handleClose} autoHideDuration={2000}>
-            <Alert
-                onClose={handleClose}
-                severity="error"
-                variant="filled"
-                sx={{ width: "100%" }}
-            >
-                {message}
-            </Alert>
-        </Snackbar>
-    );
+  return (
+    <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+      <Alert
+        onClose={handleClose}
+        severity="error"
+        variant="filled"
+        sx={{ width: "100%" }}
+      >
+        {message}
+      </Alert>
+    </Snackbar>
+  );
 };

@@ -23,7 +23,7 @@ export default function Login() {
   const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
     try {
       const { status } = await LoginRegistrateService.login(data);
-      router.push(process.env.NEXT_PUBLIC_CLIENT_PROFILE as string);
+      router.push(process.env.CLIENT_PROFILE as string);
       reset();
     } catch (err) {
       setError(err as string);
@@ -54,8 +54,8 @@ export default function Login() {
           endIcon={<GoogleIcon color="info" />}
           onClick={() =>
             router.push(
-              (process.env.NEXT_PUBLIC_SERVER_BASE as string).concat(
-                process.env.NEXT_PUBLIC_SERVER_GOOGLE_AUTH as string,
+              (process.env.SERVER_ORIGIN as string).concat(
+                process.env.SERVER_GOOGLE_AUTH as string,
               ),
             )
           }
@@ -77,7 +77,7 @@ export default function Login() {
           </p>
           <CustomLink
             content="Create account."
-            href={process.env.NEXT_PUBLIC_CLIENT_REG as string}
+            href={process.env.CLIENT_REG as string}
           />
         </Box>
       </div>
