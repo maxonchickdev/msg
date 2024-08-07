@@ -1,0 +1,16 @@
+name: Build the server image
+
+on:
+  push:
+    branches: ["polinom"]
+  pull_request:
+    branches: ["polinom"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the server docker image
+        run: docker build ./server --file ./server/Dockerfile --tag msg/server:$(date +%s)

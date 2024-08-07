@@ -1,0 +1,16 @@
+name: Build the client image
+
+on:
+  push:
+    branches: ["polinom"]
+  pull_request:
+    branches: ["polinom"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the client docker image
+        run: docker build ./client --file ./client/Dockerfile --tag msg/client:$(date +%s)
