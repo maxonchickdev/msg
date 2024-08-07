@@ -18,6 +18,8 @@ import {
 } from "@/app/utils/interfaces/interfaces";
 import { CustomLink } from "@/app/components/custom/link/link";
 import { CustomSnackbar } from "@/app/components/custom/snackbar/snackbar";
+import { CustomButton } from "@/app/components/custom/button/button";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export default function Registrate() {
   const router = useRouter();
@@ -36,15 +38,26 @@ export default function Registrate() {
     try {
       const email = secureLocalStorage.getItem("email");
       if (!email) return;
-      const confirmationData: IConfirmation = {
+      const { status } = await LoginRegistrateService.confirm({
         email: email as string,
         code: data.code,
-      };
-      const { status } = await LoginRegistrateService.confirm(confirmationData);
+      });
       router.push("/");
       reset();
     } catch (err) {
       setConfirmationError(err as string);
+      setOpen(true);
+    }
+  };
+  const resendCode = async () => {
+    try {
+      const email = secureLocalStorage.getItem("email");
+      if (!email) return;
+      const { status } = await LoginRegistrateService.resendConfirmationCode({
+        email: email as string,
+      });
+      console.log("err");
+    } catch (err) {
       setOpen(true);
     }
   };
@@ -67,6 +80,11 @@ export default function Registrate() {
             open={open}
           />
         ) : null}
+        <CustomButton
+          content="Resend confirmation code"
+          endIcon={<KeyboardArrowUpIcon color="info" />}
+          onClick={resendCode}
+        />
         <Box
           sx={{
             textAlign: "center",

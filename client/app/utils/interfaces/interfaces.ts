@@ -20,6 +20,10 @@ export interface IProfile {
   createdAt: Date;
 }
 
+export interface IResendConfirmationCode {
+  email: string;
+}
+
 export interface INotify {
   message: string;
 }
