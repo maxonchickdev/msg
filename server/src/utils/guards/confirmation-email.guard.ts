@@ -34,13 +34,9 @@ export class ConfirmationEmailGuard implements CanActivate {
       `confirmation-code-${emailConfirmationDto.email}`,
     );
 
-    if (confirmationCode !== emailConfirmationDto.code)
+    if (confirmationCode !== emailConfirmationDto.code) {
       throw new HttpException('Invalid code', HttpStatus.CONFLICT);
-
-    await this.redisService.deleteValue(
-      `confirmation-code-${emailConfirmationDto.email}`,
-    );
-
+    }
     return true;
   }
 }
