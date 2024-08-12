@@ -1,19 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LoginForm } from "./components/forms/login.form";
-import { ILogin } from "./utils/interfaces/interfaces";
+import { LoginForm } from "./components/form/index";
+import { ILogin } from "./utils/interfaces/index";
 import { SubmitHandler } from "react-hook-form";
-import { LoginRegistrateService } from "./utils/services/services";
+import { Services } from "./utils/services/index";
 import { useForm } from "react-hook-form";
 import { useState, SyntheticEvent } from "react";
 import Stack from "@mui/material/Stack";
-import { CustomSnackbar } from "./components/custom/snackbar/snackbar";
 import GoogleIcon from "@mui/icons-material/Google";
-import { CustomButton } from "./components/custom/button/button";
+import Button from "@mui/material/Button";
 import { Divider } from "@mui/material";
-import { CustomLink } from "./components/custom/link/link";
 import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Link from "@mui/material/Link";
 
 export default function Login() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function Login() {
   const { reset } = useForm<ILogin>();
   const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
     try {
-      const { status } = await LoginRegistrateService.login(data);
+      const { status } = await Services.login(data);
       router.push(process.env.CLIENT_PROFILE as string);
       reset();
     } catch (err) {
@@ -49,17 +50,22 @@ export default function Login() {
         <h1 className="font-bold text-2xl text-center pb-4">
           Login to <span className="text-green-700">MESSANGER</span>
         </h1>
-        <CustomButton
-          content="Continue with Google"
-          endIcon={<GoogleIcon color="info" />}
-          onClick={() =>
+        <Button
+          type="submit"
+          onClick={() => {
             router.push(
               (process.env.SERVER_ORIGIN as string).concat(
                 process.env.SERVER_GOOGLE_AUTH as string,
               ),
-            )
-          }
-        />
+            );
+          }}
+          fullWidth
+          endIcon={<GoogleIcon color="info" />}
+          variant="outlined"
+          sx={{ margin: "4px 0" }}
+        >
+          Login with google
+        </Button>
         <Divider sx={{ padding: "10px 0" }}>Or</Divider>
         <LoginForm onSubmitLogin={onSubmitLogin} />
         <Box
@@ -72,17 +78,23 @@ export default function Login() {
             marginTop: "10px",
           }}
         >
-          <p className="">
+          <p>
             New to <span className="text-green-700">MESSANGER</span>?
           </p>
-          <CustomLink
-            content="Create account."
-            href={process.env.CLIENT_REG as string}
-          />
+          <Link href={process.env.CLIENT_REG}>Create account</Link>
         </Box>
       </div>
       {error ? (
-        <CustomSnackbar handleClose={handleClose} message={error} open={open} />
+        <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+          <Alert
+            onClose={handleClose}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
       ) : null}
     </Stack>
   );

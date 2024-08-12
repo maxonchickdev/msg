@@ -86,7 +86,6 @@ export class AuthController {
             .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
         );
     } catch (err) {
-      console.log(err);
       return res.redirect(
         this.configService
           .get<string>('CLIENT_ORIGIN')
