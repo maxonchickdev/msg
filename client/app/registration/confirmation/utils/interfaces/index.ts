@@ -15,10 +15,10 @@ export interface IRegistrate {
   password: string;
 }
 
-export interface IVerificationCode {
+export interface IConfirmationCode {
   code: string;
 }
 
-export interface ConfirmationFormProps {
-  onSubmitCode: SubmitHandler<IVerificationCode>;
+export interface IConfirmationFormProps {
+  onSubmitCode: SubmitHandler<IConfirmationCode>;
 }

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { IProfile } from "../interfaces/interfaces";
+import { IProfile } from "../interfaces/index";
 
 export const Services = {
   profile: async (): Promise<{ data: IProfile }> => {

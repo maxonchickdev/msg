@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ILogin, LoginFormProps } from "../../utils/interfaces/interfaces";
-import { CustomButton } from "../custom/button/button";
+import { ILogin, LoginFormProps } from "@/app/utils/interfaces/index";
 import TextField from "@mui/material/TextField";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Button from "@mui/material/Button";
 
 export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
   const { handleSubmit, control } = useForm<ILogin>({ mode: "onChange" });
@@ -43,10 +43,14 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
           />
         )}
       />
-      <CustomButton
-        content="Submit"
+      <Button
+        type="submit"
+        fullWidth
+        variant="outlined"
         endIcon={<KeyboardArrowUpIcon color="info" />}
-      />
+      >
+        Submit
+      </Button>
     </form>
   );
 };

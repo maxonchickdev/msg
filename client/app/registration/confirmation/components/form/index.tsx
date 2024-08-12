@@ -1,17 +1,17 @@
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  IVerificationCode,
-  ConfirmationFormProps,
-} from "../utils/interfaces/interfaces";
-import { CustomButton } from "../custom/button/button";
+  IConfirmationCode,
+  IConfirmationFormProps,
+} from "../../utils/interfaces";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
-export const ConfirmationCodeForm: FC<ConfirmationFormProps> = ({
+export const ConfirmationCodeForm: FC<IConfirmationFormProps> = ({
   onSubmitCode,
 }) => {
-  const { handleSubmit, control } = useForm<IVerificationCode>({
+  const { handleSubmit, control } = useForm<IConfirmationCode>({
     mode: "onChange",
   });
   return (
@@ -33,10 +33,14 @@ export const ConfirmationCodeForm: FC<ConfirmationFormProps> = ({
           />
         )}
       />
-      <CustomButton
-        content="Submit"
+      <Button
+        fullWidth
+        variant="outlined"
+        type="submit"
         endIcon={<KeyboardArrowUpIcon color="info" />}
-      />
+      >
+        Submit
+      </Button>
     </form>
   );
 };

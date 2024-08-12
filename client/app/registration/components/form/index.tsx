@@ -3,10 +3,10 @@ import { Controller, useForm } from "react-hook-form";
 import {
   IRegistrate,
   RegistrationFormProps,
-} from "../utils/interfaces/interfaces";
-import { CustomButton } from "../custom/button/button";
+} from "@/app/registration/utils/interfaces/index";
 import TextField from "@mui/material/TextField";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Button from "@mui/material/Button";
 
 export const RegistrationForm: FC<RegistrationFormProps> = ({
   onSubmitUserInfo,
@@ -67,10 +67,14 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
           />
         )}
       />
-      <CustomButton
-        content="Submit"
+      <Button
+        type="submit"
+        fullWidth
+        variant="outlined"
         endIcon={<KeyboardArrowUpIcon color="info" />}
-      />
+      >
+        Submit
+      </Button>
     </form>
   );
 };

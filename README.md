@@ -35,50 +35,41 @@ CLIENT_TO_REGISTRATE=
 CLIENT_TO_PROFILE=
 
 REDIS_HOST=
-REDIS_PORT=
-
+REDIS_LOCAL_PORT=
 ```
 
-- create **.env** file of the server directory
+- create **.env** file of the client directory
 ```.env
 NEXTJS_APP_LOCAL_PORT=
 NEXTJS_APP_DOCKER_PORT=
 
+
 NEXT_PUBLIC_SECURE_LOCAL_STORAGE_HASH_KEY=
 NEXT_PUBLIC_SECURE_LOCAL_STORAGE_PREFIX=
 
+
 NEST_PUBLIC_SERVER_BASE=
-NEST_PUBLIC_CLIENT_ROOT=
+
+NEST_PUBLIC_SERVER_BASIC_REG=
+NEST_PUBLIC_SERVER_BASIC_REG_CONFIRM=
+NEST_PUBLIC_SERVER_BASIC_REG_RESEND=
 
 NEST_PUBLIC_SERVER_BASIC_AUTH=
 NEST_PUBLIC_SERVER_GOOGLE_AUTH=
 
-NEST_PUBLIC_SERVER_BASIC_REG=
-NEST_PUBLIC_SERVER_BASIC_REG_CONFIRM=
+NEST_PUBLIC_SERVER_PROFILE=
 
-NEST_PUBLIC_SERVER_BASIC_PROFILE=
+
+NEXT_PUBLIC_CLIENT_REG=
+NEXT_PUBLIC_CLIENT_CONFIRMATION=
+NEXT_PUBLIC_CLIENT_PROFILE=
 ```
 
 ## 2. Up with docker-compose
 
-#### Pull images and uo containers
+#### Pull images and up containers
 ```sh
-docker-compose up
-```
-
-#### Check container logs
-```sh
-docker-compose logs mysql-db
-
-docker-compose logs nestjs-app
-```
-
-#### Execute to container
-
-```sh
-docker-compose exec mysql-db bash
-
-docker-compose exec nestjs-app bash
+docker-compose --env-file ./server/.env ./client/.env up --build
 ```
 
 ## 3. Server tree
@@ -98,6 +89,9 @@ src
 │   ├── mail.module.ts
 │   └── mail.service.ts
 ├── main.ts
+├── passvord-validation
+│   ├── password-validation.module.ts
+│   └── password-validation.service.ts
 ├── profile
 │   ├── profile.controller.ts
 │   ├── profile.module.ts
@@ -115,18 +109,20 @@ src
 │       └── users.service.ts
 └── utils
     ├── config
-    │   ├── mailer.ts
-    │   └── typeorm.ts
+    │   ├── mailer.config.ts
+    │   └── typeorm.config.ts
     ├── constants
     │   └── constants.ts
     ├── decorators
     │   └── parse-request.decorator.ts
     ├── dto
     │   ├── email-confirmation.dto.ts
+    │   ├── jwt.dto.ts
     │   ├── login.dto.ts
     │   ├── mail.dto.ts
     │   ├── payload.dto.ts
     │   ├── profile.dto.ts
+    │   ├── resend-code.sto.ts
     │   └── user.dto.ts
     ├── entities
     │   └── user.entity.ts
@@ -148,33 +144,46 @@ src
 ```sh
 app
 ├── components
-│   ├── custom
-│   │   ├── button
-│   │   │   └── button.tsx
-│   │   ├── error
-│   │   │   └── error.tsx
-│   │   ├── link
-│   │   │   └── link.tsx
-│   │   └── snackbar
-│   │       └── snackbar.tsx
-│   └── forms
-│       ├── login.form.tsx
-│       ├── registration.form.tsx
-│       └── validate.code.form.tsx
+│   └── form
+│       └── index.tsx
 ├── favicon.ico
 ├── global.css
 ├── layout.tsx
 ├── not-found.tsx
 ├── page.tsx
 ├── profile
-│   └── page.tsx
-├── registrate
-│   └── page.tsx
+│   ├── components
+│   ├── page.tsx
+│   └── utils
+│       ├── interfaces
+│       │   └── index.ts
+│       └── services
+│           └── index.ts
+├── registration
+│   ├── components
+│   │   └── form
+│   │       └── index.tsx
+│   ├── confirmation
+│   │   ├── components
+│   │   │   └── form
+│   │   │       └── index.tsx
+│   │   ├── page.tsx
+│   │   └── utils
+│   │       ├── interfaces
+│   │       │   └── index.ts
+│   │       └── services
+│   │           └── index.ts
+│   ├── page.tsx
+│   └── utils
+│       ├── interfaces
+│       │   └── index.ts
+│       └── services
+│           └── index.ts
 └── utils
     ├── interfaces
-    │   └── interfaces.ts
+    │   └── index.ts
     └── services
-        └── services.ts
+        └── index.ts
 ```
 
 ## 5. Support

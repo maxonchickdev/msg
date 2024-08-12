@@ -4,21 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { SubmitHandler } from "react-hook-form";
-import { ValidateCodeForm } from "@/app/components/forms/validate.code.form";
+import { ConfirmationCodeForm } from "./components/form/index";
+import Button from "@mui/material/Button";
 import secureLocalStorage from "react-secure-storage";
 import Stack from "@mui/material/Stack";
 import { SyntheticEvent } from "react";
 import { Box } from "@mui/material";
-import { Services } from "./utils/services/services";
-import { IVerificationCode, IRegistrate } from "./utils/interfaces/interfaces";
-import { CustomLink } from "@/app/components/custom/link/link";
-import { CustomSnackbar } from "@/app/components/custom/snackbar/snackbar";
-import { CustomButton } from "@/app/components/custom/button/button";
+import { Services } from "./utils/services/index";
+import { IConfirmationCode, IRegistrate } from "./utils/interfaces/index";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Link } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function Registrate() {
   const router = useRouter();
-  const { reset } = useForm<IRegistrate>({ mode: "onChange" });
+  const { reset } = useForm<IConfirmationCode>({ mode: "onChange" });
   const [confirmationError, setConfirmationError] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const handleClose = (event?: SyntheticEvent | Event, reason?: string) => {
@@ -27,7 +28,7 @@ export default function Registrate() {
     }
     setOpen(false);
   };
-  const onSubmitConfirmationCode: SubmitHandler<IVerificationCode> = async (
+  const onSubmitConfirmationCode: SubmitHandler<IConfirmationCode> = async (
     data,
   ) => {
     try {
@@ -51,7 +52,6 @@ export default function Registrate() {
       const { status } = await Services.resendConfirmationCode({
         email: email as string,
       });
-      console.log("err");
     } catch (err) {
       setOpen(true);
     }
@@ -67,19 +67,29 @@ export default function Registrate() {
         <h1 className="font-bold text-2xl text-center pb-2">
           Enter confirmation code
         </h1>
-        <ValidateCodeForm onSubmitCode={onSubmitConfirmationCode} />
+        <ConfirmationCodeForm onSubmitCode={onSubmitConfirmationCode} />
         {confirmationError ? (
-          <CustomSnackbar
-            handleClose={handleClose}
-            message={confirmationError}
-            open={open}
-          />
+          <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {confirmationError}
+            </Alert>
+          </Snackbar>
         ) : null}
-        <CustomButton
-          content="Resend confirmation code"
-          endIcon={<KeyboardArrowUpIcon color="info" />}
+        <Button
+          type="submit"
           onClick={resendCode}
-        />
+          fullWidth
+          endIcon={<KeyboardArrowUpIcon color="info" />}
+          variant="outlined"
+          sx={{ margin: "4px 0" }}
+        >
+          Resend confirmation code
+        </Button>
         <Box
           sx={{
             textAlign: "center",
@@ -91,7 +101,7 @@ export default function Registrate() {
           }}
         >
           <p>Already have an account?</p>
-          <CustomLink content="Log in." href="/" />
+          <Link href="/">Log in</Link>;
         </Box>
       </div>
     </Stack>

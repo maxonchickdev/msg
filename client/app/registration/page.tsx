@@ -4,15 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { SubmitHandler } from "react-hook-form";
-import { Services } from "./utils/services/services";
-import { RegistrationForm } from "../components/forms/registration.form";
+import { Services } from "./utils/services/index";
+import { RegistrationForm } from "./components/form/index";
 import secureLocalStorage from "react-secure-storage";
 import Stack from "@mui/material/Stack";
 import { SyntheticEvent } from "react";
-import { CustomSnackbar } from "../components/custom/snackbar/snackbar";
 import { Box } from "@mui/material";
-import { CustomLink } from "../components/custom/link/link";
-import { IRegistrate } from "./utils/interfaces/interfaces";
+import { IRegistrate } from "./utils/interfaces/index";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Link from "@mui/material/Link";
 
 export default function Registrate() {
   const router = useRouter();
@@ -56,11 +57,16 @@ export default function Registrate() {
         </h1>
         <RegistrationForm onSubmitUserInfo={onSubmitUserInfo} />
         {regError ? (
-          <CustomSnackbar
-            handleClose={handleClose}
-            message={regError}
-            open={open}
-          />
+          <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {regError}
+            </Alert>
+          </Snackbar>
         ) : null}
         <Box
           sx={{
@@ -73,7 +79,7 @@ export default function Registrate() {
           }}
         >
           <p>Already have an account?</p>
-          <CustomLink content="Log in." href="/" />
+          <Link href="/">Log in</Link>
         </Box>
       </div>
     </Stack>
