@@ -1,20 +1,19 @@
 import axios, { AxiosError } from "axios";
-import { ILogin } from "../interfaces/interfaces";
+import { IProfile } from "../interfaces/interfaces";
 
 export const Services = {
-  login: async (loginUser: ILogin): Promise<{ status: number }> => {
+  profile: async (): Promise<{ data: IProfile }> => {
     try {
-      const res = await axios({
-        url: process.env.SERVER_BASIC_AUTH,
-        method: "post",
+      const res = await axios<IProfile>({
+        url: process.env.SERVER_PROFILE,
+        method: "get",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },
-        data: loginUser,
         withCredentials: true,
       });
-      return { status: res.status };
+      return { data: res.data };
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         throw new Error(err.response.data.message).message;

@@ -2,13 +2,15 @@ import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   IVerificationCode,
-  ValidationFormProps,
-} from "../../utils/interfaces/interfaces";
+  ConfirmationFormProps,
+} from "../utils/interfaces/interfaces";
 import { CustomButton } from "../custom/button/button";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import TextField from "@mui/material/TextField";
 
-export const ValidateCodeForm: FC<ValidationFormProps> = ({ onSubmitCode }) => {
+export const ConfirmationCodeForm: FC<ConfirmationFormProps> = ({
+  onSubmitCode,
+}) => {
   const { handleSubmit, control } = useForm<IVerificationCode>({
     mode: "onChange",
   });

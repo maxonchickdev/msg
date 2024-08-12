@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { SubmitHandler } from "react-hook-form";
-import { LoginRegistrateService } from "../utils/services/services";
+import { Services } from "./utils/services/services";
 import { RegistrationForm } from "../components/forms/registration.form";
 import secureLocalStorage from "react-secure-storage";
 import Stack from "@mui/material/Stack";
@@ -12,7 +12,7 @@ import { SyntheticEvent } from "react";
 import { CustomSnackbar } from "../components/custom/snackbar/snackbar";
 import { Box } from "@mui/material";
 import { CustomLink } from "../components/custom/link/link";
-import { IRegistrate } from "../utils/interfaces/interfaces";
+import { IRegistrate } from "./utils/interfaces/interfaces";
 
 export default function Registrate() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function Registrate() {
 
   const onSubmitUserInfo: SubmitHandler<IRegistrate> = async (data) => {
     try {
-      const { status } = await LoginRegistrateService.registrate(data);
+      const { status } = await Services.registrate(data);
       secureLocalStorage.setItem("email", data.email);
       router.push(
         (process.env.CLIENT_REG as string).concat(

@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   IRegistrate,
   RegistrationFormProps,
-} from "../../utils/interfaces/interfaces";
+} from "../utils/interfaces/interfaces";
 import { CustomButton } from "../custom/button/button";
 import TextField from "@mui/material/TextField";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";

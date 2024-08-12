@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { LoginForm } from "./components/forms/login.form";
 import { ILogin } from "./utils/interfaces/interfaces";
 import { SubmitHandler } from "react-hook-form";
-import { LoginRegistrateService } from "./utils/services/services";
+import { Services } from "./utils/services/services";
 import { useForm } from "react-hook-form";
 import { useState, SyntheticEvent } from "react";
 import Stack from "@mui/material/Stack";
@@ -22,7 +22,7 @@ export default function Login() {
   const { reset } = useForm<ILogin>();
   const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
     try {
-      const { status } = await LoginRegistrateService.login(data);
+      const { status } = await Services.login(data);
       router.push(process.env.CLIENT_PROFILE as string);
       reset();
     } catch (err) {

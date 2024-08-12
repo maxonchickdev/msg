@@ -3,19 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
 import { SubmitHandler } from "react-hook-form";
 import { ValidateCodeForm } from "@/app/components/forms/validate.code.form";
 import secureLocalStorage from "react-secure-storage";
 import Stack from "@mui/material/Stack";
 import { SyntheticEvent } from "react";
 import { Box } from "@mui/material";
-import { LoginRegistrateService } from "@/app/utils/services/services";
-import {
-  IVerificationCode,
-  IRegistrate,
-  IConfirmation,
-} from "@/app/utils/interfaces/interfaces";
+import { Services } from "./utils/services/services";
+import { IVerificationCode, IRegistrate } from "./utils/interfaces/interfaces";
 import { CustomLink } from "@/app/components/custom/link/link";
 import { CustomSnackbar } from "@/app/components/custom/snackbar/snackbar";
 import { CustomButton } from "@/app/components/custom/button/button";
@@ -38,7 +33,7 @@ export default function Registrate() {
     try {
       const email = secureLocalStorage.getItem("email");
       if (!email) return;
-      const { status } = await LoginRegistrateService.confirm({
+      const { status } = await Services.confirm({
         email: email as string,
         code: data.code,
       });
@@ -53,7 +48,7 @@ export default function Registrate() {
     try {
       const email = secureLocalStorage.getItem("email");
       if (!email) return;
-      const { status } = await LoginRegistrateService.resendConfirmationCode({
+      const { status } = await Services.resendConfirmationCode({
         email: email as string,
       });
       console.log("err");
