@@ -1,16 +1,16 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class MailDto {
+export class UserProfileDTO {
   @IsNotEmpty()
+  username: string;
+
   @IsEmail()
-  to: string;
+  @IsNotEmpty()
+  email: string;
 
   @IsNotEmpty()
-  subject: string;
+  createdAt: Date;
 
   @IsNotEmpty()
-  text: string;
-
-  @IsNotEmpty()
-  value: string;
+  updatedAt: Date;
 }

@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Post,
-  UseGuards,
-  HttpCode,
-  Res,
   Body,
+  Controller,
+  HttpCode,
+  Post,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { EmailConfirmationDto } from 'src/utils/dto/email-confirmation.dto';
-import { ConfirmationEmailGuard } from 'src/utils/guards/confirmation-email.guard';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { ConfirmationEmailGuard } from 'src/utils/guards/confirmation-email.guard';
+import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
+import { ResendCodeDTO } from './dto/resend.code.dto';
 import { EmailConfirmationService } from './email-confirmation.service';
-import { ResendCodeDto } from 'src/utils/dto/resend-code.sto';
 
 @ApiTags('registration')
 @Controller('reg')
@@ -23,7 +23,7 @@ export class EmailConfirmationController {
   @Post('confirmation')
   @UseGuards(ConfirmationEmailGuard)
   @HttpCode(200)
-  @ApiBody({ type: EmailConfirmationDto })
+  @ApiBody({ type: EmailConfirmationDTO })
   @ApiOperation({ summary: 'Confirmation user' })
   @ApiResponse({ status: 404, description: 'User does not exists' })
   @ApiResponse({ status: 409, description: 'Invalid code' })
@@ -31,7 +31,7 @@ export class EmailConfirmationController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async confirmationUser(
     @Body()
-    emailConfirmationDto: EmailConfirmationDto,
+    emailConfirmationDto: EmailConfirmationDTO,
     @Res() res: Response,
   ) {
     try {
@@ -45,7 +45,7 @@ export class EmailConfirmationController {
 
   @Post('resend')
   @HttpCode(200)
-  @ApiBody({ type: ResendCodeDto })
+  @ApiBody({ type: ResendCodeDTO })
   @ApiOperation({ summary: 'Resend email' })
   @ApiResponse({ status: 404, description: 'User does not exists' })
   @ApiResponse({ status: 409, description: 'Invalid code' })
@@ -53,7 +53,7 @@ export class EmailConfirmationController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async reconfirmationUser(
     @Body()
-    resendCodeDto: ResendCodeDto,
+    resendCodeDto: ResendCodeDTO,
     @Res() res: Response,
   ) {
     try {

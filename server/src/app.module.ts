@@ -1,18 +1,17 @@
 import { MailerModule } from '@nestjs-modules/mailer';
+import { CacheModule, CacheModuleAsyncOptions } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { ProfileModule } from './profile/profile.module';
-import { RegistrationModule } from './registration/registration.module';
-import { MailModule } from './mail/mail.module';
-import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
-import { RedisModule } from './redis/redis.module';
-import typeormConfig from './utils/config/typeorm.config';
-import mailerConfig from './utils/config/mailer.config';
-import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
-import { CacheModuleAsyncOptions } from '@nestjs/cache-manager';
+import { AuthModule } from './auth/auth.module';
+import { EmailConfirmationModule } from './email-confirmation/email.confirmation.module';
+import { MailModule } from './mail/mail.module';
+import { ProfileModule } from './profile/profile.module';
+import { RedisModule } from './redis/redis.module';
+import { RegistrationModule } from './registration/registration.module';
+import mailerConfig from './utils/config/mailer.config';
+import typeormConfig from './utils/config/typeorm.config';
 
 @Module({
   imports: [

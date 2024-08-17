@@ -1,13 +1,13 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { MailDto } from 'src/utils/dto/mail.dto';
+import { SendMailDto } from './dto/send.mail.dto';
 
 @Injectable()
 export class MailService {
   constructor(private readonly mailService: MailerService) {}
 
   async sendMail(
-    mailDto: MailDto,
+    mailDto: SendMailDto,
   ): Promise<{ statusCode: number; message: string }> {
     try {
       await this.mailService.sendMail({

@@ -1,13 +1,13 @@
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
   HttpException,
   HttpStatus,
+  Injectable,
 } from '@nestjs/common';
-import { EmailConfirmationDto } from '../dto/email-confirmation.dto';
-import { UsersService } from 'src/repositories/users/users.service';
+import { EmailConfirmationDTO } from 'src/email-confirmation/dto/email.confirmation.dto';
 import { RedisService } from 'src/redis/redis.service';
+import { UsersService } from 'src/repositories/users/users.service';
 
 @Injectable()
 export class ConfirmationEmailGuard implements CanActivate {
@@ -19,12 +19,12 @@ export class ConfirmationEmailGuard implements CanActivate {
   canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { body: EmailConfirmationDto }>();
+      .getRequest<Request & { body: EmailConfirmationDTO }>();
     return this.validateEmail(request.body);
   }
 
   async validateEmail(
-    emailConfirmationDto: EmailConfirmationDto,
+    emailConfirmationDto: EmailConfirmationDTO,
   ): Promise<boolean> {
     const user = await this.usersSerice.findByEmail(emailConfirmationDto.email);
     if (!user)

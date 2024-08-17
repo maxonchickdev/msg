@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { EmailConfirmationDto } from 'src/utils/dto/email-confirmation.dto';
-import { UsersService } from 'src/repositories/users/users.service';
-import { RedisService } from 'src/redis/redis.service';
 import { MailService } from 'src/mail/mail.service';
+import { RedisService } from 'src/redis/redis.service';
+import { UsersService } from 'src/repositories/users/users.service';
 import { v4 as uuidv4 } from 'uuid';
-import { ResendCodeDto } from 'src/utils/dto/resend-code.sto';
+import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
+import { ResendCodeDTO } from './dto/resend.code.dto';
 
 @Injectable()
 export class EmailConfirmationService {
@@ -14,7 +14,7 @@ export class EmailConfirmationService {
     private readonly mailService: MailService,
   ) {}
 
-  async confirmEmail(emailConfirmationDto: EmailConfirmationDto) {
+  async confirmEmail(emailConfirmationDto: EmailConfirmationDTO) {
     await this.redisService.deleteValue(
       `confirmation-code-${emailConfirmationDto.email}`,
     );
@@ -24,7 +24,7 @@ export class EmailConfirmationService {
     return user;
   }
 
-  async resendMail(resendCodeDto: ResendCodeDto) {
+  async resendMail(resendCodeDto: ResendCodeDTO) {
     await this.redisService.deleteValue(
       `confirmation-code-${resendCodeDto.email}`,
     );
