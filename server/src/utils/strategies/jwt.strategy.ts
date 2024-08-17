@@ -2,17 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtConstants } from '../constants/constants';
-import { JwtService } from '@nestjs/jwt';
-import { PayloadDto } from '../dto/payload.dto';
+import { PayloadDTO } from 'src/auth/dto/payload.dto';
 import { UsersService } from 'src/repositories/users/users.service';
+import { jwtConstants } from '../constants/constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly usersSerivce: UsersService,
-  ) {
+  constructor(private readonly usersSerivce: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
@@ -28,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
+  async validate(payloadDto: PayloadDTO): Promise<PayloadDTO> {
     const user = await this.usersSerivce.findByEmail(payloadDto.email);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     return {

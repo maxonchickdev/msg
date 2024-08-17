@@ -1,4 +1,3 @@
-import { RegistrationService } from './registration.service';
 import {
   Body,
   Controller,
@@ -7,10 +6,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ValidationUserGuard } from 'src/utils/guards/validate.new.user.guard';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/utils/dto/user.dto';
 import { Response } from 'express';
+import { ValidationUserGuard } from 'src/utils/guards/validate.new.user.guard';
+import { CreateUserDTO } from './dto/create.user.dto';
+import { RegistrationService } from './registration.service';
 
 @ApiTags('registration')
 @Controller('reg')
@@ -20,13 +20,13 @@ export class RegistrationController {
   @Post('basic')
   @UseGuards(ValidationUserGuard)
   @HttpCode(200)
-  @ApiBody({ type: CreateUserDto })
+  @ApiBody({ type: CreateUserDTO })
   @ApiOperation({ summary: 'Create new user' })
   @ApiResponse({ status: 409, description: 'User exists' })
   @ApiResponse({ status: 404, description: 'Incorrect email' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiResponse({ status: 200, description: 'Check mail' })
-  async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+  async createUser(@Body() createUserDto: CreateUserDTO, @Res() res: Response) {
     try {
       const response = await this.registrationService.createUser(createUserDto);
       return res.send(response);

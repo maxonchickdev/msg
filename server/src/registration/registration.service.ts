@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../utils/entities/user.entity';
-import { MailService } from '../mail/mail.service';
-import { v4 as uuidv4 } from 'uuid';
-import { UsersService } from 'src/repositories/users/users.service';
-import { CreateUserDto } from 'src/utils/dto/user.dto';
 import { RedisService } from 'src/redis/redis.service';
+import { UsersService } from 'src/repositories/users/users.service';
+import { v4 as uuidv4 } from 'uuid';
+import { MailService } from '../mail/mail.service';
+import { User } from '../utils/entities/user.entity';
+import { CreateUserDTO } from './dto/create.user.dto';
 
 @Injectable()
 export class RegistrationService {
@@ -13,7 +13,7 @@ export class RegistrationService {
     private readonly mailService: MailService,
     private readonly redisService: RedisService,
   ) {}
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDTO): Promise<User> {
     const confirmationCode = uuidv4();
 
     await this.mailService.sendMail({

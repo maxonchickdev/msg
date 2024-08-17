@@ -1,29 +1,25 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
   HttpStatus,
   Injectable,
-  HttpException,
 } from '@nestjs/common';
-import { CreateUserDto } from '../dto/user.dto';
+import { CreateUserDTO } from 'src/registration/dto/create.user.dto';
 import { UsersService } from 'src/repositories/users/users.service';
-import { PasswordValidationService } from 'src/passvord-validation/password-validation.service';
 
 @Injectable()
 export class ValidationUserGuard implements CanActivate {
-  constructor(
-    private readonly usersSerice: UsersService,
-    private readonly passwordValidationService: PasswordValidationService,
-  ) {}
+  constructor(private readonly usersSerice: UsersService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { body: CreateUserDto }>();
+      .getRequest<Request & { body: CreateUserDTO }>();
     return this.validateUser(request.body);
   }
 
-  async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
+  async validateUser(createUserDto: CreateUserDTO): Promise<boolean> {
     const isSameUsername = await this.usersSerice.findByUsername(
       createUserDto.username,
     );
@@ -38,9 +34,6 @@ export class ValidationUserGuard implements CanActivate {
         'User with the same email exists',
         HttpStatus.CONFLICT,
       );
-    await this.passwordValidationService.validatePassword(
-      createUserDto.password,
-    );
     return true;
   }
 }
