@@ -1,17 +1,21 @@
-import { FC } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { ILogin, LoginFormProps } from "@/app/utils/interfaces/index";
-import TextField from "@mui/material/TextField";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
-  const { handleSubmit, control } = useForm<ILogin>({ mode: "onChange" });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<ILogin>({ mode: "onChange" });
   return (
     <form onSubmit={handleSubmit(onSubmitLogin)}>
       <Controller
         control={control}
-        rules={{ required: true }}
+        rules={{ required: "Email is required" }}
         name="email"
         render={({ field: { value, onChange } }) => (
           <TextField
@@ -26,9 +30,12 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
           />
         )}
       />
+      {errors.email && <p>{errors.email.message}</p>}
       <Controller
         control={control}
-        rules={{ required: true }}
+        rules={{
+          required: "Password is required",
+        }}
         name="password"
         render={({ field: { value, onChange } }) => (
           <TextField
@@ -43,6 +50,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
           />
         )}
       />
+      {errors.password && <p>{errors.password.message}</p>}
       <Button
         type="submit"
         fullWidth
