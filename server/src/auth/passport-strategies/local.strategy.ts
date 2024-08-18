@@ -2,11 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 import { Strategy } from 'passport-local';
-import { User } from '../../utils/entities/user.entity';
 import { UsersService } from 'src/repositories/users/users.service';
+import { User } from '../../utils/entities/user.entity';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalPassportStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly usersSerice: UsersService) {
     super({
       usernameField: 'email',

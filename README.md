@@ -7,6 +7,7 @@
 ## 1. Setup .env
 
 - create **.env** file of the server directory
+
 ```.env
 MAILER_USER=
 MAILER_HOST=
@@ -39,6 +40,7 @@ REDIS_LOCAL_PORT=
 ```
 
 - create **.env** file of the client directory
+
 ```.env
 NEXTJS_APP_LOCAL_PORT=
 NEXTJS_APP_DOCKER_PORT=
@@ -68,6 +70,7 @@ NEXT_PUBLIC_CLIENT_PROFILE=
 ## 2. Up with docker-compose
 
 #### Pull images and up containers
+
 ```sh
 docker-compose --env-file ./server/.env ./client/.env up --build
 ```
@@ -78,21 +81,44 @@ docker-compose --env-file ./server/.env ./client/.env up --build
 src
 ├── app.module.ts
 ├── auth
+│   ├── auth-strategies
+│   │   ├── auth.strategy.ts
+│   │   ├── google.auth.strategy.ts
+│   │   └── local.auth.strategy.ts
 │   ├── auth.controller.ts
 │   ├── auth.module.ts
-│   └── auth.service.ts
+│   ├── auth.service.ts
+│   ├── dto
+│   │   ├── access.token.dto.ts
+│   │   ├── login.user.dto.ts
+│   │   └── payload.dto.ts
+│   ├── guards
+│   │   ├── google.oauth.guard.ts
+│   │   ├── jwt.auth.guard.ts
+│   │   └── local.auth.guard.ts
+│   └── passport-strategies
+│       ├── google.strategy.ts
+│       ├── jwt.strategy.ts
+│       └── local.strategy.ts
 ├── email-confirmation
-│   ├── email-confirmation.controller.ts
-│   ├── email-confirmation.module.ts
-│   └── email-confirmation.service.ts
+│   ├── dto
+│   │   ├── email.confirmation.dto.ts
+│   │   └── resend.code.dto.ts
+│   ├── email.confirmation.controller.ts
+│   ├── email.confirmation.module.ts
+│   ├── email.confirmation.service.ts
+│   └── guards
+│       └── confirmation.email.guard.ts
 ├── mail
+│   ├── dto
+│   │   └── send.mail.dto.ts
 │   ├── mail.module.ts
 │   └── mail.service.ts
 ├── main.ts
-├── passvord-validation
-│   ├── password-validation.module.ts
-│   └── password-validation.service.ts
 ├── profile
+│   ├── dto
+│   │   ├── jwt.payload.dto.ts
+│   │   └── user.profile.dto.ts
 │   ├── profile.controller.ts
 │   ├── profile.module.ts
 │   └── profile.service.ts
@@ -100,6 +126,10 @@ src
 │   ├── redis.module.ts
 │   └── redis.service.ts
 ├── registration
+│   ├── dto
+│   │   └── create.user.dto.ts
+│   ├── guards
+│   │   └── validate.new.user.guard.ts
 │   ├── registration.controller.ts
 │   ├── registration.module.ts
 │   └── registration.service.ts
@@ -114,33 +144,15 @@ src
     ├── constants
     │   └── constants.ts
     ├── decorators
-    │   └── parse-request.decorator.ts
-    ├── dto
-    │   ├── email-confirmation.dto.ts
-    │   ├── jwt.dto.ts
-    │   ├── login.dto.ts
-    │   ├── mail.dto.ts
-    │   ├── payload.dto.ts
-    │   ├── profile.dto.ts
-    │   ├── resend-code.sto.ts
-    │   └── user.dto.ts
+    │   └── parse.request.decorator.ts
     ├── entities
     │   └── user.entity.ts
-    ├── guards
-    │   ├── confirmation-email.guard.ts
-    │   ├── google-oauth.guard.ts
-    │   ├── jwt-auth.guard.ts
-    │   ├── local-auth.guard.ts
-    │   └── validate.new.user.guard.ts
-    ├── migrations
-    │   └── 1722589444444-User.ts
-    └── strategies
-        ├── google.strategy.ts
-        ├── jwt.strategy.ts
-        └── local.strategy.ts
+    └── migrations
+        └── 1722589444444-User.ts
 ```
 
 ## 4. Client tree
+
 ```sh
 app
 ├── components

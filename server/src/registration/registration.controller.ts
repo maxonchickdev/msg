@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ValidationUserGuard } from 'src/utils/guards/validate.new.user.guard';
 import { CreateUserDTO } from './dto/create.user.dto';
+import { ValidationUserGuard } from './guards/validate.new.user.guard';
 import { RegistrationService } from './registration.service';
 
 @ApiTags('registration')

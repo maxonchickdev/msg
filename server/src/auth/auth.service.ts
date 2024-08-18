@@ -1,42 +1,23 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/repositories/users/users.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { GoogleAuthStrategy } from './auth-strategies/google.auth.strategy';
+import { LocalAuthStrategy } from './auth-strategies/local.auth.strategy';
+import { AccessTokenDTO } from './dto/access.token.dto';
 import { LoginUserDTO } from './dto/login.user.dto';
-import { PayloadDTO } from './dto/payload.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
+    @Inject('GoogleAuthStrategy')
+    private readonly googleAuthStrategy: GoogleAuthStrategy,
+    @Inject('LocalAuthStrategy')
+    private readonly localAuthStrategy: LocalAuthStrategy,
   ) {}
 
-  async loginBasic(loginUserDto: LoginUserDTO) {
-    const user = await this.usersService.findByEmail(loginUserDto.email);
-    const payload: PayloadDTO = {
-      id: user.id,
-      email: user.email,
-    };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  async localAuth(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
+    return this.localAuthStrategy.generateJwtToken(loginUserDTO);
   }
 
-  async loginGoogle(email: string) {
-    const user = await this.usersService.findByEmail(email);
-
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-
-    user.isVerified = true;
-
-    await this.usersService.saveUser(user);
-    const payload: PayloadDTO = {
-      id: user.id,
-      email: user.email,
-    };
-
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  async googleAuth(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
+    return this.googleAuthStrategy.generateJwtToken(loginUserDTO);
   }
 }

@@ -8,10 +8,10 @@ import {
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ConfirmationEmailGuard } from 'src/utils/guards/confirmation-email.guard';
 import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
 import { ResendCodeDTO } from './dto/resend.code.dto';
-import { EmailConfirmationService } from './email-confirmation.service';
+import { EmailConfirmationService } from './email.confirmation.service';
+import { ConfirmationEmailGuard } from './guards/confirmation.email.guard';
 
 @ApiTags('registration')
 @Controller('reg')

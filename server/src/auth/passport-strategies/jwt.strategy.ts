@@ -4,10 +4,10 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PayloadDTO } from 'src/auth/dto/payload.dto';
 import { UsersService } from 'src/repositories/users/users.service';
-import { jwtConstants } from '../constants/constants';
+import { jwtConstants } from '../../utils/constants/constants';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtPassportStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly usersSerivce: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([

@@ -1,8 +1,8 @@
 import { Controller, Get, HttpCode, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/utils/guards/jwt-auth.guard';
-import { ParseRequest } from '../utils/decorators/parse-request.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { ParseRequest } from '../utils/decorators/parse.request.decorator';
 import { JwtPayloadDTO } from './dto/jwt.payload.dto';
 import { ProfileService } from './profile.service';
 
