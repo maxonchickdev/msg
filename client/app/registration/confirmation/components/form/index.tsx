@@ -1,24 +1,28 @@
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   IConfirmationCode,
   IConfirmationFormProps,
 } from "../../utils/interfaces";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 
 export const ConfirmationCodeForm: FC<IConfirmationFormProps> = ({
   onSubmitCode,
 }) => {
-  const { handleSubmit, control } = useForm<IConfirmationCode>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<IConfirmationCode>({
     mode: "onChange",
   });
   return (
     <form onSubmit={handleSubmit(onSubmitCode)}>
       <Controller
         control={control}
-        rules={{ required: true }}
+        rules={{ required: "Confirmation code is required" }}
         name="code"
         render={({ field: { value, onChange } }) => (
           <TextField
@@ -33,6 +37,7 @@ export const ConfirmationCodeForm: FC<IConfirmationFormProps> = ({
           />
         )}
       />
+      {errors.code && <p>{errors.code.message}</p>}
       <Button
         fullWidth
         variant="outlined"
