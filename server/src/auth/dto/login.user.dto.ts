@@ -9,5 +9,5 @@ export class LoginUserDTO {
 
   @ApiProperty({ name: 'password' })
   @IsNotEmpty()
-  password: string;
+  password?: string;
 }

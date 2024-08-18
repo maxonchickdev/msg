@@ -10,11 +10,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { GoogleOAuthGuard } from 'src/utils/guards/google-oauth.guard';
-import { LocalAuthGuard } from 'src/utils/guards/local-auth.guard';
-import { ParseRequest } from '../utils/decorators/parse-request.decorator';
+import { LocalAuthGuard } from 'src/auth/guards/local.auth.guard';
+import { ParseRequest } from '../utils/decorators/parse.request.decorator';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login.user.dto';
+import { GoogleOAuthGuard } from './guards/google.oauth.guard';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -34,11 +34,11 @@ export class AuthController {
   @ApiResponse({ status: 404, description: 'Email or password incorrected' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiResponse({ status: 200, description: 'Login success' })
-  async jwtLogin(@Body() loginUserDto: LoginUserDTO, @Res() res: Response) {
+  async jwtLogin(@Body() loginUserDTO: LoginUserDTO, @Res() res: Response) {
     try {
-      const { access_token } = await this.authService.loginBasic(loginUserDto);
+      const { accessToken } = await this.authService.localAuth(loginUserDTO);
       return res
-        .cookie('access_token', access_token, {
+        .cookie('access_token', accessToken, {
           httpOnly: true,
           secure: false,
           path: '/',
@@ -72,9 +72,9 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
-      const { access_token } = await this.authService.loginGoogle(email);
+      const { accessToken } = await this.authService.googleAuth({ email });
       return res
-        .cookie('access_token', access_token, {
+        .cookie('access_token', accessToken, {
           httpOnly: true,
           secure: false,
           path: '/',
