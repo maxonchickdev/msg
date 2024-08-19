@@ -13,10 +13,15 @@ export class GoogleAuthStrategy implements AuthStrategy {
     private readonly usersService: UsersService,
   ) {}
   async generateJwtToken(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
-    const user = await this.usersService.findByEmail(loginUserDTO.email);
+    const user = await this.usersService.updateUser({
+      where: {
+        email: loginUserDTO.email,
+      },
+      data: {
+        isVerified: true,
+      },
+    });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    user.isVerified = true;
-    await this.usersService.saveUser(user);
     const payload: PayloadDTO = {
       id: user.id,
       email: user.email,

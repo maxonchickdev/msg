@@ -18,9 +18,14 @@ export class EmailConfirmationService {
     await this.redisService.deleteValue(
       `confirmation-code-${emailConfirmationDto.email}`,
     );
-    const user = await this.usersSerice.findByEmail(emailConfirmationDto.email);
-    user.isVerified = true;
-    await this.usersSerice.saveUser(user);
+    const user = await this.usersSerice.updateUser({
+      where: {
+        email: emailConfirmationDto.email,
+      },
+      data: {
+        isVerified: true,
+      },
+    });
     return user;
   }
 

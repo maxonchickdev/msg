@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { RedisService } from 'src/redis/redis.service';
 import { UsersService } from 'src/repositories/users/users.service';
 import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../mail/mail.service';
-import { User } from '../utils/entities/user.entity';
 import { CreateUserDTO } from './dto/create.user.dto';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class RegistrationService {
     private readonly mailService: MailService,
     private readonly redisService: RedisService,
   ) {}
-  async createUser(createUserDto: CreateUserDTO): Promise<User> {
+  async signupUser(createUserDto: CreateUserDTO): Promise<User> {
     const confirmationCode = uuidv4();
 
     await this.mailService.sendMail({
@@ -33,8 +33,6 @@ export class RegistrationService {
       email: createUserDto.email,
       password: createUserDto.password,
     });
-
-    await this.usersService.saveUser(newUser);
 
     return newUser;
   }
