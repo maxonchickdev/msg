@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Strategy } from 'passport-local';
 import { UsersService } from 'src/repositories/users/users.service';
-import { User } from '../../utils/entities/user.entity';
 
 @Injectable()
 export class LocalPassportStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +15,7 @@ export class LocalPassportStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string): Promise<User> {
-    const user = await this.usersSerice.findByEmail(email);
+    const user = await this.usersSerice.findUser({ email: email });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

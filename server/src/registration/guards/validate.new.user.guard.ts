@@ -20,15 +20,17 @@ export class ValidationUserGuard implements CanActivate {
   }
 
   async validateUser(createUserDto: CreateUserDTO): Promise<boolean> {
-    const isSameUsername = await this.usersSerice.findByUsername(
-      createUserDto.username,
-    );
+    const isSameUsername = await this.usersSerice.findUser({
+      username: createUserDto.username,
+    });
     if (isSameUsername)
       throw new HttpException(
         'User with the same username exists',
         HttpStatus.CONFLICT,
       );
-    const isSameEmail = await this.usersSerice.findByEmail(createUserDto.email);
+    const isSameEmail = await this.usersSerice.findUser({
+      email: createUserDto.email,
+    });
     if (isSameEmail)
       throw new HttpException(
         'User with the same email exists',

@@ -13,10 +13,10 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser());
-  const config = new DocumentBuilder().setTitle('MESSANGER api').build();
+  const config = new DocumentBuilder().setTitle('MSG api').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'MESSANGER api',
+    customSiteTitle: 'MSG api',
   });
   await app.listen(8080);
   logger.log('🚀 Application running');

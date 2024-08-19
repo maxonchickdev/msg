@@ -28,7 +28,7 @@ export class RegistrationController {
   @ApiResponse({ status: 200, description: 'Check mail' })
   async createUser(@Body() createUserDto: CreateUserDTO, @Res() res: Response) {
     try {
-      const response = await this.registrationService.createUser(createUserDto);
+      const response = await this.registrationService.signupUser(createUserDto);
       return res.send(response);
     } catch (err) {
       return res

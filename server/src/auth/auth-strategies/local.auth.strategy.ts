@@ -13,7 +13,9 @@ export class LocalAuthStrategy implements AuthStrategy {
     private readonly usersService: UsersService,
   ) {}
   async generateJwtToken(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
-    const user = await this.usersService.findByEmail(loginUserDTO.email);
+    const user = await this.usersService.findUser({
+      email: loginUserDTO.email,
+    });
     const payload: PayloadDTO = {
       id: user.id,
       email: user.email,

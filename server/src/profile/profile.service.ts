@@ -7,7 +7,7 @@ export class ProfileService {
   constructor(private readonly usersService: UsersService) {}
 
   async getUserProfile(uuid: string): Promise<UserProfileDTO> {
-    const user = await this.usersService.findByUuid(uuid);
+    const user = await this.usersService.findUser({ id: uuid });
 
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 
