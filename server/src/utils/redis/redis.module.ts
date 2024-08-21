@@ -4,11 +4,7 @@ import { RedisOptions } from 'src/utils/config/redis.config';
 import { RedisService } from './redis.service';
 
 @Module({
-  imports: [
-    CacheModule.registerAsync({
-      ...RedisOptions,
-    }),
-  ],
+  imports: [CacheModule.registerAsync(RedisOptions)],
   providers: [RedisService],
   exports: [RedisService],
 })

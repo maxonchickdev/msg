@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 import { ResendCodeDTO } from 'src/registration/dto/resend.code.dto';
 import { RedisService } from 'src/utils/redis/redis.service';
 import { UsersService } from 'src/utils/repositories/users/users.service';
@@ -7,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../utils/mail/mail.service';
 import { CreateUserDTO } from './dto/create.user.dto';
 import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
+import { JustifiedUserDTO } from './dto/justified.user.dto';
 
 @Injectable()
 export class RegistrationService {
@@ -14,9 +16,10 @@ export class RegistrationService {
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
     private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async signupUser(createUserDto: CreateUserDTO): Promise<User> {
+  async signupUser(createUserDto: CreateUserDTO): Promise<JustifiedUserDTO> {
     const confirmationCode = uuidv4();
 
     await this.mailService.sendMail({
@@ -27,24 +30,31 @@ export class RegistrationService {
     });
 
     await this.redisService.setValue(
-      `confirmation-code-${createUserDto.email}`,
+      `confirmation-code-${createUserDto.email.split('@')[0]}`,
       confirmationCode,
     );
 
     const newUser = await this.usersService.createUser({
       username: createUserDto.username,
       email: createUserDto.email,
-      password: createUserDto.password,
+      password: await bcrypt.hash(
+        createUserDto.password,
+        parseInt(this.configService.get<string>('SALT_OR_ROUNDS'), 10),
+      ),
     });
 
-    return newUser;
+    return {
+      username: newUser.username,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+    };
   }
 
   async validateConfirmationCode(
     emailConfirmationDto: EmailConfirmationDTO,
-  ): Promise<boolean> {
+  ): Promise<JustifiedUserDTO> {
     await this.redisService.deleteValue(
-      `confirmation-code-${emailConfirmationDto.email}`,
+      `confirmation-code-${emailConfirmationDto.email.split('@')[0]}`,
     );
     const user = await this.usersService.updateUser({
       where: {
@@ -54,12 +64,16 @@ export class RegistrationService {
         isVerified: true,
       },
     });
-    return true;
+    return {
+      username: user.username,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
   async resendConfirmationCode(resendCodeDto: ResendCodeDTO): Promise<boolean> {
     await this.redisService.deleteValue(
-      `confirmation-code-${resendCodeDto.email}`,
+      `confirmation-code-${resendCodeDto.email.split('@')[0]}`,
     );
 
     const confirmationCode = uuidv4();
@@ -72,7 +86,7 @@ export class RegistrationService {
     });
 
     await this.redisService.setValue(
-      `confirmation-code-${resendCodeDto.email}`,
+      `confirmation-code-${resendCodeDto.email.split('@')[0]}`,
       confirmationCode,
     );
 

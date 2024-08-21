@@ -33,7 +33,7 @@ export class ConfirmationEmailGuard implements CanActivate {
       throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
 
     const confirmationCode = await this.redisService.getValue(
-      `confirmation-code-${emailConfirmationDto.email}`,
+      `confirmation-code-${emailConfirmationDto.email.split('@')[0]}`,
     );
 
     if (confirmationCode !== emailConfirmationDto.code) {

@@ -6,6 +6,7 @@ import { UsersModule } from 'src/utils/repositories/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './signin-strategies/google.strategy';
+import { JwtStrategy } from './signin-strategies/jwt.strategy';
 import { LocalStrategy } from './signin-strategies/local.strategy';
 
 @Module({
@@ -27,6 +28,7 @@ import { LocalStrategy } from './signin-strategies/local.strategy';
       provide: 'GoogleStrategy',
       useClass: GoogleStrategy,
     },
+    JwtStrategy,
   ],
   controllers: [AuthController],
 })

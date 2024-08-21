@@ -40,12 +40,14 @@ export class AuthController {
   ): Promise<Response> {
     try {
       const { accessToken } = await this.authService.localAuth(loginUserDTO);
-      return res.cookie('access_token', accessToken, {
-        httpOnly: true,
-        secure: false,
-        path: '/',
-        sameSite: 'lax',
-      });
+      return res
+        .cookie('access_token', accessToken, {
+          httpOnly: true,
+          secure: false,
+          path: '/',
+          sameSite: 'lax',
+        })
+        .send('Login success');
     } catch (err) {
       return res
         .status(err.status)

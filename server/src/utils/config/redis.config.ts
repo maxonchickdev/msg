@@ -1,20 +1,20 @@
 import { CacheModuleAsyncOptions } from '@nestjs/cache-manager';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-store';
-import * as dotenv from 'dotenv';
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 export const RedisOptions: CacheModuleAsyncOptions = {
-  useFactory: async () => {
+  isGlobal: true,
+  imports: [ConfigModule],
+  useFactory: async (configService: ConfigService) => {
     const store = await redisStore({
       socket: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_LOCAL_PORT, 10),
+        host: configService.get<string>('REDIS_HOST'),
+        port: parseInt(configService.get<string>('REDIS_LOCAL_PORT'), 10),
       },
-      ttl: 5,
     });
     return {
       store: () => store,
     };
   },
+  inject: [ConfigService],
 };
