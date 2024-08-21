@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtPassportStrategy } from 'src/auth/passport-strategies/jwt.strategy';
-import { LocalPassportStrategy } from 'src/auth/passport-strategies/local.strategy';
-import { UsersModule } from 'src/repositories/users/users.module';
 import { jwtConstants } from 'src/utils/constants/constants';
-import { GoogleAuthStrategy } from './auth-strategies/google.auth.strategy';
-import { LocalAuthStrategy } from './auth-strategies/local.auth.strategy';
+import { UsersModule } from 'src/utils/repositories/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { GooglePassportStrategy } from './passport-strategies/google.strategy';
+import { GoogleStrategy } from './signin-strategies/google.strategy';
+import { LocalStrategy } from './signin-strategies/local.strategy';
 
 @Module({
   imports: [
@@ -22,16 +19,13 @@ import { GooglePassportStrategy } from './passport-strategies/google.strategy';
   ],
   providers: [
     AuthService,
-    JwtPassportStrategy,
-    LocalPassportStrategy,
-    GooglePassportStrategy,
     {
-      provide: 'GoogleAuthStrategy',
-      useClass: GoogleAuthStrategy,
+      provide: 'LocalStrategy',
+      useClass: LocalStrategy,
     },
     {
-      provide: 'LocalAuthStrategy',
-      useClass: LocalAuthStrategy,
+      provide: 'GoogleStrategy',
+      useClass: GoogleStrategy,
     },
   ],
   controllers: [AuthController],

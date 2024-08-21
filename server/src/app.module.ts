@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { EmailConfirmationModule } from './email-confirmation/email.confirmation.module';
-import { MailModule } from './mail/mail.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfileModule } from './profile/profile.module';
-import { RedisModule } from './redis/redis.module';
 import { RegistrationModule } from './registration/registration.module';
 import mailerConfig from './utils/config/mailer.config';
+import { MailModule } from './utils/mail/mail.module';
+import { RedisModule } from './utils/redis/redis.module';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import mailerConfig from './utils/config/mailer.config';
     RegistrationModule,
     AuthModule,
     ProfileModule,
-    EmailConfirmationModule,
     PrismaModule,
   ],
 })

@@ -6,9 +6,7 @@ import { SendMailDto } from './dto/send.mail.dto';
 export class MailService {
   constructor(private readonly mailService: MailerService) {}
 
-  async sendMail(
-    mailDto: SendMailDto,
-  ): Promise<{ statusCode: number; message: string }> {
+  async sendMail(mailDto: SendMailDto): Promise<boolean> {
     try {
       await this.mailService.sendMail({
         to: mailDto.to,
@@ -16,7 +14,7 @@ export class MailService {
         subject: mailDto.subject,
         html: `<p>${mailDto.text}: <strong>${mailDto.value}</strong></p>`,
       });
-      return { statusCode: 200, message: 'Mail sended successfully' };
+      return true;
     } catch (err) {
       throw new HttpException(`Incorrect email: ${err}`, HttpStatus.NOT_FOUND);
     }

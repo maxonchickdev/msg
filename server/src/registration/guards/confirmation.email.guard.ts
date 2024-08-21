@@ -5,9 +5,9 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { EmailConfirmationDTO } from 'src/email-confirmation/dto/email.confirmation.dto';
-import { RedisService } from 'src/redis/redis.service';
-import { UsersService } from 'src/repositories/users/users.service';
+import { RedisService } from 'src/utils/redis/redis.service';
+import { UsersService } from 'src/utils/repositories/users/users.service';
+import { EmailConfirmationDTO } from '../dto/email.confirmation.dto';
 
 @Injectable()
 export class ConfirmationEmailGuard implements CanActivate {

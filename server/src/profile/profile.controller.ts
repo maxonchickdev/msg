@@ -18,10 +18,10 @@ export class ProfileController {
   @ApiResponse({ status: 200, description: 'User profile' })
   @ApiResponse({ status: 404, description: 'Access token not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async jwtGetProfile(
+  async getUserProfile(
     @ParseRequest() user: JwtPayloadDTO,
     @Res() res: Response,
-  ) {
+  ): Promise<Response> {
     try {
       const userProfile = await this.profileService.getUserProfile(user.id);
       return res.send(userProfile);

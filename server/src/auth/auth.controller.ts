@@ -17,7 +17,7 @@ import { LoginUserDTO } from './dto/login.user.dto';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
 
 @ApiTags('authentication')
-@Controller('auth')
+@Controller('signin')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -34,17 +34,18 @@ export class AuthController {
   @ApiResponse({ status: 404, description: 'Email or password incorrected' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiResponse({ status: 200, description: 'Login success' })
-  async jwtLogin(@Body() loginUserDTO: LoginUserDTO, @Res() res: Response) {
+  async localAuth(
+    @Body() loginUserDTO: LoginUserDTO,
+    @Res() res: Response,
+  ): Promise<Response> {
     try {
       const { accessToken } = await this.authService.localAuth(loginUserDTO);
-      return res
-        .cookie('access_token', accessToken, {
-          httpOnly: true,
-          secure: false,
-          path: '/',
-          sameSite: 'lax',
-        })
-        .send('Login success');
+      return res.cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: false,
+        path: '/',
+        sameSite: 'lax',
+      });
     } catch (err) {
       return res
         .status(err.status)
@@ -58,7 +59,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Try to login with google provider' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async googleAuth() {}
+  async googleAuth(): Promise<void> {}
 
   @Get('google-redirect')
   @UseGuards(GoogleOAuthGuard)
@@ -70,7 +71,7 @@ export class AuthController {
   async googleAuthRedirect(
     @ParseRequest() email: string,
     @Res() res: Response,
-  ) {
+  ): Promise<void> {
     try {
       const { accessToken } = await this.authService.googleAuth({ email });
       return res

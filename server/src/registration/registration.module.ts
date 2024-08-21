@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MailModule } from 'src/mail/mail.module';
-import { RedisModule } from 'src/redis/redis.module';
-import { UsersModule } from 'src/repositories/users/users.module';
+import { MailModule } from 'src/utils/mail/mail.module';
+import { RedisModule } from 'src/utils/redis/redis.module';
+import { UsersModule } from 'src/utils/repositories/users/users.module';
 import { RegistrationController } from './registration.controller';
 import { RegistrationService } from './registration.service';
 

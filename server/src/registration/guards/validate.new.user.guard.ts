@@ -6,7 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDTO } from 'src/registration/dto/create.user.dto';
-import { UsersService } from 'src/repositories/users/users.service';
+import { UsersService } from 'src/utils/repositories/users/users.service';
 
 @Injectable()
 export class ValidationUserGuard implements CanActivate {

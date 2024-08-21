@@ -1,23 +1,23 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { GoogleAuthStrategy } from './auth-strategies/google.auth.strategy';
-import { LocalAuthStrategy } from './auth-strategies/local.auth.strategy';
 import { AccessTokenDTO } from './dto/access.token.dto';
 import { LoginUserDTO } from './dto/login.user.dto';
+import { GoogleStrategy } from './signin-strategies/google.strategy';
+import { LocalStrategy } from './signin-strategies/local.strategy';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('GoogleAuthStrategy')
-    private readonly googleAuthStrategy: GoogleAuthStrategy,
-    @Inject('LocalAuthStrategy')
-    private readonly localAuthStrategy: LocalAuthStrategy,
+    @Inject('GoogleStrategy')
+    private readonly googleAuthStrategy: GoogleStrategy,
+    @Inject('LocalStrategy')
+    private readonly localAuthStrategy: LocalStrategy,
   ) {}
 
   async localAuth(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
-    return this.localAuthStrategy.generateJwtToken(loginUserDTO);
+    return this.localAuthStrategy.generateJwt(loginUserDTO);
   }
 
   async googleAuth(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
-    return this.googleAuthStrategy.generateJwtToken(loginUserDTO);
+    return this.googleAuthStrategy.generateJwt(loginUserDTO);
   }
 }
