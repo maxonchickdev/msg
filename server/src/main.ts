@@ -1,24 +1,35 @@
-import { Logger } from '@nestjs/common';
+import { INestApplication, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cookieParser from 'cookie-parser';
+import * as dotenv from 'dotenv';
+import * as basicAuth from 'express-basic-auth';
 import { AppModule } from './app.module';
+import { setup } from './utils/config/setup';
+
+dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 async function bootstrap() {
   const logger = new Logger();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<INestApplication>(AppModule);
+
+  app.use(
+    '/docs*',
+    basicAuth({
+      challenge: true,
+      users: {
+        maxondev: process.env.SWAGGER_PASSWORD.toString(),
+      },
+    }),
+  );
+
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [process.env.CLIENT_ORIGIN],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   });
-  app.use(cookieParser());
-  const config = new DocumentBuilder().setTitle('MSG api').build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'MSG api',
-  });
+
+  setup(app);
   await app.listen(8080);
   logger.log('🚀 Application running');
 }
+
 bootstrap();

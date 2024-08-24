@@ -8,9 +8,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { LocalAuthGuard } from 'src/auth/guards/local.auth.guard';
+import { HttpExceptionDTO } from 'src/registration/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login.user.dto';
@@ -27,13 +36,35 @@ export class AuthController {
   @Post('basic')
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
-  @ApiBody({ type: LoginUserDTO })
+  @ApiBody({ type: LoginUserDTO, description: 'Sign in basic' })
   @ApiOperation({ summary: 'Login JWT strategy' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  @ApiResponse({ status: 401, description: 'Mail not confirmed' })
-  @ApiResponse({ status: 404, description: 'Email or password incorrected' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  @ApiResponse({ status: 200, description: 'Login success' })
+  @ApiOkResponse({
+    description: 'Access token is active',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Mail not confirmed',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 403,
+      message: 'Mail not confirmed',
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Email or password incorrected',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 401,
+      message: 'Email or password incorrected',
+    },
+  })
   async localAuth(
     @Body() loginUserDTO: LoginUserDTO,
     @Res() res: Response,
@@ -58,18 +89,35 @@ export class AuthController {
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(200)
-  @ApiOperation({ summary: 'Try to login with google provider' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiOperation({ summary: 'Sign in with google provider' })
+  @ApiOkResponse({
+    description: 'Login success',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
   async googleAuth(): Promise<void> {}
 
   @Get('google-redirect')
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user profile' })
-  @ApiResponse({ status: 200, description: 'Login success' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiOkResponse({
+    description: 'Access token is active',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
   async googleAuthRedirect(
     @ParseRequest() email: string,
     @Res() res: Response,

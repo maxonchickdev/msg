@@ -16,7 +16,7 @@ export class MailService {
       });
       return true;
     } catch (err) {
-      throw new HttpException(`Incorrect email: ${err}`, HttpStatus.NOT_FOUND);
+      throw new HttpException('Incorrect email', HttpStatus.NOT_FOUND);
     }
   }
 }

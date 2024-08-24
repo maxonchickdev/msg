@@ -31,7 +31,7 @@ export class LocalStrategy
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (user.isVerified === false) {
-      throw new HttpException('Mail not confirmed', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Mail not confirmed', HttpStatus.FORBIDDEN);
     }
     const isPasswordsMatching = await bcrypt.compare(password, user.password);
     if (!isPasswordsMatching) {

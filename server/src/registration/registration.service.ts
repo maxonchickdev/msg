@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../utils/mail/mail.service';
 import { CreateUserDTO } from './dto/create.user.dto';
 import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
-import { JustifiedUserDTO } from './dto/justified.user.dto';
 
 @Injectable()
 export class RegistrationService {
@@ -19,7 +18,7 @@ export class RegistrationService {
     private readonly configService: ConfigService,
   ) {}
 
-  async signupUser(createUserDto: CreateUserDTO): Promise<JustifiedUserDTO> {
+  async signupUser(createUserDto: CreateUserDTO): Promise<boolean> {
     const confirmationCode = uuidv4();
 
     await this.mailService.sendMail({
@@ -34,7 +33,7 @@ export class RegistrationService {
       confirmationCode,
     );
 
-    const newUser = await this.usersService.createUser({
+    await this.usersService.createUser({
       username: createUserDto.username,
       email: createUserDto.email,
       password: await bcrypt.hash(
@@ -43,16 +42,12 @@ export class RegistrationService {
       ),
     });
 
-    return {
-      username: newUser.username,
-      createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt,
-    };
+    return true;
   }
 
   async validateConfirmationCode(
     emailConfirmationDto: EmailConfirmationDTO,
-  ): Promise<JustifiedUserDTO> {
+  ): Promise<boolean> {
     await this.redisService.deleteValue(
       `confirmation-code-${emailConfirmationDto.email.split('@')[0]}`,
     );
@@ -64,11 +59,7 @@ export class RegistrationService {
         isVerified: true,
       },
     });
-    return {
-      username: user.username,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+    return true;
   }
 
   async resendConfirmationCode(resendCodeDto: ResendCodeDTO): Promise<boolean> {
