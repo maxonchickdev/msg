@@ -23,6 +23,7 @@ import { HttpExceptionDTO } from 'src/registration/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login.user.dto';
+import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
 
 @ApiTags('authentication')
@@ -37,7 +38,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @ApiBody({ type: LoginUserDTO, description: 'Sign in basic' })
-  @ApiOperation({ summary: 'Login JWT strategy' })
+  @ApiOperation({ summary: 'Local sign in' })
   @ApiOkResponse({
     description: 'Access token is active',
   })
@@ -106,7 +107,7 @@ export class AuthController {
   @Get('google-redirect')
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(200)
-  @ApiOperation({ summary: 'Get user profile' })
+  @ApiOperation({ summary: 'Get jwt token' })
   @ApiOkResponse({
     description: 'Access token is active',
   })
@@ -142,6 +143,65 @@ export class AuthController {
           .get<string>('CLIENT_ORIGIN')
           .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
       );
+    }
+  }
+
+  @Get('github')
+  @UseGuards(GithubAuthGuard)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Sign in with github provider' })
+  @ApiOkResponse({
+    description: 'Login success',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
+  async githubAuth(): Promise<void> {}
+
+  @Get('github-redirect')
+  @UseGuards(GithubAuthGuard)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get jwt token' })
+  @ApiOkResponse({
+    description: 'Access token is active',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
+  async githubAuthRedirect(
+    @ParseRequest() email: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const { accessToken } = await this.authService.githubAuth({ email });
+      return res.cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: false,
+        path: '/',
+        sameSite: 'lax',
+      });
+      // .redirect(
+      //   this.configService
+      //     .get<string>('CLIENT_ORIGIN')
+      //     .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
+      // );
+    } catch (err) {
+      console.log(err);
+      // return res.redirect(
+      //   this.configService
+      //     .get<string>('CLIENT_ORIGIN')
+      //     .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
+      // );
     }
   }
 }

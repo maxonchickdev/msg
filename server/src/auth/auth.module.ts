@@ -5,9 +5,10 @@ import { jwtConstants } from 'src/utils/constants/constants';
 import { UsersModule } from 'src/utils/repositories/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { GoogleStrategy } from './signin-strategies/google.strategy';
-import { JwtStrategy } from './signin-strategies/jwt.strategy';
-import { LocalStrategy } from './signin-strategies/local.strategy';
+import { GithubStrategy } from './signin-strategies/github.signin.strategy';
+import { GoogleStrategy } from './signin-strategies/google.signin.strategy';
+import { JwtStrategy } from './signin-strategies/jwt.signin.strategy';
+import { LocalStrategy } from './signin-strategies/local.sgnin.strategy';
 
 @Module({
   imports: [
@@ -27,6 +28,10 @@ import { LocalStrategy } from './signin-strategies/local.strategy';
     {
       provide: 'GoogleStrategy',
       useClass: GoogleStrategy,
+    },
+    {
+      provide: 'GithubStrategy',
+      useClass: GithubStrategy,
     },
     JwtStrategy,
   ],

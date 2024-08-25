@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { UsersService } from 'src/utils/repositories/users/users.service';
 import { AccessTokenDTO } from '../dto/access.token.dto';
 import { LoginUserDTO } from '../dto/login.user.dto';
@@ -29,7 +29,7 @@ export class GoogleStrategy
   async validate(
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: Profile,
     done: VerifyCallback,
   ): Promise<void> {
     const { _json } = profile;

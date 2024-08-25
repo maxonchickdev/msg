@@ -1,20 +1,20 @@
 "use client";
 
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GoogleIcon from "@mui/icons-material/Google";
+import { Divider } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
+import { SyntheticEvent, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginForm } from "./components/form/index";
 import { ILogin } from "./utils/interfaces/index";
-import { SubmitHandler } from "react-hook-form";
 import { Services } from "./utils/services/index";
-import { useForm } from "react-hook-form";
-import { useState, SyntheticEvent } from "react";
-import Stack from "@mui/material/Stack";
-import GoogleIcon from "@mui/icons-material/Google";
-import Button from "@mui/material/Button";
-import { Divider } from "@mui/material";
-import Box from "@mui/material/Box";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import Link from "@mui/material/Link";
 
 export default function Login() {
   const router = useRouter();
@@ -55,16 +55,32 @@ export default function Login() {
           onClick={() => {
             router.push(
               (process.env.SERVER_ORIGIN as string).concat(
-                process.env.SERVER_GOOGLE_AUTH as string,
-              ),
+                process.env.SERVER_GOOGLE_AUTH as string
+              )
             );
           }}
           fullWidth
-          endIcon={<GoogleIcon color="info" />}
+          endIcon={<GoogleIcon color="success" />}
           variant="outlined"
-          sx={{ margin: "4px 0" }}
+          sx={{ margin: "4px 0", color: "#000" }}
         >
           Login with google
+        </Button>
+        <Button
+          type="submit"
+          onClick={() => {
+            router.push(
+              (process.env.SERVER_ORIGIN as string).concat(
+                process.env.SERVER_GOOGLE_AUTH as string
+              )
+            );
+          }}
+          fullWidth
+          endIcon={<GitHubIcon color="success" />}
+          variant="outlined"
+          sx={{ margin: "4px 0", color: "#000" }}
+        >
+          Login with github
         </Button>
         <Divider sx={{ padding: "10px 0" }}>Or</Divider>
         <LoginForm onSubmitLogin={onSubmitLogin} />
