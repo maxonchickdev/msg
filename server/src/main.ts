@@ -1,5 +1,6 @@
 import { INestApplication, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as basicAuth from 'express-basic-auth';
 import { AppModule } from './app.module';
@@ -16,7 +17,7 @@ async function bootstrap() {
     basicAuth({
       challenge: true,
       users: {
-        maxondev: process.env.SWAGGER_PASSWORD.toString(),
+        admin: process.env.SWAGGER_PASSWORD.toString(),
       },
     }),
   );
@@ -26,6 +27,8 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   });
+
+  app.use(cookieParser());
 
   setup(app);
   await app.listen(8080);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { ResendCodeDTO } from 'src/registration/dto/resend.code.dto';
+import { ResendCodeDTO } from 'src/signup/dto/resend.code.dto';
 import { RedisService } from 'src/utils/redis/redis.service';
 import { UsersService } from 'src/utils/repositories/users/users.service';
 import { v4 as uuidv4 } from 'uuid';

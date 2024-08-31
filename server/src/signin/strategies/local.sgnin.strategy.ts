@@ -5,9 +5,9 @@ import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Strategy } from 'passport-local';
 import { UsersService } from 'src/utils/repositories/users/users.service';
-import { AccessTokenDTO } from '../dto/access.token.dto';
-import { LoginUserDTO } from '../dto/login.user.dto';
 import { PayloadDTO } from '../dto/payload.dto';
+import { LoginUserDTO } from '../dto/signin.user.dto';
+import { TemporaryTokenDTO } from '../dto/temporary.token.dto';
 import { SingInStrategy } from './signin.strategy';
 
 @Injectable()
@@ -43,14 +43,15 @@ export class LocalStrategy
     return user;
   }
 
-  async generateJwt(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
+  async generateTemporaryJwt(
+    loginUserDTO: LoginUserDTO,
+  ): Promise<TemporaryTokenDTO> {
     const user = await this.usersService.findUser({
       email: loginUserDTO.email,
     });
     const payload: PayloadDTO = {
-      id: user.id,
       email: user.email,
     };
-    return { accessToken: await this.jwtService.signAsync(payload) };
+    return { temporaryToken: await this.jwtService.signAsync(payload) };
   }
 }

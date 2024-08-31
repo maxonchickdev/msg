@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/utils/repositories/users/users.service';
 import { UserProfileDTO } from './dto/user.profile.dto';
 
@@ -6,16 +6,11 @@ import { UserProfileDTO } from './dto/user.profile.dto';
 export class ProfileService {
   constructor(private readonly usersService: UsersService) {}
 
-  async getUserProfile(uuid: string): Promise<UserProfileDTO> {
-    const user = await this.usersService.findUser({ id: uuid });
+  async getUserProfile(email: string): Promise<UserProfileDTO> {
+    const user = await this.usersService.findUser({ email: email });
 
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    const { id, password, isVerified, ...publicInfo } = user;
 
-    return {
-      username: user.username,
-      email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+    return publicInfo;
   }
 }

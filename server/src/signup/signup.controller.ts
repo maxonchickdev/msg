@@ -22,11 +22,11 @@ import { HttpExceptionDTO } from './dto/http.exception.dto';
 import { ResendCodeDTO } from './dto/resend.code.dto';
 import { ConfirmationEmailGuard } from './guards/confirmation.email.guard';
 import { ValidationUserGuard } from './guards/validate.new.user.guard';
-import { RegistrationService } from './registration.service';
+import { RegistrationService } from './signup.service';
 
 @ApiTags('registration')
 @Controller('signup')
-export class RegistrationController {
+export class SignupController {
   constructor(private readonly registrationService: RegistrationService) {}
 
   @Post()

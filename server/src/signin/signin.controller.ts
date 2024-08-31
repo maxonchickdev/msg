@@ -18,29 +18,29 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { LocalAuthGuard } from 'src/auth/guards/local.auth.guard';
-import { HttpExceptionDTO } from 'src/registration/dto/http.exception.dto';
+import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
-import { AuthService } from './auth.service';
-import { LoginUserDTO } from './dto/login.user.dto';
+import { LoginUserDTO } from './dto/signin.user.dto';
 import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
+import { LocalSigninGuard } from './guards/local.signin.guard';
+import { SigninService } from './signin.service';
 
 @ApiTags('authentication')
 @Controller('signin')
-export class AuthController {
+export class SigninController {
   constructor(
-    private readonly authService: AuthService,
+    private readonly authService: SigninService,
     private readonly configService: ConfigService,
   ) {}
 
   @Post('basic')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalSigninGuard)
   @HttpCode(200)
   @ApiBody({ type: LoginUserDTO, description: 'Sign in basic' })
   @ApiOperation({ summary: 'Local sign in' })
   @ApiOkResponse({
-    description: 'Access token is active',
+    description: 'Temporary token in cookies',
   })
   @ApiNotFoundResponse({
     description: 'User not found',
@@ -71,15 +71,15 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const { accessToken } = await this.authService.localAuth(loginUserDTO);
+      const { temporaryToken } = await this.authService.localAuth(loginUserDTO);
       return res
-        .cookie('access_token', accessToken, {
+        .cookie('temporary_token', temporaryToken, {
           httpOnly: true,
           secure: false,
           path: '/',
           sameSite: 'lax',
         })
-        .send('Login success');
+        .send(true);
     } catch (err) {
       return res
         .status(err.status)
@@ -124,9 +124,9 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<void> {
     try {
-      const { accessToken } = await this.authService.googleAuth({ email });
+      const { temporaryToken } = await this.authService.googleAuth({ email });
       return res
-        .cookie('access_token', accessToken, {
+        .cookie('temporary_token', temporaryToken, {
           httpOnly: true,
           secure: false,
           path: '/',
@@ -135,7 +135,7 @@ export class AuthController {
         .redirect(
           this.configService
             .get<string>('CLIENT_ORIGIN')
-            .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
+            .concat(this.configService.get<string>('CLIENT_TO_PROFILE')), //
         );
     } catch (err) {
       return res.redirect(
@@ -183,8 +183,8 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const { accessToken } = await this.authService.githubAuth({ email });
-      return res.cookie('access_token', accessToken, {
+      const { temporaryToken } = await this.authService.githubAuth({ email });
+      return res.cookie('temporary_token', temporaryToken, {
         httpOnly: true,
         secure: false,
         path: '/',
@@ -196,7 +196,6 @@ export class AuthController {
       //     .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
       // );
     } catch (err) {
-      console.log(err);
       // return res.redirect(
       //   this.configService
       //     .get<string>('CLIENT_ORIGIN')

@@ -1,9 +1,17 @@
-import { Controller, Get, HttpCode, Res, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
 import { JwtPayloadDTO } from './dto/jwt.payload.dto';
+import { JwtGuard } from './guards/jwt.guard';
 import { ProfileService } from './profile.service';
 
 @ApiTags('profile')
@@ -12,19 +20,25 @@ export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
-  @ApiOperation({ summary: 'Get user profile with' })
-  @ApiResponse({ status: 200, description: 'User profile' })
-  @ApiResponse({ status: 404, description: 'Access token not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Get user profile' })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDTO,
+    example: {
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'User not found',
+    },
+  })
   async getUserProfile(
-    @ParseRequest() user: JwtPayloadDTO,
+    @ParseRequest() payload: JwtPayloadDTO,
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const userProfile = await this.profileService.getUserProfile(user.id);
-      return res.send(userProfile);
+      console.log(payload);
+      const profile = await this.profileService.getUserProfile(payload.email);
+      return res.send(profile);
     } catch (err) {
       return res
         .status(err.status)

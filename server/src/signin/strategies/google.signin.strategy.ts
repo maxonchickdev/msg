@@ -4,9 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { UsersService } from 'src/utils/repositories/users/users.service';
-import { AccessTokenDTO } from '../dto/access.token.dto';
-import { LoginUserDTO } from '../dto/login.user.dto';
 import { PayloadDTO } from '../dto/payload.dto';
+import { LoginUserDTO } from '../dto/signin.user.dto';
+import { TemporaryTokenDTO } from '../dto/temporary.token.dto';
 import { SingInStrategy } from './signin.strategy';
 
 @Injectable()
@@ -37,7 +37,9 @@ export class GoogleStrategy
     done(null, _json.email);
   }
 
-  async generateJwt(loginUserDTO: LoginUserDTO): Promise<AccessTokenDTO> {
+  async generateTemporaryJwt(
+    loginUserDTO: LoginUserDTO,
+  ): Promise<TemporaryTokenDTO> {
     const user = await this.usersService.updateUser({
       where: {
         email: loginUserDTO.email,
@@ -48,9 +50,8 @@ export class GoogleStrategy
     });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     const payload: PayloadDTO = {
-      id: user.id,
       email: user.email,
     };
-    return { accessToken: await this.jwtService.signAsync(payload) };
+    return { temporaryToken: await this.jwtService.signAsync(payload) };
   }
 }

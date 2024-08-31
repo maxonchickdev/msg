@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserDTO } from 'src/registration/dto/create.user.dto';
+import { CreateUserDTO } from 'src/signup/dto/create.user.dto';
 import { UsersService } from 'src/utils/repositories/users/users.service';
 
 @Injectable()
