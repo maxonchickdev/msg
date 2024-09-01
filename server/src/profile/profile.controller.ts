@@ -39,7 +39,9 @@ export class ProfileController {
       const profile = await this.profileService.getUserProfile(payload.email);
       return res.send(profile);
     } catch (err) {
-      return res.json({ status: err.status, message: err.response });
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
     }
   }
 }

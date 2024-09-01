@@ -25,6 +25,7 @@ const nextConfig = {
     CLIENT_REG: process.env.NEXT_PUBLIC_CLIENT_REG,
     CLIENT_CONF: process.env.NEXT_PUBLIC_CLIENT_CONFIRMATION,
     CLIENT_PROFILE: process.env.NEXT_PUBLIC_CLIENT_PROFILE,
+    CLIENT_TWOFA: process.env.NEXT_PUBLIC_CLIENT_TWOFA,
   },
 };
 

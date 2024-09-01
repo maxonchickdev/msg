@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { TwofaCode } from "./utils/interfaces";
@@ -16,6 +17,7 @@ export default function Twofa() {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const router = useRouter();
   const {
     handleSubmit,
     control,
@@ -42,7 +44,13 @@ export default function Twofa() {
     getQR();
   }, []);
   const onSubmitUserInfo: SubmitHandler<TwofaCode> = async (data) => {
-    console.log(data);
+    try {
+      const res = await Services.turnOnTwofa(data);
+      router.push(process.env.CLIENT_PROFILE as string);
+    } catch (err) {
+      setError(err as string);
+      setOpen(true);
+    }
   };
   return (
     <Stack
@@ -61,7 +69,7 @@ export default function Twofa() {
         </h1>
         {qrCodeDataUrl ? (
           <div className="flex justify-center">
-            <Image src={qrCodeDataUrl} width={200} height={200} alt="qr-code" />
+            <Image src={qrCodeDataUrl} width={400} height={400} alt="qr-code" />
           </div>
         ) : (
           <>Loading...</>
@@ -76,7 +84,16 @@ export default function Twofa() {
             }}
             name="code"
             render={({ field: { value, onChange } }) => (
-              <MuiOtpInput onChange={onChange} value={value} length={6} />
+              <MuiOtpInput
+                onChange={onChange}
+                value={value}
+                length={6}
+                sx={{ margin: "10px 0" }}
+                TextFieldsProps={(index) => ({
+                  size: "small",
+                  placeholder: String(index),
+                })}
+              />
             )}
           />
           {errors.code && <p>{errors.code.message}</p>}

@@ -64,7 +64,9 @@ export class SignupController {
       const response = await this.registrationService.signupUser(createUserDto);
       return res.send(response);
     } catch (err) {
-      return res.send({ status: err.status, message: err.response });
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
     }
   }
 
@@ -107,7 +109,9 @@ export class SignupController {
         );
       return res.send(response);
     } catch (err) {
-      return res.send({ status: err.status, message: err.response });
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
     }
   }
 
@@ -136,7 +140,9 @@ export class SignupController {
         await this.registrationService.resendConfirmationCode(resendCodeDto);
       return res.send(response);
     } catch (err) {
-      return res.send({ status: 200, message: 'Internal server error' });
+      return res
+        .status(err.status)
+        .json({ status: 200, message: 'Internal server error' });
     }
   }
 }

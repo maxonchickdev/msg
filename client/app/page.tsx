@@ -24,7 +24,7 @@ export default function Login() {
   const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
     try {
       const { status } = await Services.login(data);
-      router.push(process.env.CLIENT_PROFILE as string);
+      router.push(process.env.CLIENT_TWOFA as string);
       reset();
     } catch (err) {
       setError(err as string);

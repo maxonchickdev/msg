@@ -82,7 +82,9 @@ export class SigninController {
         })
         .send(true);
     } catch (err) {
-      return res.json({ status: err.status, message: err.response });
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
     }
   }
 
