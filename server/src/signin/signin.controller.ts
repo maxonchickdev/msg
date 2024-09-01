@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Post,
   Res,
   UseGuards,
@@ -20,13 +21,13 @@ import {
 import { Response } from 'express';
 import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
-import { LoginUserDTO } from './dto/signin.user.dto';
+import { SigninUserDTO } from './dto/signin.user.dto';
 import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
 import { LocalSigninGuard } from './guards/local.signin.guard';
 import { SigninService } from './signin.service';
 
-@ApiTags('authentication')
+@ApiTags('signin')
 @Controller('signin')
 export class SigninController {
   constructor(
@@ -36,8 +37,8 @@ export class SigninController {
 
   @Post('basic')
   @UseGuards(LocalSigninGuard)
-  @HttpCode(200)
-  @ApiBody({ type: LoginUserDTO, description: 'Sign in basic' })
+  @HttpCode(HttpStatus.OK)
+  @ApiBody({ type: SigninUserDTO, description: 'Sign in basic' })
   @ApiOperation({ summary: 'Local sign in' })
   @ApiOkResponse({
     description: 'Temporary token in cookies',
@@ -46,7 +47,7 @@ export class SigninController {
     description: 'User not found',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 404,
+      statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
@@ -54,7 +55,7 @@ export class SigninController {
     description: 'Mail not confirmed',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 403,
+      statusCode: HttpStatus.FORBIDDEN,
       message: 'Mail not confirmed',
     },
   })
@@ -62,18 +63,18 @@ export class SigninController {
     description: 'Email or password incorrected',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 401,
+      statusCode: HttpStatus.UNAUTHORIZED,
       message: 'Email or password incorrected',
     },
   })
   async localAuth(
-    @Body() loginUserDTO: LoginUserDTO,
+    @Body() loginUserDTO: SigninUserDTO,
     @Res() res: Response,
   ): Promise<Response> {
     try {
       const { temporaryToken } = await this.authService.localAuth(loginUserDTO);
       return res
-        .cookie('temporary_token', temporaryToken, {
+        .cookie('temporaryToken', temporaryToken, {
           httpOnly: true,
           secure: false,
           path: '/',
@@ -81,15 +82,13 @@ export class SigninController {
         })
         .send(true);
     } catch (err) {
-      return res
-        .status(err.status)
-        .json({ status: err.status, message: err.response });
+      return res.json({ status: err.status, message: err.response });
     }
   }
 
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sign in with google provider' })
   @ApiOkResponse({
     description: 'Login success',
@@ -98,7 +97,7 @@ export class SigninController {
     description: 'User not found',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 404,
+      statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
@@ -106,7 +105,7 @@ export class SigninController {
 
   @Get('google-redirect')
   @UseGuards(GoogleOAuthGuard)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get jwt token' })
   @ApiOkResponse({
     description: 'Access token is active',
@@ -115,7 +114,7 @@ export class SigninController {
     description: 'User not found',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 404,
+      statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
@@ -126,7 +125,7 @@ export class SigninController {
     try {
       const { temporaryToken } = await this.authService.googleAuth({ email });
       return res
-        .cookie('temporary_token', temporaryToken, {
+        .cookie('temporaryToken', temporaryToken, {
           httpOnly: true,
           secure: false,
           path: '/',
@@ -148,7 +147,7 @@ export class SigninController {
 
   @Get('github')
   @UseGuards(GithubAuthGuard)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sign in with github provider' })
   @ApiOkResponse({
     description: 'Login success',
@@ -157,7 +156,7 @@ export class SigninController {
     description: 'User not found',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 404,
+      statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
@@ -165,7 +164,7 @@ export class SigninController {
 
   @Get('github-redirect')
   @UseGuards(GithubAuthGuard)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get jwt token' })
   @ApiOkResponse({
     description: 'Access token is active',
@@ -174,7 +173,7 @@ export class SigninController {
     description: 'User not found',
     type: HttpExceptionDTO,
     example: {
-      statusCode: 404,
+      statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
@@ -184,7 +183,7 @@ export class SigninController {
   ): Promise<Response> {
     try {
       const { temporaryToken } = await this.authService.githubAuth({ email });
-      return res.cookie('temporary_token', temporaryToken, {
+      return res.cookie('temporaryToken', temporaryToken, {
         httpOnly: true,
         secure: false,
         path: '/',

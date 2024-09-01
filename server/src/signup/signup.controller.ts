@@ -24,7 +24,7 @@ import { ConfirmationEmailGuard } from './guards/confirmation.email.guard';
 import { ValidationUserGuard } from './guards/validate.new.user.guard';
 import { RegistrationService } from './signup.service';
 
-@ApiTags('registration')
+@ApiTags('signup')
 @Controller('signup')
 export class SignupController {
   constructor(private readonly registrationService: RegistrationService) {}
@@ -64,9 +64,7 @@ export class SignupController {
       const response = await this.registrationService.signupUser(createUserDto);
       return res.send(response);
     } catch (err) {
-      return res
-        .status(err.status)
-        .send({ status: err.status, message: err.response });
+      return res.send({ status: err.status, message: err.response });
     }
   }
 
@@ -109,9 +107,7 @@ export class SignupController {
         );
       return res.send(response);
     } catch (err) {
-      return res
-        .status(err.status)
-        .send({ status: err.status, message: err.response });
+      return res.send({ status: err.status, message: err.response });
     }
   }
 

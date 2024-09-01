@@ -10,7 +10,7 @@ export class MailService {
     try {
       await this.mailService.sendMail({
         to: mailDto.to,
-        from: 'messanger@gmail.com',
+        from: 'msg@gmail.com',
         subject: mailDto.subject,
         html: `<p>${mailDto.text}: <strong>${mailDto.value}</strong></p>`,
       });

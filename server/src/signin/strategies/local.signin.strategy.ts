@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { Strategy } from 'passport-local';
 import { UsersService } from 'src/utils/repositories/users/users.service';
 import { PayloadDTO } from '../dto/payload.dto';
-import { LoginUserDTO } from '../dto/signin.user.dto';
+import { SigninUserDTO } from '../dto/signin.user.dto';
 import { TemporaryTokenDTO } from '../dto/temporary.token.dto';
 import { SingInStrategy } from './signin.strategy';
 
@@ -44,7 +44,7 @@ export class LocalStrategy
   }
 
   async generateTemporaryJwt(
-    loginUserDTO: LoginUserDTO,
+    loginUserDTO: SigninUserDTO,
   ): Promise<TemporaryTokenDTO> {
     const user = await this.usersService.findUser({
       email: loginUserDTO.email,

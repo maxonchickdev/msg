@@ -7,7 +7,7 @@ export class TwoFactorAuthenticationCodeDTO {
     name: 'code',
     required: true,
     example: '111111',
-    description: 'The two-fa code',
+    description: 'The twofa code',
   })
   @IsNotEmpty()
   twoFactorAuthenticationCode: string;

@@ -1,20 +1,31 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { authenticator } from 'otplib';
 import { toFileStream } from 'qrcode';
 import { PayloadDTO } from 'src/signin/dto/payload.dto';
 import { UsersService } from 'src/utils/repositories/users/users.service';
+import { AccessTokenDTO } from './dto/access.token.dto';
 
 @Injectable()
 export class TwofaService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async generateTwoFactorAuthenticationSecret(
     payload: PayloadDTO,
   ): Promise<string> {
     const secret = authenticator.generateSecret();
 
-    const otpauthUrl = authenticator.keyuri(payload.email, 'APP', secret);
+    const otpauthUrl = authenticator.keyuri(
+      payload.email,
+      this.configService.get<string>('GOOGLE_AUTHENTICATOR_APP_NAME'),
+      secret,
+    );
 
     await this.usersService.updateUser({
       where: {
@@ -44,15 +55,13 @@ export class TwofaService {
     if (!isCodeValid)
       throw new HttpException('Wrong authentication code', HttpStatus.CONFLICT);
 
-    await this.usersService.updateUser({
-      where: {
-        email: payload.email,
-      },
-      data: {
-        isTwoFactorAuthenticationEnabled: true,
-      },
-    });
-
     return true;
+  }
+
+  async generateAccessToken(email: string): Promise<AccessTokenDTO> {
+    const payload: PayloadDTO = {
+      email: email,
+    };
+    return { accessToken: await this.jwtService.signAsync(payload) };
   }
 }

@@ -4,7 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as basicAuth from 'express-basic-auth';
 import { AppModule } from './app.module';
-import { setup } from './utils/config/setup';
+import { setup } from './utils/config/swagger.config';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 

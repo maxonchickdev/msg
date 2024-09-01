@@ -1,39 +1,30 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { jwtConstants } from 'src/utils/constants/constants';
 import { UsersModule } from 'src/utils/repositories/users/users.module';
 import { SigninController } from './signin.controller';
 import { SigninService } from './signin.service';
 import { GithubStrategy } from './strategies/github.signin.strategy';
 import { GoogleStrategy } from './strategies/google.signin.strategy';
-import { LocalStrategy } from './strategies/local.sgnin.strategy';
+import { LocalStrategy } from './strategies/local.signin.strategy';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.register({
-      secret: jwtConstants.secretOrKey,
-      signOptions: { expiresIn: 5 * 60 },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: parseInt(configService.get<string>('JWT_EXPIRES_IN'), 10),
+        },
+      }),
+      inject: [ConfigService],
     }),
-    UsersModule,
   ],
-  providers: [
-    SigninService,
-    {
-      provide: 'LocalStrategy',
-      useClass: LocalStrategy,
-    },
-    {
-      provide: 'GoogleStrategy',
-      useClass: GoogleStrategy,
-    },
-    {
-      provide: 'GithubStrategy',
-      useClass: GithubStrategy,
-    },
-  ],
+  providers: [SigninService, LocalStrategy, GoogleStrategy, GithubStrategy],
   controllers: [SigninController],
 })
 export class SigninModule {}

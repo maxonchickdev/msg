@@ -2,10 +2,12 @@ import {
   Body,
   Controller,
   HttpCode,
+  HttpStatus,
   Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PayloadDTO } from 'src/signin/dto/payload.dto';
 import { ParseRequest } from 'src/utils/decorators/parse.request.decorator';
@@ -13,12 +15,13 @@ import { TwoFactorAuthenticationCodeDTO } from './dto/two.factor.authentication.
 import { JwtTemporaryGuard } from './guards/jwt.temporary.guard';
 import { TwofaService } from './twofa.service';
 
+@ApiTags('twofa')
 @Controller('twofa')
 export class TwofaController {
   constructor(private readonly twofaService: TwofaService) {}
 
   @Post('generate-qr')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTemporaryGuard)
   async generateQr(@Res() res: Response, @ParseRequest() payload: PayloadDTO) {
     const otpauthUrl =
@@ -30,7 +33,7 @@ export class TwofaController {
   }
 
   @Post('turn-on')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTemporaryGuard)
   async turnOnTwoFactorAuthentication(
     @ParseRequest() payload: PayloadDTO,
@@ -42,11 +45,25 @@ export class TwofaController {
         twoFactorAuthenticationCodeDTO.twoFactorAuthenticationCode,
         payload,
       );
-      return res.send('Two fa success');
-    } catch (err) {
+      const { accessToken } = await this.twofaService.generateAccessToken(
+        payload.email,
+      );
       return res
-        .status(err.status)
-        .json({ status: err.status, message: err.response });
+        .cookie('acccessToken', accessToken, {
+          httpOnly: true,
+          secure: false,
+          path: '/',
+          sameSite: 'lax',
+        })
+        .clearCookie('temporaryToken', {
+          httpOnly: true,
+          secure: false,
+          path: '/',
+          sameSite: 'lax',
+        })
+        .send(true);
+    } catch (err) {
+      return res.json({ status: err.status, message: err.response });
     }
   }
 }
