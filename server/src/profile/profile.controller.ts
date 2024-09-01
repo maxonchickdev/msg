@@ -36,7 +36,6 @@ export class ProfileController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      console.log(payload);
       const profile = await this.profileService.getUserProfile(payload.email);
       return res.send(profile);
     } catch (err) {

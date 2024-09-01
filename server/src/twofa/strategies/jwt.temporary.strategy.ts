@@ -15,7 +15,7 @@ export class JwtTemporaryStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          return req.cookies.temporary_token;
+          return req.cookies.temporaryToken;
         },
       ]),
       ignoreExpiration: false,

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -20,16 +21,14 @@ import { TwofaService } from './twofa.service';
 export class TwofaController {
   constructor(private readonly twofaService: TwofaService) {}
 
-  @Post('generate-qr')
+  @Get('generate-qr')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTemporaryGuard)
   async generateQr(@Res() res: Response, @ParseRequest() payload: PayloadDTO) {
     const otpauthUrl =
       await this.twofaService.generateTwoFactorAuthenticationSecret(payload);
 
-    res.setHeader('Content-Type', 'image/png');
-
-    return this.twofaService.pipeQrCodeStream(res, otpauthUrl);
+    return res.send(await this.twofaService.pipeQrCode(otpauthUrl));
   }
 
   @Post('turn-on')

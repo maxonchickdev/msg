@@ -1,20 +1,18 @@
 import axios, { AxiosError } from "axios";
-import { ILogin } from "../interfaces/index";
 
 export const Services = {
-  login: async (loginUser: ILogin): Promise<{ status: number }> => {
+  qr: async (): Promise<string> => {
     try {
       const res = await axios({
-        url: process.env.SERVER_BASIC_SIGNIN,
-        method: "post",
+        url: process.env.SERVER_QR,
+        method: "get",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },
-        data: loginUser,
         withCredentials: true,
       });
-      return { status: res.status };
+      return res.data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         throw new Error(err.response.data.message).message;

@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
 import { authenticator } from 'otplib';
-import { toFileStream } from 'qrcode';
+import { toDataURL } from 'qrcode';
 import { PayloadDTO } from 'src/signin/dto/payload.dto';
 import { UsersService } from 'src/utils/repositories/users/users.service';
 import { AccessTokenDTO } from './dto/access.token.dto';
@@ -38,8 +37,8 @@ export class TwofaService {
     return otpauthUrl;
   }
 
-  async pipeQrCodeStream(stream: Response, otpauthUrl: string): Promise<void> {
-    return toFileStream(stream, otpauthUrl);
+  async pipeQrCode(otpauthUrl: string): Promise<string> {
+    return toDataURL(otpauthUrl);
   }
 
   async isTwoFactorAuthenticationCodeValid(

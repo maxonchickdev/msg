@@ -1,0 +1,121 @@
+"use client";
+
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Snackbar } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import { MuiOtpInput } from "mui-one-time-password-input";
+import Image from "next/image";
+import { SyntheticEvent, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { TwofaCode } from "./utils/interfaces";
+import { Services } from "./utils/services";
+
+export default function Twofa() {
+  const [otp, setOtp] = useState<string>("");
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<TwofaCode>({
+    mode: "onChange",
+  });
+  const handleClose = (event?: SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+  const getQR = async () => {
+    try {
+      const data = await Services.qr();
+      setQrCodeDataUrl(data);
+    } catch (err) {
+      setError(err as string);
+      setOpen(true);
+    }
+  };
+  useEffect(() => {
+    getQR();
+  }, []);
+  const onSubmitUserInfo = async () => {
+    // const res = await
+  };
+  return (
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        width: 1,
+        height: "100vh",
+      }}
+    >
+      <div className="max-w-[700px] w-full">
+        <h1 className="font-bold text-2xl text-center pb-2">
+          2FA authentication to{" "}
+          <span className="text-green-700">MESSANGER</span>
+        </h1>
+        {qrCodeDataUrl ? (
+          <div className="flex justify-center">
+            <Image src={qrCodeDataUrl} width={200} height={200} alt="qr-code" />
+          </div>
+        ) : (
+          <>Loading...</>
+        )}
+        <form onSubmit={handleSubmit(onSubmitUserInfo)}>
+          <Controller
+            control={control}
+            rules={{
+              required: "Code is required",
+            }}
+            name="code"
+            render={({ field: { value, onChange } }) => (
+              <TextField
+                id="outlined-password-input"
+                label="Code"
+                type="text"
+                defaultValue={value}
+                onChange={onChange}
+                sx={{ margin: "4px 0" }}
+                fullWidth
+                size="small"
+              />
+            )}
+          />
+          {errors.code && <p>{errors.code.message}</p>}
+          <Button
+            type="submit"
+            fullWidth
+            variant="outlined"
+            endIcon={<KeyboardArrowUpIcon color="info" />}
+          >
+            Submit
+          </Button>
+          <MuiOtpInput
+            value={otp}
+            onChange={(newValue) => setOtp(newValue)}
+            length={6}
+          />
+        </form>
+        {error ? (
+          <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {error}
+            </Alert>
+          </Snackbar>
+        ) : null}
+      </div>
+    </Stack>
+  );
+}
