@@ -5,16 +5,14 @@ import { Snackbar } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import Image from "next/image";
 import { SyntheticEvent, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { TwofaCode } from "./utils/interfaces";
 import { Services } from "./utils/services";
 
 export default function Twofa() {
-  const [otp, setOtp] = useState<string>("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -43,8 +41,8 @@ export default function Twofa() {
   useEffect(() => {
     getQR();
   }, []);
-  const onSubmitUserInfo = async () => {
-    // const res = await
+  const onSubmitUserInfo: SubmitHandler<TwofaCode> = async (data) => {
+    console.log(data);
   };
   return (
     <Stack
@@ -73,19 +71,12 @@ export default function Twofa() {
             control={control}
             rules={{
               required: "Code is required",
+              validate: (value) =>
+                value.length === 6 || "Code must be 6 digits",
             }}
             name="code"
             render={({ field: { value, onChange } }) => (
-              <TextField
-                id="outlined-password-input"
-                label="Code"
-                type="text"
-                defaultValue={value}
-                onChange={onChange}
-                sx={{ margin: "4px 0" }}
-                fullWidth
-                size="small"
-              />
+              <MuiOtpInput onChange={onChange} value={value} length={6} />
             )}
           />
           {errors.code && <p>{errors.code.message}</p>}
@@ -97,11 +88,6 @@ export default function Twofa() {
           >
             Submit
           </Button>
-          <MuiOtpInput
-            value={otp}
-            onChange={(newValue) => setOtp(newValue)}
-            length={6}
-          />
         </form>
         {error ? (
           <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
