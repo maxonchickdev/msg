@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import * as dotenv from 'dotenv';
 import { UsersModule } from 'src/utils/repositories/users/users.module';
 import { SigninController } from './signin.controller';
 import { SigninService } from './signin.service';
@@ -9,22 +9,21 @@ import { GithubStrategy } from './strategies/github.signin.strategy';
 import { GoogleStrategy } from './strategies/google.signin.strategy';
 import { LocalStrategy } from './strategies/local.signin.strategy';
 
+dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+
 @Module({
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: parseInt(configService.get<string>('JWT_EXPIRES_IN'), 10),
-        },
-      }),
-      inject: [ConfigService],
+    JwtModule.register({
+      secret: process.env.JWT_SECRET.toString(),
+      signOptions: {
+        expiresIn: '1d',
+        // expiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10).toString() + 's',
+      },
     }),
   ],
-  providers: [SigninService, LocalStrategy, GoogleStrategy, GithubStrategy],
   controllers: [SigninController],
+  providers: [SigninService, LocalStrategy, GoogleStrategy, GithubStrategy],
 })
 export class SigninModule {}

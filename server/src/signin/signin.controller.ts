@@ -18,6 +18,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import * as dotenv from 'dotenv';
 import { Response } from 'express';
 import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
@@ -26,6 +27,8 @@ import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
 import { LocalSigninGuard } from './guards/local.signin.guard';
 import { SigninService } from './signin.service';
+
+dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @ApiTags('signin')
 @Controller('signin')
@@ -79,6 +82,7 @@ export class SigninController {
           secure: false,
           path: '/',
           sameSite: 'lax',
+          expires: new Date(Date.now() + 900000),
         })
         .send(true);
     } catch (err) {

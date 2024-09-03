@@ -1,3 +1,4 @@
+import { Err } from "@/app/2fa/components/err";
 import {
   IRegistrate,
   RegistrationFormProps,
@@ -39,7 +40,7 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
           />
         )}
       />
-      {errors.username && <p>{errors.username.message}</p>}
+      {errors.username && <Err msg={errors.username.message!} />}
       <Controller
         control={control}
         rules={{
@@ -59,7 +60,7 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
           />
         )}
       />
-      {errors.email && <p>{errors.email.message}</p>}
+      {errors.email && <Err msg={errors.email.message!} />}
       <Controller
         control={control}
         rules={{
@@ -98,7 +99,7 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({
           />
         )}
       />
-      {errors.password && <p>{errors.password.message}</p>}
+      {errors.password && <Err msg={errors.password.message!} />}
       <Button
         type="submit"
         fullWidth

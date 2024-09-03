@@ -1,3 +1,4 @@
+import { Err } from "@/app/2fa/components/err";
 import { ILogin, LoginFormProps } from "@/app/utils/interfaces/index";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "@mui/material/Button";
@@ -30,7 +31,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
           />
         )}
       />
-      {errors.email && <p>{errors.email.message}</p>}
+      {errors.email && <Err msg={errors.email.message!} />}
       <Controller
         control={control}
         rules={{
@@ -50,7 +51,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmitLogin }) => {
           />
         )}
       />
-      {errors.password && <p>{errors.password.message}</p>}
+      {errors.password && <Err msg={errors.password.message!} />}
       <Button
         type="submit"
         fullWidth

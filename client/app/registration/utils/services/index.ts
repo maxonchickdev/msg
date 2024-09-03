@@ -3,11 +3,11 @@ import { IRegistrate } from "../interfaces/index";
 
 export const Services = {
   registrate: async (
-    registrateUser: IRegistrate,
+    registrateUser: IRegistrate
   ): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.SERVER_BASIC_REG,
+        url: process.env.SERVER_BASIC_SIGNUP,
         method: "post",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {

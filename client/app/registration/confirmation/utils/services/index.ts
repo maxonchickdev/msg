@@ -3,11 +3,11 @@ import { IConfirmation, IResendConfirmationCode } from "../interfaces/index";
 
 export const Services = {
   confirm: async (
-    confirmationData: IConfirmation,
+    confirmationData: IConfirmation
   ): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.SERVER_BASIC_REG_CONFIRM,
+        url: process.env.SERVER_BASIC_SIGNUP_CONFIRM,
         method: "post",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {
@@ -25,11 +25,11 @@ export const Services = {
   },
 
   resendConfirmationCode: async (
-    resendConfirmationCode: IResendConfirmationCode,
+    resendConfirmationCode: IResendConfirmationCode
   ): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.SERVER_RESEND,
+        url: process.env.SERVER_BASIC_SIGNUP_RESEND,
         method: "post",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {

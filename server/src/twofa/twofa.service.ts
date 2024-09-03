@@ -51,11 +51,6 @@ export class TwofaService {
       secret: user.twoFactorAuthenticationSecret,
     });
 
-    console.log(
-      twoFactorAuthenticationCode,
-      user.twoFactorAuthenticationSecret,
-    );
-
     if (!isCodeValid)
       throw new HttpException('Wrong authentication code', HttpStatus.CONFLICT);
 

@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { PayloadDTO } from 'src/signin/dto/payload.dto';
 import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
 import { ParseRequest } from '../utils/decorators/parse.request.decorator';
-import { JwtPayloadDTO } from './dto/jwt.payload.dto';
 import { JwtGuard } from './guards/jwt.guard';
 import { ProfileService } from './profile.service';
 
@@ -32,7 +32,7 @@ export class ProfileController {
     },
   })
   async getUserProfile(
-    @ParseRequest() payload: JwtPayloadDTO,
+    @ParseRequest() payload: PayloadDTO,
     @Res() res: Response,
   ): Promise<Response> {
     try {

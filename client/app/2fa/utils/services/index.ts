@@ -6,7 +6,7 @@ export const Services = {
     try {
       const res = await axios({
         url: process.env.SERVER_QR,
-        method: "get",
+        method: "post",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
@@ -31,6 +31,7 @@ export const Services = {
         headers: {
           "Content-Type": "application/json",
         },
+        data: code,
         withCredentials: true,
       });
       return res.data;
