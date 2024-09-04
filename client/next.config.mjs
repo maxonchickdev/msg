@@ -7,6 +7,10 @@ const nextConfig = {
   output: "standalone",
   distDir: "dist",
   transpilePackages: ["mui-one-time-password-input"],
+  images: {
+    domains: ["msg-bucket.s3.eu-north-1.amazonaws.com"],
+    formats: ["image/webp", "image/avif"],
+  },
   env: {
     LS_HASH_KEY: process.env.NEXT_PUBLIC_SECURE_LOCAL_STORAGE_HASH_KEY,
     LS_PREFIX: process.env.NEXT_PUBLIC_SECURE_LOCAL_STORAGE_PREFIX,
@@ -26,6 +30,7 @@ const nextConfig = {
     CLIENT_CONF: process.env.NEXT_PUBLIC_CLIENT_CONFIRMATION,
     CLIENT_PROFILE: process.env.NEXT_PUBLIC_CLIENT_PROFILE,
     CLIENT_TWOFA: process.env.NEXT_PUBLIC_CLIENT_TWOFA,
+    SERVER_UPLOAD_AVATAR: process.env.NEST_PUBLIC_SERVER_UPLOAD_AVATAR,
   },
 };
 

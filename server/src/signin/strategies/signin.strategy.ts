@@ -1,6 +1,6 @@
-import { SigninUserDTO } from '../dto/signin.user.dto';
-import { TemporaryTokenDTO } from '../dto/temporary.token.dto';
+import { SigninUserDto } from '../dto/signin.user.dto';
+import { TemporaryTokenDto } from '../dto/temporary.token.dto';
 
 export interface SingInStrategy {
-  generateTemporaryJwt(loginUserDTO: SigninUserDTO): Promise<TemporaryTokenDTO>;
+  generateTemporaryJwt(loginUserDTO: SigninUserDto): Promise<TemporaryTokenDto>;
 }

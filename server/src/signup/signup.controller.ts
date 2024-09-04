@@ -16,10 +16,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { CreateUserDTO } from './dto/create.user.dto';
-import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
-import { HttpExceptionDTO } from './dto/http.exception.dto';
-import { ResendCodeDTO } from './dto/resend.code.dto';
+import { CreateUserDto } from './dto/create.user.dto';
+import { EmailConfirmationDto } from './dto/email.confirmation.dto';
+import { HttpExceptionDto } from './dto/http.exception.dto';
+import { ResendCodeDto } from './dto/resend.code.dto';
 import { ConfirmationEmailGuard } from './guards/confirmation.email.guard';
 import { ValidationUserGuard } from './guards/validate.new.user.guard';
 import { RegistrationService } from './signup.service';
@@ -33,7 +33,7 @@ export class SignupController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(ValidationUserGuard)
   @ApiBody({
-    type: CreateUserDTO,
+    type: CreateUserDto,
     description: 'Create new user',
   })
   @ApiOperation({ summary: 'Create new user' })
@@ -42,7 +42,7 @@ export class SignupController {
   })
   @ApiConflictResponse({
     description: 'User with the same username or email exists',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.CONFLICT,
       message: 'User with the same username or email exists',
@@ -50,14 +50,14 @@ export class SignupController {
   })
   @ApiNotFoundResponse({
     description: 'Incorrect email',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'Incorrect email',
     },
   })
   async signupUser(
-    @Body() createUserDto: CreateUserDTO,
+    @Body() createUserDto: CreateUserDto,
     @Res() res: Response,
   ): Promise<Response> {
     try {
@@ -74,7 +74,7 @@ export class SignupController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(ConfirmationEmailGuard)
   @ApiBody({
-    type: EmailConfirmationDTO,
+    type: EmailConfirmationDto,
     description: 'Validate confirmation code',
   })
   @ApiOperation({ summary: 'Validate confirmation code' })
@@ -83,7 +83,7 @@ export class SignupController {
   })
   @ApiNotFoundResponse({
     description: 'User does not exists',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'User does not exists',
@@ -91,7 +91,7 @@ export class SignupController {
   })
   @ApiConflictResponse({
     description: 'Invalid code',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.CONFLICT,
       message: 'Invalid code',
@@ -99,7 +99,7 @@ export class SignupController {
   })
   async validateConfirmationCode(
     @Body()
-    emailConfirmationDto: EmailConfirmationDTO,
+    emailConfirmationDto: EmailConfirmationDto,
     @Res() res: Response,
   ): Promise<Response> {
     try {
@@ -117,14 +117,14 @@ export class SignupController {
 
   @Post('resend-confirmation-code')
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: ResendCodeDTO, description: 'Resend confirmation code' })
+  @ApiBody({ type: ResendCodeDto, description: 'Resend confirmation code' })
   @ApiOperation({ summary: 'Resend confirmation code' })
   @ApiOkResponse({
     description: 'Confirmation code resended successfully',
   })
   @ApiNotFoundResponse({
     description: 'Incorrect email',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'Incorrect email',
@@ -132,7 +132,7 @@ export class SignupController {
   })
   async resendConfirmationCode(
     @Body()
-    resendCodeDto: ResendCodeDTO,
+    resendCodeDto: ResendCodeDto,
     @Res() res: Response,
   ): Promise<Response> {
     try {

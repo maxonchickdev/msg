@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { RedisService } from 'src/utils/redis/redis.service';
 import { UserService } from 'src/utils/repositories/user/user.service';
-import { EmailConfirmationDTO } from '../dto/email.confirmation.dto';
+import { EmailConfirmationDto } from '../dto/email.confirmation.dto';
 
 @Injectable()
 export class ConfirmationEmailGuard implements CanActivate {
@@ -19,12 +19,12 @@ export class ConfirmationEmailGuard implements CanActivate {
   canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { body: EmailConfirmationDTO }>();
+      .getRequest<Request & { body: EmailConfirmationDto }>();
     return this.validateEmail(request.body);
   }
 
   async validateEmail(
-    emailConfirmationDto: EmailConfirmationDTO,
+    emailConfirmationDto: EmailConfirmationDto,
   ): Promise<boolean> {
     const user = await this.usersSerice.findUser({
       email: emailConfirmationDto.email,

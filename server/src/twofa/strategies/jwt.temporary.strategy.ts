@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PayloadDTO } from 'src/signin/dto/payload.dto';
+import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
@@ -27,7 +27,7 @@ export class JwtTemporaryStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payloadDto: PayloadDTO): Promise<PayloadDTO> {
+  async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
     const user = await this.usersService.findUser({ email: payloadDto.email });
     3;
     if (!user) {

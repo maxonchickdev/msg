@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class EmailConfirmationDTO {
+export class EmailConfirmationDto {
   @ApiProperty({
     type: 'string',
     name: 'email',

@@ -8,7 +8,6 @@ import mailerConfig from './utils/config/mailer.config';
 import { MailModule } from './utils/mail/mail.module';
 import { PrismaModule } from './utils/prisma/prisma.module';
 import { RedisModule } from './utils/redis/redis.module';
-import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -24,7 +23,6 @@ import { FileModule } from './file/file.module';
     TwofaModule,
     ProfileModule,
     PrismaModule,
-    FileModule,
   ],
 })
 export class AppModule {}

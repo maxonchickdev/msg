@@ -1,3 +1,3 @@
-export class PayloadDTO {
+export class PayloadDto {
   email: string;
 }

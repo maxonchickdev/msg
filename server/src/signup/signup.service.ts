@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { ResendCodeDTO } from 'src/signup/dto/resend.code.dto';
+import { ResendCodeDto } from 'src/signup/dto/resend.code.dto';
 import { RedisService } from 'src/utils/redis/redis.service';
 import { UserService } from 'src/utils/repositories/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../utils/mail/mail.service';
-import { CreateUserDTO } from './dto/create.user.dto';
-import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
+import { CreateUserDto } from './dto/create.user.dto';
+import { EmailConfirmationDto } from './dto/email.confirmation.dto';
 
 @Injectable()
 export class RegistrationService {
@@ -18,7 +18,7 @@ export class RegistrationService {
     private readonly configService: ConfigService,
   ) {}
 
-  async signupUser(createUserDto: CreateUserDTO): Promise<boolean> {
+  async signupUser(createUserDto: CreateUserDto): Promise<boolean> {
     const confirmationCode = uuidv4();
 
     await this.mailService.sendMail({
@@ -46,7 +46,7 @@ export class RegistrationService {
   }
 
   async validateConfirmationCode(
-    emailConfirmationDto: EmailConfirmationDTO,
+    emailConfirmationDto: EmailConfirmationDto,
   ): Promise<boolean> {
     await this.redisService.deleteValue(
       `confirmation-code-${emailConfirmationDto.email.split('@')[0]}`,
@@ -62,7 +62,7 @@ export class RegistrationService {
     return true;
   }
 
-  async resendConfirmationCode(resendCodeDto: ResendCodeDTO): Promise<boolean> {
+  async resendConfirmationCode(resendCodeDto: ResendCodeDto): Promise<boolean> {
     await this.redisService.deleteValue(
       `confirmation-code-${resendCodeDto.email.split('@')[0]}`,
     );

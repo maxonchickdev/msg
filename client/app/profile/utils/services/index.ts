@@ -21,4 +21,26 @@ export const Services = {
       throw new Error("Internal server error").message;
     }
   },
+
+  uploadAvatar: async (formData: FormData): Promise<any> => {
+    try {
+      const res = await axios({
+        url: process.env.SERVER_UPLOAD_AVATAR,
+        method: "post",
+        baseURL: process.env.SERVER_ORIGIN,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+        data: formData,
+      });
+      console.log(res.data);
+      return res.data;
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        throw new Error(err.response.data.message).message;
+      }
+      throw new Error("Internal server error").message;
+    }
+  },
 };

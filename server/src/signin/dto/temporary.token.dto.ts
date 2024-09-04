@@ -1,3 +1,3 @@
-export class TemporaryTokenDTO {
+export class TemporaryTokenDto {
   temporaryToken: string;
 }

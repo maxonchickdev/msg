@@ -23,11 +23,11 @@ model User {
   isVerified                       Boolean  @default(false)
   twoFactorAuthenticationSecret    String   @default("") @db.VarChar(255)
   isTwoFactorAuthenticationEnabled Boolean  @default(false)
-  profileImage                     Image?   @relation(fields: [profileImageId], references: [id])
-  profileImageId                   Int?     @unique
+  profileImage                     Avatar?  @relation(fields: [avatarId], references: [id])
+  avatarId                         Int?     @unique
 }
 
-model Image {
+model Avatar {
   id   Int    @id @default(autoincrement())
   url  String @unique @db.VarChar(255)
   key  String @unique @db.VarChar(255)

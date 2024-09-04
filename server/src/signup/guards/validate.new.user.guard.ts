@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserDTO } from 'src/signup/dto/create.user.dto';
+import { CreateUserDto } from 'src/signup/dto/create.user.dto';
 import { UserService } from 'src/utils/repositories/user/user.service';
 
 @Injectable()
@@ -15,11 +15,11 @@ export class ValidationUserGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { body: CreateUserDTO }>();
+      .getRequest<Request & { body: CreateUserDto }>();
     return this.validateUser(request.body);
   }
 
-  async validateUser(createUserDto: CreateUserDTO): Promise<boolean> {
+  async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
     const isSameUsername = await this.usersSerice.findUser({
       username: createUserDto.username,
     });

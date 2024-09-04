@@ -21,9 +21,9 @@ import {
 } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import { Request, Response } from 'express';
-import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
-import { PayloadDTO } from './dto/payload.dto';
-import { SigninUserDTO } from './dto/signin.user.dto';
+import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
+import { PayloadDto } from './dto/payload.dto';
+import { SigninUserDto } from './dto/signin.user.dto';
 import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
 import { LocalSigninGuard } from './guards/local.signin.guard';
@@ -42,14 +42,14 @@ export class SigninController {
   @Post('basic')
   @UseGuards(LocalSigninGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: SigninUserDTO, description: 'Sign in basic' })
+  @ApiBody({ type: SigninUserDto, description: 'Sign in basic' })
   @ApiOperation({ summary: 'Local sign in' })
   @ApiOkResponse({
     description: 'Temporary token in cookies',
   })
   @ApiNotFoundResponse({
     description: 'User not found',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
@@ -57,7 +57,7 @@ export class SigninController {
   })
   @ApiForbiddenResponse({
     description: 'Mail not confirmed',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.FORBIDDEN,
       message: 'Mail not confirmed',
@@ -65,14 +65,14 @@ export class SigninController {
   })
   @ApiUnauthorizedResponse({
     description: 'Email or password incorrected',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.UNAUTHORIZED,
       message: 'Email or password incorrected',
     },
   })
   async localAuth(
-    @Body() loginUserDTO: SigninUserDTO,
+    @Body() loginUserDTO: SigninUserDto,
     @Res() res: Response,
   ): Promise<Response> {
     try {
@@ -102,7 +102,7 @@ export class SigninController {
   })
   @ApiNotFoundResponse({
     description: 'User not found',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
@@ -119,14 +119,14 @@ export class SigninController {
   })
   @ApiNotFoundResponse({
     description: 'User not found',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
   async googleAuthRedirect(
-    @Req() req: Request & { user: PayloadDTO },
+    @Req() req: Request & { user: PayloadDto },
     @Res() res: Response,
   ): Promise<void> {
     try {
@@ -162,7 +162,7 @@ export class SigninController {
   })
   @ApiNotFoundResponse({
     description: 'User not found',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
@@ -179,14 +179,14 @@ export class SigninController {
   })
   @ApiNotFoundResponse({
     description: 'User not found',
-    type: HttpExceptionDTO,
+    type: HttpExceptionDto,
     example: {
       statusCode: HttpStatus.NOT_FOUND,
       message: 'User not found',
     },
   })
   async githubAuthRedirect(
-    @Req() req: Request & { user: PayloadDTO },
+    @Req() req: Request & { user: PayloadDto },
     @Res() res: Response,
   ): Promise<Response> {
     try {

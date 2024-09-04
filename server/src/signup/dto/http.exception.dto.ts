@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class HttpExceptionDTO {
+export class HttpExceptionDto {
   @ApiProperty({
     type: 'string',
     name: 'statusCode',

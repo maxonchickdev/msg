@@ -3,3 +3,7 @@ export interface IProfile {
   email: string;
   createdAt: Date;
 }
+
+export interface IAvatar {
+  avatar: string;
+}
