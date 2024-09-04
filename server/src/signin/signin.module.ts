@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
-import { UsersModule } from 'src/utils/repositories/users/users.module';
+import { UserModule } from 'src/utils/repositories/user/user.module';
 import { SigninController } from './signin.controller';
 import { SigninService } from './signin.service';
 import { GithubStrategy } from './strategies/github.signin.strategy';
@@ -13,7 +13,7 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Module({
   imports: [
-    UsersModule,
+    UserModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET.toString(),

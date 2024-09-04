@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-github';
 import { VerifyCallback } from 'passport-google-oauth20';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 import { PayloadDTO } from '../dto/payload.dto';
 import { SigninUserDTO } from '../dto/signin.user.dto';
 import { TemporaryTokenDTO } from '../dto/temporary.token.dto';
@@ -23,7 +23,7 @@ export class GithubStrategy
 {
   constructor(
     private readonly configService: ConfigService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly jwtService: JwtService,
   ) {
     super({

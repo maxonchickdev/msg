@@ -1,14 +1,7 @@
-import { ClassSerializerInterceptor, INestApplication } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setup(app: INestApplication) {
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector), {
-      strategy: 'excludeAll',
-    }),
-  );
-
   const config = new DocumentBuilder()
     .setTitle('MSG api')
     .setDescription('MSG api description')

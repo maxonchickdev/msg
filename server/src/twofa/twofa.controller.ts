@@ -4,13 +4,13 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PayloadDTO } from 'src/signin/dto/payload.dto';
-import { ParseRequest } from 'src/utils/decorators/parse.request.decorator';
 import { TwoFactorAuthenticationCodeDTO } from './dto/two.factor.authentication.code.dto';
 import { JwtTemporaryGuard } from './guards/jwt.temporary.guard';
 import { TwofaService } from './twofa.service';
@@ -23,27 +23,31 @@ export class TwofaController {
   @Post('generate-qr')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTemporaryGuard)
-  async generateQr(@Res() res: Response, @ParseRequest() payload: PayloadDTO) {
+  async generateQr(
+    @Res() res: Response,
+    @Req() req: Request & { user: PayloadDTO },
+  ) {
     const otpauthUrl =
-      await this.twofaService.generateTwoFactorAuthenticationSecret(payload);
-    return res.send(await this.twofaService.pipeQrCode(otpauthUrl));
+      await this.twofaService.generateTwoFactorAuthenticationSecret(req.user);
+    res.setHeader('COntent-Type', 'image/png');
+    return await this.twofaService.pipeQrCode(res, otpauthUrl);
   }
 
   @Post('turn-on')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTemporaryGuard)
   async turnOnTwoFactorAuthentication(
-    @ParseRequest() payload: PayloadDTO,
+    @Req() req: Request & { user: PayloadDTO },
     @Body() twoFactorAuthenticationCodeDTO: TwoFactorAuthenticationCodeDTO,
     @Res() res: Response,
   ) {
     try {
       await this.twofaService.isTwoFactorAuthenticationCodeValid(
         twoFactorAuthenticationCodeDTO.code,
-        payload,
+        req.user,
       );
       const { accessToken } = await this.twofaService.generateAccessToken(
-        payload.email,
+        req.user.email,
       );
       return res
         .cookie('accessToken', accessToken, {

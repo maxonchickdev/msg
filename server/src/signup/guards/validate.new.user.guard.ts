@@ -6,11 +6,11 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDTO } from 'src/signup/dto/create.user.dto';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 
 @Injectable()
 export class ValidationUserGuard implements CanActivate {
-  constructor(private readonly usersSerice: UsersService) {}
+  constructor(private readonly usersSerice: UserService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context

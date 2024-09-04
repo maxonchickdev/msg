@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Strategy } from 'passport-local';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 import { PayloadDTO } from '../dto/payload.dto';
 import { SigninUserDTO } from '../dto/signin.user.dto';
 import { TemporaryTokenDTO } from '../dto/temporary.token.dto';
@@ -16,7 +16,7 @@ export class LocalStrategy
   implements SingInStrategy
 {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly jwtService: JwtService,
   ) {
     super({

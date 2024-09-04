@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class ResendCodeDTO {
   @ApiProperty({
@@ -9,7 +8,5 @@ export class ResendCodeDTO {
     example: 'testUser@gmail.com',
     description: 'The email of the user',
   })
-  @IsEmail()
-  @IsNotEmpty()
   email: string;
 }

@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PayloadDTO } from 'src/signin/dto/payload.dto';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(
   Strategy,
   JWT_ACCESS_STRATEGY_KEY,
 ) {
-  constructor(private readonly usersSerivce: UsersService) {
+  constructor(private readonly usersSerivce: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {

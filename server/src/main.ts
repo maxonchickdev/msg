@@ -1,5 +1,6 @@
 import { INestApplication, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { config } from 'aws-sdk';
 import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
@@ -18,6 +19,12 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+  });
 
   setup(app);
   await app.listen(8080);

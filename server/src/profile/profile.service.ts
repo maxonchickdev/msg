@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 import { UserProfileDTO } from './dto/user.profile.dto';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UserService) {}
 
   async getUserProfile(email: string): Promise<UserProfileDTO> {
     const user = await this.usersService.findUser({ email: email });

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -19,9 +20,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { HttpExceptionDTO } from 'src/signup/dto/http.exception.dto';
-import { ParseRequest } from '../utils/decorators/parse.request.decorator';
+import { PayloadDTO } from './dto/payload.dto';
 import { SigninUserDTO } from './dto/signin.user.dto';
 import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
@@ -125,10 +126,11 @@ export class SigninController {
     },
   })
   async googleAuthRedirect(
-    @ParseRequest() email: string,
+    @Req() req: Request & { user: PayloadDTO },
     @Res() res: Response,
   ): Promise<void> {
     try {
+      const { email } = req.user;
       const { temporaryToken } = await this.authService.googleAuth({ email });
       return res
         .cookie('temporaryToken', temporaryToken, {
@@ -140,7 +142,7 @@ export class SigninController {
         .redirect(
           this.configService
             .get<string>('CLIENT_ORIGIN')
-            .concat(this.configService.get<string>('CLIENT_TO_PROFILE')), //
+            .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
         );
     } catch (err) {
       return res.redirect(
@@ -184,10 +186,11 @@ export class SigninController {
     },
   })
   async githubAuthRedirect(
-    @ParseRequest() email: string,
+    @Req() req: Request & { user: PayloadDTO },
     @Res() res: Response,
   ): Promise<Response> {
     try {
+      const { email } = req.user;
       const { temporaryToken } = await this.authService.githubAuth({ email });
       return res.cookie('temporaryToken', temporaryToken, {
         httpOnly: true,

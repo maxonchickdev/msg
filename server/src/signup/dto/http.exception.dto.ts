@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
 
 export class HttpExceptionDTO {
   @ApiProperty({
@@ -9,7 +8,6 @@ export class HttpExceptionDTO {
     example: '404',
     description: 'Not found',
   })
-  @IsNotEmpty()
   statusCode: number;
 
   @ApiProperty({
@@ -19,6 +17,5 @@ export class HttpExceptionDTO {
     example: 'Not found',
     description: 'User not found',
   })
-  @IsNotEmpty()
   message: string;
 }

@@ -6,13 +6,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { RedisService } from 'src/utils/redis/redis.service';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 import { EmailConfirmationDTO } from '../dto/email.confirmation.dto';
 
 @Injectable()
 export class ConfirmationEmailGuard implements CanActivate {
   constructor(
-    private readonly usersSerice: UsersService,
+    private readonly usersSerice: UserService,
     private readonly redisService: RedisService,
   ) {}
 

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { ResendCodeDTO } from 'src/signup/dto/resend.code.dto';
 import { RedisService } from 'src/utils/redis/redis.service';
-import { UsersService } from 'src/utils/repositories/users/users.service';
+import { UserService } from 'src/utils/repositories/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../utils/mail/mail.service';
 import { CreateUserDTO } from './dto/create.user.dto';
@@ -12,7 +12,7 @@ import { EmailConfirmationDTO } from './dto/email.confirmation.dto';
 @Injectable()
 export class RegistrationService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly mailService: MailService,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,

@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
 
 export class TwoFactorAuthenticationCodeDTO {
   @ApiProperty({
@@ -9,6 +8,5 @@ export class TwoFactorAuthenticationCodeDTO {
     example: '111111',
     description: 'The twofa code',
   })
-  @IsNotEmpty()
   twoFactorAuthenticationCode: string;
 }
