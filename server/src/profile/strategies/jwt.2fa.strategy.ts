@@ -8,8 +8,10 @@ import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
+export const JWT_2FA_KEY = 'jwt-2fa';
+
 @Injectable()
-export class Jwt2FaStrategy extends PassportStrategy(Strategy) {
+export class Jwt2FaStrategy extends PassportStrategy(Strategy, JWT_2FA_KEY) {
   constructor(private readonly usersSerivce: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([

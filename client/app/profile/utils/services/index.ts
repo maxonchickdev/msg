@@ -34,7 +34,6 @@ export const Services = {
         withCredentials: true,
         data: formData,
       });
-      console.log(res.data);
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {

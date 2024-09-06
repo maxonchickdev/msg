@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
+import { Response } from 'express';
 import { authenticator } from 'otplib';
-import { toDataURL } from 'qrcode';
+import { toFileStream } from 'qrcode';
 import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { UserService } from 'src/utils/repositories/user/user.service';
 
@@ -10,10 +10,7 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Injectable()
 export class TwofaService {
-  constructor(
-    private readonly usersService: UserService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly usersService: UserService) {}
 
   async generateTwoFactorAuthenticationSecret(
     payload: PayloadDto,
@@ -37,8 +34,8 @@ export class TwofaService {
     return otpauthUrl;
   }
 
-  async pipeQrCode(otpauthUrl: string): Promise<string> {
-    return toDataURL(otpauthUrl);
+  async generateQrCodeData(res: Response, otpauthUrl: string): Promise<void> {
+    return toFileStream(res, otpauthUrl);
   }
 
   async isTwoFactorAuthenticationCodeValid(
@@ -54,7 +51,14 @@ export class TwofaService {
     if (!isCodeValid)
       throw new HttpException('Wrong authentication code', HttpStatus.CONFLICT);
 
-    user.isTwoFactorAuthenticationEnabled = true;
+    await this.usersService.updateUser({
+      where: {
+        email: payload.email,
+      },
+      data: {
+        isTwoFactorAuthenticationEnabled: true,
+      },
+    });
 
     return true;
   }

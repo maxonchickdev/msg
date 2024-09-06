@@ -8,8 +8,10 @@ import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
+export const JWT_QR_KEY = 'jwt-qr';
+
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, JWT_QR_KEY) {
   constructor(private readonly usersService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([

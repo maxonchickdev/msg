@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { TwoFactorAuthenticationCodeDto } from './dto/two.factor.authentication.code.dto';
 import { JwtGuard } from './guards/jwt.guard';
@@ -27,9 +27,14 @@ export class TwofaController {
     @Res() res: Response,
     @Req() req: Request & { user: PayloadDto },
   ) {
-    const otpauthUrl =
-      await this.twofaService.generateTwoFactorAuthenticationSecret(req.user);
-    return res.send(await this.twofaService.pipeQrCode(otpauthUrl));
+    try {
+      const otpauthUrl =
+        await this.twofaService.generateTwoFactorAuthenticationSecret(req.user);
+      res.setHeader('Content-Type', 'image/png');
+      return await this.twofaService.generateQrCodeData(res, otpauthUrl);
+    } catch (err) {
+      return res.status(500).send('Internal server error');
+    }
   }
 
   @Post('turn-on')

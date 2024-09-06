@@ -75,7 +75,6 @@ export class ProfileController {
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    console.log(file);
     return res.send('success');
     return await this.profileService.uploadAvatar(
       req.user.email,
