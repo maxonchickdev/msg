@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { AccessTokenDto } from './dto/access.token.dto';
 import { SigninUserDto } from './dto/signin.user.dto';
-import { TemporaryTokenDto } from './dto/temporary.token.dto';
 import { GithubStrategy } from './strategies/github.signin.strategy';
 import { GoogleStrategy } from './strategies/google.signin.strategy';
 import { LocalStrategy } from './strategies/local.signin.strategy';
@@ -13,15 +13,15 @@ export class SigninService {
     private readonly githubStrategy: GithubStrategy,
   ) {}
 
-  async localAuth(loginUserDTO: SigninUserDto): Promise<TemporaryTokenDto> {
-    return this.localAuthStrategy.generateTemporaryJwt(loginUserDTO);
+  async localAuth(loginUserDTO: SigninUserDto): Promise<AccessTokenDto> {
+    return this.localAuthStrategy.generateAccessJwt(loginUserDTO);
   }
 
-  async googleAuth(loginUserDTO: SigninUserDto): Promise<TemporaryTokenDto> {
-    return this.googleAuthStrategy.generateTemporaryJwt(loginUserDTO);
+  async googleAuth(loginUserDTO: SigninUserDto): Promise<AccessTokenDto> {
+    return this.googleAuthStrategy.generateAccessJwt(loginUserDTO);
   }
 
-  async githubAuth(loginUserDTO: SigninUserDto): Promise<TemporaryTokenDto> {
-    return this.githubStrategy.generateTemporaryJwt(loginUserDTO);
+  async githubAuth(loginUserDTO: SigninUserDto): Promise<AccessTokenDto> {
+    return this.githubStrategy.generateAccessJwt(loginUserDTO);
   }
 }

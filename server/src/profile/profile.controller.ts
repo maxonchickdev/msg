@@ -21,7 +21,7 @@ import {
 import { Response } from 'express';
 import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
-import { JwtGuard } from './guards/jwt.guard';
+import { Jwt2FaGuard } from './guards/jwt.2fa.guard';
 import { ProfileService } from './profile.service';
 
 @ApiTags('profile')
@@ -31,7 +31,7 @@ export class ProfileController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtGuard)
+  @UseGuards(Jwt2FaGuard)
   @ApiOperation({ summary: 'Get user profile' })
   @ApiNotFoundResponse({
     description: 'User not found',
@@ -56,7 +56,7 @@ export class ProfileController {
   }
 
   @Post('avatar')
-  @UseGuards(JwtGuard)
+  @UseGuards(Jwt2FaGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   @ApiBody({

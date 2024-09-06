@@ -9,7 +9,6 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   ApiBody,
   ApiForbiddenResponse,
@@ -34,10 +33,7 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 @ApiTags('signin')
 @Controller('signin')
 export class SigninController {
-  constructor(
-    private readonly authService: SigninService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly authService: SigninService) {}
 
   @Post('basic')
   @UseGuards(LocalSigninGuard)
@@ -76,9 +72,9 @@ export class SigninController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const { temporaryToken } = await this.authService.localAuth(loginUserDTO);
+      const { accessToken } = await this.authService.localAuth(loginUserDTO);
       return res
-        .cookie('temporaryToken', temporaryToken, {
+        .cookie('accessToken', accessToken, {
           httpOnly: true,
           secure: false,
           path: '/',
@@ -131,24 +127,18 @@ export class SigninController {
   ): Promise<void> {
     try {
       const { email } = req.user;
-      const { temporaryToken } = await this.authService.googleAuth({ email });
+      const { accessToken } = await this.authService.googleAuth({ email });
       return res
-        .cookie('temporaryToken', temporaryToken, {
+        .cookie('accessToken', accessToken, {
           httpOnly: true,
           secure: false,
           path: '/',
           sameSite: 'lax',
         })
-        .redirect(
-          this.configService
-            .get<string>('CLIENT_ORIGIN')
-            .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
-        );
+        .redirect(process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_PROFILE);
     } catch (err) {
       return res.redirect(
-        this.configService
-          .get<string>('CLIENT_ORIGIN')
-          .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
+        process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_REGISTRATE,
       );
     }
   }
@@ -191,8 +181,8 @@ export class SigninController {
   ): Promise<Response> {
     try {
       const { email } = req.user;
-      const { temporaryToken } = await this.authService.githubAuth({ email });
-      return res.cookie('temporaryToken', temporaryToken, {
+      const { accessToken } = await this.authService.githubAuth({ email });
+      return res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: false,
         path: '/',

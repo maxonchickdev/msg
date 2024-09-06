@@ -7,7 +7,7 @@ import { UserModule } from 'src/utils/repositories/user/user.module';
 import { S3Module } from 'src/utils/s3/s3.module';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { Jwt2FaStrategy } from './strategies/jwt.2fa.strategy';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -26,6 +26,6 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
     }),
   ],
   controllers: [ProfileController],
-  providers: [ProfileService, JwtStrategy],
+  providers: [ProfileService, Jwt2FaStrategy],
 })
 export class ProfileModule {}

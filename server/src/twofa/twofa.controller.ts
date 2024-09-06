@@ -12,7 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { TwoFactorAuthenticationCodeDto } from './dto/two.factor.authentication.code.dto';
-import { JwtTemporaryGuard } from './guards/jwt.temporary.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { TwofaService } from './twofa.service';
 
 @ApiTags('twofa')
@@ -22,7 +22,7 @@ export class TwofaController {
 
   @Post('generate-qr')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtTemporaryGuard)
+  @UseGuards(JwtGuard)
   async generateQr(
     @Res() res: Response,
     @Req() req: Request & { user: PayloadDto },
@@ -34,7 +34,7 @@ export class TwofaController {
 
   @Post('turn-on')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtTemporaryGuard)
+  @UseGuards(JwtGuard)
   async turnOnTwoFactorAuthentication(
     @Req() req: Request & { user: PayloadDto },
     @Body() twoFactorAuthenticationCodeDTO: TwoFactorAuthenticationCodeDto,
@@ -45,23 +45,7 @@ export class TwofaController {
         twoFactorAuthenticationCodeDTO.code,
         req.user,
       );
-      const { accessToken } = await this.twofaService.generateAccessToken(
-        req.user.email,
-      );
-      return res
-        .cookie('accessToken', accessToken, {
-          httpOnly: true,
-          secure: false,
-          path: '/',
-          sameSite: 'lax',
-        })
-        .clearCookie('temporaryToken', {
-          httpOnly: true,
-          secure: false,
-          path: '/',
-          sameSite: 'lax',
-        })
-        .send(true);
+      return res.status(HttpStatus.OK).send(true);
     } catch (err) {
       return res
         .status(err.status)

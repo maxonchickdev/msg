@@ -8,13 +8,8 @@ import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
-export const JWT_ACCESS_STRATEGY_KEY = 'jwt-access';
-
 @Injectable()
-export class JwtStrategy extends PassportStrategy(
-  Strategy,
-  JWT_ACCESS_STRATEGY_KEY,
-) {
+export class Jwt2FaStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly usersSerivce: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -30,6 +25,8 @@ export class JwtStrategy extends PassportStrategy(
   async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
     const user = await this.usersSerivce.findUser({ email: payloadDto.email });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    if (!user.isTwoFactorAuthenticationEnabled)
+      throw new HttpException('Two fa is not enabled', HttpStatus.CONFLICT);
     return {
       email: payloadDto.email,
     };

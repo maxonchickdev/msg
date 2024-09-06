@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
 import { ResendCodeDto } from 'src/signup/dto/resend.code.dto';
 import { RedisService } from 'src/utils/redis/redis.service';
 import { UserService } from 'src/utils/repositories/user/user.service';
@@ -9,13 +9,14 @@ import { MailService } from '../utils/mail/mail.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { EmailConfirmationDto } from './dto/email.confirmation.dto';
 
+dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+
 @Injectable()
 export class RegistrationService {
   constructor(
     private readonly usersService: UserService,
     private readonly mailService: MailService,
     private readonly redisService: RedisService,
-    private readonly configService: ConfigService,
   ) {}
 
   async signupUser(createUserDto: CreateUserDto): Promise<boolean> {
@@ -38,7 +39,7 @@ export class RegistrationService {
       email: createUserDto.email,
       password: await bcrypt.hash(
         createUserDto.password,
-        parseInt(this.configService.get<string>('SALT_OR_ROUNDS'), 10),
+        parseInt(process.env.SALT_OR_ROUNDS, 10),
       ),
     });
 

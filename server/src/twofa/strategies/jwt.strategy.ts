@@ -8,18 +8,13 @@ import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
-export const JWT_TEMPORARY_STRATEGY_KEY = 'jwt-temporary';
-
 @Injectable()
-export class JwtTemporaryStrategy extends PassportStrategy(
-  Strategy,
-  JWT_TEMPORARY_STRATEGY_KEY,
-) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly usersService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          return req.cookies['temporaryToken'];
+          return req.cookies['accessToken'];
         },
       ]),
       ignoreExpiration: false,
@@ -29,7 +24,6 @@ export class JwtTemporaryStrategy extends PassportStrategy(
 
   async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
     const user = await this.usersService.findUser({ email: payloadDto.email });
-    3;
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

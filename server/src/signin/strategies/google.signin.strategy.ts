@@ -1,13 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
+import * as dotenv from 'dotenv';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { UserService } from 'src/utils/repositories/user/user.service';
+import { AccessTokenDto } from '../dto/access.token.dto';
 import { PayloadDto } from '../dto/payload.dto';
 import { SigninUserDto } from '../dto/signin.user.dto';
-import { TemporaryTokenDto } from '../dto/temporary.token.dto';
 import { SingInStrategy } from './signin.strategy';
+
+dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Injectable()
 export class GoogleStrategy
@@ -15,14 +17,13 @@ export class GoogleStrategy
   implements SingInStrategy
 {
   constructor(
-    private readonly configService: ConfigService,
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
   ) {
     super({
-      clientID: configService.get<string>('GOOGLE_CLIENT_ID'),
-      clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET'),
-      callbackURL: configService.get<string>('GOOGLE_CALL_BACK_URL'),
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALL_BACK_URL,
       scope: ['email', 'profile'],
     });
   }
@@ -37,9 +38,9 @@ export class GoogleStrategy
     done(null, _json.email);
   }
 
-  async generateTemporaryJwt(
+  async generateAccessJwt(
     loginUserDTO: SigninUserDto,
-  ): Promise<TemporaryTokenDto> {
+  ): Promise<AccessTokenDto> {
     const user = await this.usersService.updateUser({
       where: {
         email: loginUserDTO.email,
@@ -52,6 +53,6 @@ export class GoogleStrategy
     const payload: PayloadDto = {
       email: user.email,
     };
-    return { temporaryToken: await this.jwtService.signAsync(payload) };
+    return { accessToken: await this.jwtService.signAsync(payload) };
   }
 }
