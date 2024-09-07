@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   IConfirmationCode,
   IConfirmationFormProps,
-} from "../../utils/interfaces";
+} from "../../utils/interfaces/email.confirmation.interfaces";
 
 export const ConfirmationCodeForm: FC<IConfirmationFormProps> = ({
   onSubmitCode,

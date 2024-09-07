@@ -1,21 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { SubmitHandler } from "react-hook-form";
-import { ConfirmationCodeForm } from "./components/form/index";
-import Button from "@mui/material/Button";
-import secureLocalStorage from "react-secure-storage";
-import Stack from "@mui/material/Stack";
-import { SyntheticEvent } from "react";
-import { Box } from "@mui/material";
-import { Services } from "./utils/services/index";
-import { IConfirmationCode, IRegistrate } from "./utils/interfaces/index";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { Link } from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
+import { Box, Link } from "@mui/material";
 import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
+import { useRouter } from "next/navigation";
+import { SyntheticEvent, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import secureLocalStorage from "react-secure-storage";
+import { ConfirmationCodeForm } from "./components/form/email.confirmation.form";
+import { IConfirmationCode } from "./utils/interfaces/email.confirmation.interfaces";
+import { Services } from "./utils/services/email.confirmation.services";
 
 export default function Registrate() {
   const router = useRouter();
@@ -29,7 +26,7 @@ export default function Registrate() {
     setOpen(false);
   };
   const onSubmitConfirmationCode: SubmitHandler<IConfirmationCode> = async (
-    data,
+    data
   ) => {
     try {
       const email = secureLocalStorage.getItem("email");

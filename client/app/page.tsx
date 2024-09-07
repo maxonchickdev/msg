@@ -12,9 +12,9 @@ import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 import { SyntheticEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LoginForm } from "./components/form/index";
-import { ILogin } from "./utils/interfaces/index";
-import { Services } from "./utils/services/index";
+import { LoginForm } from "./components/form/signin.form";
+import { ILogin } from "./utils/interfaces/signin.interfaces";
+import { Services } from "./utils/services/signup.services";
 
 export default function Login() {
   const router = useRouter();

@@ -3,8 +3,8 @@
 import { Link } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { IProfile } from "./utils/interfaces/index";
-import { Services } from "./utils/services/index";
+import { IProfile } from "./utils/interfaces/profile.interfaces";
+import { Services } from "./utils/services/profile.services";
 
 export default function Registrate() {
   const [loading, setLoading] = useState<boolean>(true);

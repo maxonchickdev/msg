@@ -1,5 +1,8 @@
 import axios, { AxiosError } from "axios";
-import { IConfirmation, IResendConfirmationCode } from "../interfaces/index";
+import {
+  IConfirmation,
+  IResendConfirmationCode,
+} from "../interfaces/email.confirmation.interfaces";
 
 export const Services = {
   confirm: async (

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { AvatarService } from 'src/utils/repositories/avatar/avatar.service';
 import { UserService } from 'src/utils/repositories/user/user.service';
 import { S3Service } from 'src/utils/s3/s3.service';
@@ -25,7 +24,7 @@ export class ProfileService {
     email: string,
     dataBuffer: Buffer,
     filename: string,
-  ): Promise<Prisma.AvatarCreateInput> {
+  ): Promise<string> {
     const user = await this.usersService.findUser({ email: email });
     const avatar = await this.avatarService.deleteAvatar(user.avatarId);
     await this.avatarService.deleteAvatar(user.avatarId);
@@ -40,6 +39,6 @@ export class ProfileService {
 
     user.avatarId = newAvatar.id;
 
-    return newAvatar;
+    return newAvatar.url;
   }
 }

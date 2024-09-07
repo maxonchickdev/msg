@@ -11,6 +11,9 @@ export class UserService {
   ): Promise<User | null> {
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
+      include: {
+        profileImage: true,
+      },
     });
   }
 

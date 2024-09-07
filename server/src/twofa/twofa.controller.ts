@@ -8,7 +8,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { TwoFactorAuthenticationCodeDto } from './dto/two.factor.authentication.code.dto';
@@ -23,6 +28,21 @@ export class TwofaController {
   @Post('generate-qr')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
+  @ApiOperation({
+    summary: 'Generate base64',
+  })
+  @ApiOkResponse({
+    description: 'Base64 generated',
+    example:
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANQAAADUCAYAAADk...iVBORw0KGgoAAAANSUhEUgAAANQAAADUCAYAAADk',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
   async generateQr(
     @Res() res: Response,
     @Req() req: Request & { user: PayloadDto },
@@ -30,8 +50,9 @@ export class TwofaController {
     try {
       const otpauthUrl =
         await this.twofaService.generateTwoFactorAuthenticationSecret(req.user);
-      res.setHeader('Content-Type', 'image/png');
-      return await this.twofaService.generateQrCodeData(res, otpauthUrl);
+      return res
+        .status(HttpStatus.OK)
+        .send(await this.twofaService.generateQrCodeData(otpauthUrl));
     } catch (err) {
       return res.status(500).send('Internal server error');
     }
@@ -40,6 +61,20 @@ export class TwofaController {
   @Post('turn-on')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
+  @ApiOperation({
+    summary: 'Enable 2fa',
+  })
+  @ApiOkResponse({
+    description: 'Enable 2fa successfull',
+    example: true,
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    example: {
+      statusCode: 404,
+      message: 'User not found',
+    },
+  })
   async turnOnTwoFactorAuthentication(
     @Req() req: Request & { user: PayloadDto },
     @Body() twoFactorAuthenticationCodeDTO: TwoFactorAuthenticationCodeDto,

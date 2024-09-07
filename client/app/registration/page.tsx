@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { SubmitHandler } from "react-hook-form";
-import { Services } from "./utils/services/index";
-import { RegistrationForm } from "./components/form/index";
-import secureLocalStorage from "react-secure-storage";
-import Stack from "@mui/material/Stack";
-import { SyntheticEvent } from "react";
 import { Box } from "@mui/material";
-import { IRegistrate } from "./utils/interfaces/index";
-import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Link from "@mui/material/Link";
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
+import { useRouter } from "next/navigation";
+import { SyntheticEvent, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import secureLocalStorage from "react-secure-storage";
+import { RegistrationForm } from "./components/form/signup.form";
+import { IRegistrate } from "./utils/interfaces/signup.interfaces";
+import { Services } from "./utils/services/signup.services";
 
 export default function Registrate() {
   const router = useRouter();
@@ -33,9 +31,7 @@ export default function Registrate() {
       const { status } = await Services.registrate(data);
       secureLocalStorage.setItem("email", data.email);
       router.push(
-        (process.env.CLIENT_REG as string).concat(
-          "/" + process.env.CLIENT_CONF,
-        ),
+        (process.env.CLIENT_REG as string).concat("/" + process.env.CLIENT_CONF)
       );
       reset();
     } catch (err) {

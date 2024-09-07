@@ -15,13 +15,19 @@ import {
   ApiBody,
   ApiConsumes,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PayloadDto } from 'src/signin/dto/payload.dto';
 import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
+import { AvatarDto } from './dto/avatar.dto';
+import { UserProfileDto } from './dto/user.profile.dto';
 import { Jwt2FaGuard } from './guards/jwt.2fa.guard';
+import { MaxSizeAvatarPipe } from './pipes/max.size.avatar.pipe';
+import { TypeAvatarPipe } from './pipes/type.avatar.pipe';
 import { ProfileService } from './profile.service';
 
 @ApiTags('profile')
@@ -33,6 +39,16 @@ export class ProfileController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(Jwt2FaGuard)
   @ApiOperation({ summary: 'Get user profile' })
+  @ApiOkResponse({
+    description: 'User profile',
+    type: UserProfileDto,
+    example: {
+      username: 'test',
+      email: 'test@gmail.com',
+      createdAt: '2024-09-07T08:42:13.414Z',
+      updatedAt: '2024-09-07T08:44:29.146Z',
+    },
+  })
   @ApiNotFoundResponse({
     description: 'User not found',
     type: HttpExceptionDto,
@@ -56,9 +72,10 @@ export class ProfileController {
   }
 
   @Post('avatar')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('file'))
   @UseGuards(Jwt2FaGuard)
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('file'))
   @ApiBody({
     schema: {
       type: 'object',
@@ -70,16 +87,39 @@ export class ProfileController {
       },
     },
   })
+  @ApiOperation({ summary: 'Add avatar' })
+  @ApiOkResponse({
+    description: 'true',
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'Image not in valid size or format',
+    type: HttpExceptionDto,
+    example: {
+      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      message:
+        'Validation failed (expected max size is 5 kb) | (expected file type is png or jpeg)',
+    },
+  })
   async addProfileImage(
     @Req() req: Request & { user: PayloadDto },
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(new MaxSizeAvatarPipe(), new TypeAvatarPipe())
+    avatarDto: AvatarDto,
     @Res() res: Response,
   ) {
-    return res.send('success');
-    return await this.profileService.uploadAvatar(
-      req.user.email,
-      file.buffer,
-      file.originalname,
-    );
+    try {
+      console.log(avatarDto.avatar.size, avatarDto.avatar.mimetype);
+      return res
+        .status(HttpStatus.OK)
+        .send(
+          await this.profileService.uploadAvatar(
+            req.user.email,
+            avatarDto.avatar.buffer,
+            avatarDto.avatar.originalname,
+          ),
+        );
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send('Internal server error');
+    }
   }
 }

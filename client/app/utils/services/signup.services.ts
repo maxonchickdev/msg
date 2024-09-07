@@ -1,19 +1,18 @@
 import axios, { AxiosError } from "axios";
-import { IRegistrate } from "../interfaces/index";
+import { ILogin } from "../interfaces/signin.interfaces";
 
 export const Services = {
-  registrate: async (
-    registrateUser: IRegistrate
-  ): Promise<{ status: number }> => {
+  login: async (loginUser: ILogin): Promise<{ status: number }> => {
     try {
       const res = await axios({
-        url: process.env.SERVER_BASIC_SIGNUP,
+        url: process.env.SERVER_BASIC_SIGNIN,
         method: "post",
         baseURL: process.env.SERVER_ORIGIN,
         headers: {
           "Content-Type": "application/json",
         },
-        data: registrateUser,
+        data: loginUser,
+        withCredentials: true,
       });
       return { status: res.status };
     } catch (err) {

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { MulterModule } from '@nestjs/platform-express';
 import * as dotenv from 'dotenv';
 import { AvatarModule } from 'src/utils/repositories/avatar/avatar.module';
 import { UserModule } from 'src/utils/repositories/user/user.module';
@@ -13,6 +14,7 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Module({
   imports: [
+    MulterModule,
     UserModule,
     AvatarModule,
     S3Module,

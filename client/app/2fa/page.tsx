@@ -11,8 +11,8 @@ import { useRouter } from "next/navigation";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Err } from "./components/err";
-import { TwofaCode } from "./utils/interfaces";
-import { Services } from "./utils/services";
+import { TwofaCode } from "./utils/interfaces/2fa.interfaces";
+import { Services } from "./utils/services/2fa.services";
 
 export default function Twofa() {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
