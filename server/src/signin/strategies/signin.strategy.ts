@@ -1,6 +1,6 @@
-import { AccessTokenDto } from '../dto/access.token.dto';
+import { SigninTokensDto } from '../dto/signin.tokens.dto';
 import { SigninUserDto } from '../dto/signin.user.dto';
 
 export interface SingInStrategy {
-  generateAccessJwt(loginUserDTO: SigninUserDto): Promise<AccessTokenDto>;
+  generateSigninTokens(loginUserDTO: SigninUserDto): Promise<SigninTokensDto>;
 }

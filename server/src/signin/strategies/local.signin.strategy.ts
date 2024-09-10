@@ -3,12 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
 import { Strategy } from 'passport-local';
 import { UserService } from 'src/utils/repositories/user/user.service';
-import { AccessTokenDto } from '../dto/access.token.dto';
 import { PayloadDto } from '../dto/payload.dto';
+import { SigninTokensDto } from '../dto/signin.tokens.dto';
 import { SigninUserDto } from '../dto/signin.user.dto';
 import { SingInStrategy } from './signin.strategy';
+
+dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Injectable()
 export class LocalStrategy
@@ -43,15 +46,26 @@ export class LocalStrategy
     return user;
   }
 
-  async generateAccessJwt(
-    loginUserDTO: SigninUserDto,
-  ): Promise<AccessTokenDto> {
+  async generateSigninTokens(
+    signinUserDto: SigninUserDto,
+  ): Promise<SigninTokensDto> {
     const user = await this.usersService.findUser({
-      email: loginUserDTO.email,
+      email: signinUserDto.email,
     });
     const payload: PayloadDto = {
       email: user.email,
     };
-    return { accessToken: await this.jwtService.signAsync(payload) };
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_ACCESS_SECRET,
+      expiresIn: `${process.env.JWT_ACCESS_EXPIRES_IN}s`,
+    });
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_REFRESH_SECRET,
+      expiresIn: `${process.env.JWT_REFRESH_EXPIRES_IN}s`,
+    });
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   }
 }

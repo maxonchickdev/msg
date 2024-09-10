@@ -20,7 +20,7 @@ export class Jwt2FaStrategy extends PassportStrategy(Strategy, JWT_2FA_KEY) {
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: process.env.JWT_ACCESS_SECRET,
     });
   }
 

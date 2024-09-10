@@ -21,6 +21,7 @@ model User {
   createdAt                        DateTime @default(now())
   updatedAt                        DateTime @updatedAt
   isVerified                       Boolean  @default(false)
+  currentHashedRefreshToken        String?  @db.VarChar(255)
   twoFactorAuthenticationSecret    String   @default("") @db.VarChar(255)
   isTwoFactorAuthenticationEnabled Boolean  @default(false)
   profileImage                     Avatar?  @relation(fields: [avatarId], references: [id])

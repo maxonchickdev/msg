@@ -72,14 +72,22 @@ export class SigninController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const { accessToken } = await this.authService.localAuth(loginUserDTO);
+      const { accessToken, refreshToken } =
+        await this.authService.localAuth(loginUserDTO);
       return res
         .cookie('accessToken', accessToken, {
           httpOnly: true,
-          secure: false,
           path: '/',
-          sameSite: 'lax',
-          expires: new Date(Date.now() + 900000),
+          expires: new Date(
+            Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
+          ),
+        })
+        .cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/',
+          expires: new Date(
+            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
+          ),
         })
         .send(true);
     } catch (err) {
@@ -127,13 +135,23 @@ export class SigninController {
   ): Promise<void> {
     try {
       const { email } = req.user;
-      const { accessToken } = await this.authService.googleAuth({ email });
+      const { accessToken, refreshToken } = await this.authService.googleAuth({
+        email,
+      });
       return res
         .cookie('accessToken', accessToken, {
           httpOnly: true,
-          secure: false,
           path: '/',
-          sameSite: 'lax',
+          expires: new Date(
+            Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
+          ),
+        })
+        .cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/',
+          expires: new Date(
+            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
+          ),
         })
         .redirect(process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_PROFILE);
     } catch (err) {
@@ -181,13 +199,24 @@ export class SigninController {
   ): Promise<Response> {
     try {
       const { email } = req.user;
-      const { accessToken } = await this.authService.githubAuth({ email });
-      return res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        secure: false,
-        path: '/',
-        sameSite: 'lax',
+      const { accessToken, refreshToken } = await this.authService.githubAuth({
+        email,
       });
+      return res
+        .cookie('accessToken', accessToken, {
+          httpOnly: true,
+          path: '/',
+          expires: new Date(
+            Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
+          ),
+        })
+        .cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/',
+          expires: new Date(
+            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
+          ),
+        });
       // .redirect(
       //   this.configService
       //     .get<string>('CLIENT_ORIGIN')

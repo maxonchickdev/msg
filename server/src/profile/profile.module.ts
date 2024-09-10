@@ -20,10 +20,10 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
     S3Module,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET.toString(),
+      secret: process.env.JWT_ACCESS_SECRET.toString(),
       signOptions: {
-        expiresIn: '1d',
-        // expiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10).toString() + 's',
+        expiresIn:
+          parseInt(process.env.JWT_ACCESS_EXPIRES_IN, 10).toString() + 's',
       },
     }),
   ],

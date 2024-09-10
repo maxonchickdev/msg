@@ -107,7 +107,6 @@ export class ProfileController {
     @Res() res: Response,
   ) {
     try {
-      console.log(avatarDto.avatar.size, avatarDto.avatar.mimetype);
       return res
         .status(HttpStatus.OK)
         .send(
@@ -118,7 +117,6 @@ export class ProfileController {
           ),
         );
     } catch (err) {
-      console.log(err);
       return res.status(500).send('Internal server error');
     }
   }

@@ -11,6 +11,7 @@ CREATE TABLE `User` (
     `isTwoFactorAuthenticationEnabled` BOOLEAN NOT NULL DEFAULT false,
     `avatarId` INTEGER NULL,
 
+    UNIQUE INDEX `User_id_key`(`id`),
     UNIQUE INDEX `User_username_key`(`username`),
     UNIQUE INDEX `User_email_key`(`email`),
     UNIQUE INDEX `User_avatarId_key`(`avatarId`),

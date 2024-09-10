@@ -1,12 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
 import { Profile, Strategy } from 'passport-github';
 import { VerifyCallback } from 'passport-google-oauth20';
 import { UserService } from 'src/utils/repositories/user/user.service';
-import { AccessTokenDto } from '../dto/access.token.dto';
 import { PayloadDto } from '../dto/payload.dto';
+import { SigninTokensDto } from '../dto/signin.tokens.dto';
 import { SigninUserDto } from '../dto/signin.user.dto';
 import { SingInStrategy } from './signin.strategy';
 
@@ -44,21 +44,28 @@ export class GithubStrategy
     done(null, profile._json.email);
   }
 
-  async generateAccessJwt(
-    loginUserDTO: SigninUserDto,
-  ): Promise<AccessTokenDto> {
+  async generateSigninTokens(
+    signinUserDTO: SigninUserDto,
+  ): Promise<SigninTokensDto> {
     const user = await this.usersService.updateUser({
       where: {
-        email: loginUserDTO.email,
+        email: signinUserDTO.email,
       },
       data: {
         isVerified: true,
       },
     });
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     const payload: PayloadDto = {
       email: user.email,
     };
-    return { accessToken: await this.jwtService.signAsync(payload) };
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_ACCESS_SECRET,
+      expiresIn: `${process.env.JWT_ACCESS_EXPIRES_IN}s`,
+    });
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_REFRESH_SECRET,
+      expiresIn: `${process.env.JWT_REFRESH_EXPIRES_IN}s`,
+    });
+    return { accessToken: accessToken, refreshToken: refreshToken };
   }
 }

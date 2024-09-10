@@ -12,17 +12,7 @@ import { LocalStrategy } from './strategies/local.signin.strategy';
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Module({
-  imports: [
-    UserModule,
-    PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET.toString(),
-      signOptions: {
-        expiresIn: '1d',
-        // expiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10).toString() + 's',
-      },
-    }),
-  ],
+  imports: [UserModule, PassportModule, JwtModule],
   controllers: [SigninController],
   providers: [SigninService, LocalStrategy, GoogleStrategy, GithubStrategy],
 })

@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT_QR_KEY) {
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: process.env.JWT_ACCESS_SECRET,
     });
   }
 
