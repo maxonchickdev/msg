@@ -21,11 +21,11 @@ import {
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { PayloadDto } from 'src/signin/dto/payload.dto';
-import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
+import { PayloadDto } from '../login/signin/dto/payload.dto';
+import { HttpExceptionDto } from '../signup/dto/http.exception.dto';
 import { AvatarDto } from './dto/avatar.dto';
 import { UserProfileDto } from './dto/user.profile.dto';
-import { Jwt2FaGuard } from './guards/jwt.2fa.guard';
+import { JwtMainGuard } from './guards/jwt.main.guard';
 import { MaxSizeAvatarPipe } from './pipes/max.size.avatar.pipe';
 import { TypeAvatarPipe } from './pipes/type.avatar.pipe';
 import { ProfileService } from './profile.service';
@@ -37,7 +37,7 @@ export class ProfileController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(Jwt2FaGuard)
+  @UseGuards(JwtMainGuard)
   @ApiOperation({ summary: 'Get user profile' })
   @ApiOkResponse({
     description: 'User profile',
@@ -62,7 +62,7 @@ export class ProfileController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const profile = await this.profileService.getUserProfile(req.user.id);
+      const profile = await this.profileService.getUserProfile(req.user.userId);
       return res.send(profile);
     } catch (err) {
       return res
@@ -74,7 +74,7 @@ export class ProfileController {
   @Post('avatar')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(Jwt2FaGuard)
+  @UseGuards(JwtMainGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -110,7 +110,10 @@ export class ProfileController {
       return res
         .status(HttpStatus.OK)
         .send(
-          await this.profileService.uploadAvatar(req.user.id, avatarDto.avatar),
+          await this.profileService.uploadAvatar(
+            req.user.userId,
+            avatarDto.avatar,
+          ),
         );
     } catch (err) {
       return res.status(500).send('Internal server error');

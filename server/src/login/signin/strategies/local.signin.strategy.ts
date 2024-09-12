@@ -28,31 +28,30 @@ export class LocalStrategy
   }
 
   async validate(email: string, password: string): Promise<boolean> {
-    const user = await this.usersService.findUser({ email: email });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+    const user = await this.usersService.findUserByEmail(email);
+
     if (user.isVerified === false) {
       throw new HttpException('Mail not confirmed', HttpStatus.FORBIDDEN);
     }
+
     const isPasswordsMatching = await bcrypt.compare(password, user.password);
+
     if (!isPasswordsMatching) {
       throw new HttpException(
         'Email or password incorrected',
         HttpStatus.UNAUTHORIZED,
       );
     }
+
     return true;
   }
 
   async generateSigninTokens(
     signinUserDto: SigninUserDto,
   ): Promise<SigninTokensDto> {
-    const user = await this.usersService.findUser({
-      email: signinUserDto.email,
-    });
+    const user = await this.usersService.findUserByEmail(signinUserDto.email);
     const payload: PayloadDto = {
-      id: user.id,
+      userId: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET,

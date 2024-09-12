@@ -3,15 +3,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PayloadDto } from 'src/signin/dto/payload.dto';
+import { PayloadDto } from 'src/login/signin/dto/payload.dto';
 import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
-export const JWT_2FA_KEY = 'jwt-2fa';
+export const JWT_MAIN = 'jwt-main';
 
 @Injectable()
-export class Jwt2FaStrategy extends PassportStrategy(Strategy, JWT_2FA_KEY) {
+export class JwtMainStrategy extends PassportStrategy(Strategy, JWT_MAIN) {
   constructor(private readonly usersSerivce: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -21,16 +21,18 @@ export class Jwt2FaStrategy extends PassportStrategy(Strategy, JWT_2FA_KEY) {
       ]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_ACCESS_SECRET,
+      passReqToCallback: true,
     });
   }
 
-  async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
-    const user = await this.usersSerivce.findUser({ id: payloadDto.id });
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  async validate(req: Request, payloadDto: PayloadDto): Promise<PayloadDto> {
+    const user = await this.usersSerivce.findUserById(payloadDto.userId);
+
     if (!user.isTwoFactorAuthenticationEnabled)
       throw new HttpException('Two fa is not enabled', HttpStatus.CONFLICT);
+
     return {
-      id: payloadDto.id,
+      userId: payloadDto.userId,
     };
   }
 }

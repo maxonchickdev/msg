@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
-import { PayloadDto } from 'src/signin/dto/payload.dto';
+import { PayloadDto } from 'src/login/signin/dto/payload.dto';
 import { UserService } from 'src/utils/repositories/user/user.service';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
@@ -40,7 +40,7 @@ export class TwofaService {
     twoFactorAuthenticationCode: string,
     payload: PayloadDto,
   ): Promise<boolean> {
-    const user = await this.usersService.findUser({ id: payload.id });
+    const user = await this.usersService.findUserById(payload.userId);
     const isCodeValid = authenticator.verify({
       token: twoFactorAuthenticationCode,
       secret: user.twoFactorAuthenticationSecret,
@@ -51,7 +51,7 @@ export class TwofaService {
 
     await this.usersService.updateUser({
       where: {
-        id: payload.id,
+        id: payload.userId,
       },
       data: {
         isTwoFactorAuthenticationEnabled: true,

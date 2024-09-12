@@ -8,7 +8,7 @@ import { UserModule } from 'src/utils/repositories/user/user.module';
 import { S3Module } from 'src/utils/s3/s3.module';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
-import { Jwt2FaStrategy } from './strategies/jwt.2fa.strategy';
+import { JwtMainStrategy } from './strategies/jwt.main.strategy';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -20,14 +20,13 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
     S3Module,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_ACCESS_SECRET.toString(),
+      secret: process.env.JWT_ACCESS_SECRET,
       signOptions: {
-        expiresIn:
-          parseInt(process.env.JWT_ACCESS_EXPIRES_IN, 10).toString() + 's',
+        expiresIn: parseInt(process.env.JWT_ACCESS_EXPIRES_IN, 10) + 's',
       },
     }),
   ],
   controllers: [ProfileController],
-  providers: [ProfileService, Jwt2FaStrategy],
+  providers: [ProfileService, JwtMainStrategy],
 })
 export class ProfileModule {}

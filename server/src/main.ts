@@ -1,9 +1,9 @@
 import { INestApplication, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
-import { setup } from './utils/config/swagger.config';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -19,8 +19,21 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  setup(app);
-  await app.listen(8080);
+  const config = new DocumentBuilder()
+    .setTitle('MSG api')
+    .setDescription('MSG api description')
+    .setVersion('0.0.1')
+    .addServer(
+      `http://${process.env.SERVER_HOST}:${process.env.SERVER_APP_PORT}/`,
+      'Local environment',
+    )
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'MSG api',
+  });
+
+  await app.listen(parseInt(process.env.SERVER_APP_PORT));
   logger.log('🚀 Application running');
 }
 

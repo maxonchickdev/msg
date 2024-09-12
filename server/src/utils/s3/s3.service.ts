@@ -51,9 +51,6 @@ export class S3Service {
         Bucket: this.bucketName,
         Key: key,
       }),
-      {
-        expiresIn: 60 * 60 * 24,
-      },
     );
 
     return {

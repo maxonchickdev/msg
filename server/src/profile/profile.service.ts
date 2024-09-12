@@ -13,15 +13,27 @@ export class ProfileService {
   ) {}
 
   async getUserProfile(userId: string): Promise<UserProfileDto> {
-    const user = await this.usersService.findUser({ id: userId });
+    const user = await this.usersService.findUserById(userId);
 
-    const { id, password, isVerified, ...publicInfo } = user;
+    const {
+      id,
+      password,
+      isVerified,
+      currentHashedRefreshToken,
+      twoFactorAuthenticationSecret,
+      isTwoFactorAuthenticationEnabled,
+      avatarId,
+      ...publicInfo
+    } = user;
 
     return publicInfo;
   }
 
-  async uploadAvatar(id: string, avatar: Express.Multer.File): Promise<string> {
-    const user = await this.usersService.findUser({ id: id });
+  async uploadAvatar(
+    userId: string,
+    avatar: Express.Multer.File,
+  ): Promise<string> {
+    const user = await this.usersService.findUserById(userId);
     const userAvatar = await this.avatarService.deleteAvatar(user.avatarId);
     await this.avatarService.deleteAvatar(user.avatarId);
     await this.s3Service.delteFile(userAvatar.key);

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -17,16 +18,15 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import * as dotenv from 'dotenv';
 import { Response } from 'express';
 import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
+import { PayloadDto } from './dto/payload.dto';
 import { SigninUserDto } from './dto/signin.user.dto';
 import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
+import { JwtRefreshGuard } from './guards/jwt.refresh.guard';
 import { LocalSigninGuard } from './guards/local.signin.guard';
 import { SigninService } from './signin.service';
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @ApiTags('signin')
 @Controller('signin')
@@ -223,4 +223,48 @@ export class SigninController {
   //     // );
   //   }
   // }
+
+  @Get('refresh')
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiOkResponse({
+    description: 'New access token is avalible',
+  })
+  @ApiNotFoundResponse({
+    description: 'User not found',
+    type: HttpExceptionDto,
+    example: {
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'User not found',
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid refresh token',
+    type: HttpExceptionDto,
+    example: {
+      statusCode: HttpStatus.UNAUTHORIZED,
+      message: 'Invalid refresh token',
+    },
+  })
+  async refresh(
+    @Req() req: Request & { user: PayloadDto },
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const newAccessToken = await this.authService.getNewAccessToken(
+        req.user.userId,
+      );
+      return res
+        .cookie('access', newAccessToken, {
+          httpOnly: true,
+          path: '/',
+        })
+        .send(true);
+    } catch (err) {
+      return res
+        .status(err.status)
+        .json({ status: err.status, message: err.response });
+    }
+  }
 }

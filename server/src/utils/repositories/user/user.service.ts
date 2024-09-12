@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
@@ -10,15 +10,29 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findUser(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prismaService.user.findUnique({
-      where: userWhereUniqueInput,
-      include: {
-        profileImage: true,
-      },
+  async findUserById(id: string): Promise<User> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
     });
+
+    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    return user;
+  }
+
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    return user;
+  }
+
+  async findUserByUsername(username: string): Promise<User> {
+    const user = await this.prismaService.user.findUnique({
+      where: { username },
+    });
+    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    return user;
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
@@ -56,7 +70,7 @@ export class UserService {
     refreshToken: string,
     userId: string,
   ): Promise<User> {
-    const user = await this.findUser({ id: userId });
+    const user = await this.findUserById(userId);
 
     const refreshTokensMatch = await bcrypt.compare(
       refreshToken,

@@ -26,11 +26,9 @@ export class ConfirmationEmailGuard implements CanActivate {
   async validateEmail(
     emailConfirmationDto: EmailConfirmationDto,
   ): Promise<boolean> {
-    const user = await this.usersSerice.findUser({
-      email: emailConfirmationDto.email,
-    });
-    if (!user)
-      throw new HttpException('User does not exists', HttpStatus.NOT_FOUND);
+    const user = await this.usersSerice.findUserByEmail(
+      emailConfirmationDto.email,
+    );
 
     const confirmationCode = await this.redisService.getValue(
       `confirmation-code-${emailConfirmationDto.email.split('@')[0]}`,

@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
-import { Profile, Strategy } from 'passport-github';
-import { VerifyCallback } from 'passport-google-oauth20';
+import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { UserService } from 'src/utils/repositories/user/user.service';
 import { PayloadDto } from '../dto/payload.dto';
 import { SigninTokensDto } from '../dto/signin.tokens.dto';
@@ -12,14 +11,8 @@ import { SingInStrategy } from './signin.strategy';
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
-interface GithubProfile extends Profile {
-  _json: {
-    email: string;
-  };
-}
-
 @Injectable()
-export class GithubStrategy
+export class GoogleStrategy
   extends PassportStrategy(Strategy)
   implements SingInStrategy
 {
@@ -28,20 +21,20 @@ export class GithubStrategy
     private readonly jwtService: JwtService,
   ) {
     super({
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: process.env.GITHUB_CALL_BACK_URL,
-      scope: 'user:email',
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALL_BACK_URL,
+      scope: ['email', 'profile'],
     });
   }
-
   async validate(
     accessToken: string,
-    _refreshToken: string,
-    profile: GithubProfile,
+    refreshToken: string,
+    profile: Profile,
     done: VerifyCallback,
-  ) {
-    done(null, profile._json.email);
+  ): Promise<void> {
+    const user = await this.usersService.findUserByEmail(profile._json.email);
+    done(null, user.id);
   }
 
   async generateSigninTokens(
@@ -56,7 +49,7 @@ export class GithubStrategy
       },
     });
     const payload: PayloadDto = {
-      id: user.id,
+      userId: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET,

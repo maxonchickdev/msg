@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
 import { UserModule } from 'src/utils/repositories/user/user.module';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtTwofaStrategy } from './strategies/jwt.twofa.strategy';
 import { TwofaController } from './twofa.controller';
 import { TwofaService } from './twofa.service';
 
@@ -22,6 +22,6 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
     }),
   ],
   controllers: [TwofaController],
-  providers: [TwofaService, JwtStrategy],
+  providers: [TwofaService, JwtTwofaStrategy],
 })
 export class TwofaModule {}

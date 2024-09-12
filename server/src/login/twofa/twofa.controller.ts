@@ -15,9 +15,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { PayloadDto } from 'src/signin/dto/payload.dto';
+import { PayloadDto } from 'src/login/signin/dto/payload.dto';
 import { TwoFactorAuthenticationCodeDto } from './dto/two.factor.authentication.code.dto';
-import { JwtGuard } from './guards/jwt.guard';
+import { JwtTwofaGuard } from './guards/jwt.twofa.guard';
 import { TwofaService } from './twofa.service';
 
 @ApiTags('twofa')
@@ -27,7 +27,7 @@ export class TwofaController {
 
   @Post('generate-qr')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtTwofaGuard)
   @ApiOperation({
     summary: 'Generate base64',
   })
@@ -50,7 +50,7 @@ export class TwofaController {
     try {
       const otpauthUrl =
         await this.twofaService.generateTwoFactorAuthenticationSecret(
-          req.user.id,
+          req.user.userId,
         );
       return res
         .status(HttpStatus.OK)
@@ -62,7 +62,7 @@ export class TwofaController {
 
   @Post('turn-on')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtTwofaGuard)
   @ApiOperation({
     summary: 'Enable 2fa',
   })

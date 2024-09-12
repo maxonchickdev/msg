@@ -3,15 +3,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PayloadDto } from 'src/signin/dto/payload.dto';
+import { PayloadDto } from 'src/login/signin/dto/payload.dto';
 import { UserService } from 'src/utils/repositories/user/user.service';
 
-export const JWT_REFRESH_KEY = 'jwt-refresh-token';
+export const JWT_REFRESH_TOKEN = 'jwt-refresh';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
   Strategy,
-  JWT_REFRESH_KEY,
+  JWT_REFRESH_TOKEN,
 ) {
   constructor(private readonly userService: UserService) {
     super({
@@ -27,18 +27,18 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   }
 
   async validate(req: Request, payloadDto: PayloadDto): Promise<PayloadDto> {
-    const user = await this.userService.findUser({ id: payloadDto.id });
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    const user = await this.userService.findUserById(payloadDto.userId);
 
     const refreshTokensMatch = await bcrypt.compare(
       req.cookies['refresh'],
       user.currentHashedRefreshToken,
     );
+
     if (!refreshTokensMatch)
       throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
 
     return {
-      id: user.id,
+      userId: user.id,
     };
   }
 }

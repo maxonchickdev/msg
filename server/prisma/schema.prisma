@@ -17,12 +17,12 @@ model User {
   id                               String   @id @unique @default(uuid())
   username                         String   @unique @db.VarChar(255)
   email                            String   @unique @db.VarChar(255)
-  password                         String   @db.VarChar(255)
+  password                         String   @unique @db.VarChar(255)
   createdAt                        DateTime @default(now())
   updatedAt                        DateTime @updatedAt
   isVerified                       Boolean  @default(false)
-  currentHashedRefreshToken        String   @default("") @db.VarChar(255)
-  twoFactorAuthenticationSecret    String   @default("") @db.VarChar(255)
+  currentHashedRefreshToken        String   @unique @default("") @db.VarChar(255)
+  twoFactorAuthenticationSecret    String   @unique @default("") @db.VarChar(255)
   isTwoFactorAuthenticationEnabled Boolean  @default(false)
   profileImage                     Avatar?  @relation(fields: [avatarId], references: [id])
   avatarId                         Int?     @unique
@@ -30,7 +30,7 @@ model User {
 
 model Avatar {
   id   Int    @id @default(autoincrement())
-  url  String @unique @db.VarChar(255)
-  key  String @unique @db.VarChar(255)
+  url  String @unique @default("") @db.VarChar(255)
+  key  String @unique @default("") @db.VarChar(255)
   user User?
 }
