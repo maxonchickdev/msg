@@ -16,12 +16,12 @@ import { RedisModule } from './utils/redis/redis.module';
       load: [mailerConfig],
       envFilePath: `${process.env.NODE_ENV}.env`,
     }),
+    ProfileModule,
     RedisModule,
     MailModule,
     SignupModule,
     SigninModule,
     TwofaModule,
-    ProfileModule,
     PrismaModule,
   ],
 })

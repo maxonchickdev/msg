@@ -12,29 +12,25 @@ export class ProfileService {
     private readonly s3Service: S3Service,
   ) {}
 
-  async getUserProfile(email: string): Promise<UserProfileDto> {
-    const user = await this.usersService.findUser({ email: email });
+  async getUserProfile(userId: string): Promise<UserProfileDto> {
+    const user = await this.usersService.findUser({ id: userId });
 
     const { id, password, isVerified, ...publicInfo } = user;
 
     return publicInfo;
   }
 
-  async uploadAvatar(
-    email: string,
-    dataBuffer: Buffer,
-    filename: string,
-  ): Promise<string> {
-    const user = await this.usersService.findUser({ email: email });
-    const avatar = await this.avatarService.deleteAvatar(user.avatarId);
+  async uploadAvatar(id: string, avatar: Express.Multer.File): Promise<string> {
+    const user = await this.usersService.findUser({ id: id });
+    const userAvatar = await this.avatarService.deleteAvatar(user.avatarId);
     await this.avatarService.deleteAvatar(user.avatarId);
-    await this.s3Service.delete(avatar.key);
+    await this.s3Service.delteFile(userAvatar.key);
 
-    const uploadResults = await this.s3Service.upload(dataBuffer, filename);
+    const { url, key } = await this.s3Service.uploadFile(avatar);
 
     const newAvatar = await this.avatarService.createAvatar({
-      url: uploadResults.Location,
-      key: uploadResults.Key,
+      url: url,
+      key: key,
     });
 
     user.avatarId = newAvatar.id;

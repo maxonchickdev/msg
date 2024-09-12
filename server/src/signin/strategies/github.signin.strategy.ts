@@ -56,7 +56,7 @@ export class GithubStrategy
       },
     });
     const payload: PayloadDto = {
-      email: user.email,
+      id: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET,

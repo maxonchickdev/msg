@@ -16,7 +16,7 @@ export class Jwt2FaStrategy extends PassportStrategy(Strategy, JWT_2FA_KEY) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          return req.cookies['accessToken'];
+          return req.cookies['access'];
         },
       ]),
       ignoreExpiration: false,
@@ -25,12 +25,12 @@ export class Jwt2FaStrategy extends PassportStrategy(Strategy, JWT_2FA_KEY) {
   }
 
   async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
-    const user = await this.usersSerivce.findUser({ email: payloadDto.email });
+    const user = await this.usersSerivce.findUser({ id: payloadDto.id });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     if (!user.isTwoFactorAuthenticationEnabled)
       throw new HttpException('Two fa is not enabled', HttpStatus.CONFLICT);
     return {
-      email: payloadDto.email,
+      id: payloadDto.id,
     };
   }
 }

@@ -7,6 +7,7 @@ CREATE TABLE `User` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `isVerified` BOOLEAN NOT NULL DEFAULT false,
+    `currentHashedRefreshToken` VARCHAR(255) NULL DEFAULT '',
     `twoFactorAuthenticationSecret` VARCHAR(255) NOT NULL DEFAULT '',
     `isTwoFactorAuthenticationEnabled` BOOLEAN NOT NULL DEFAULT false,
     `avatarId` INTEGER NULL,

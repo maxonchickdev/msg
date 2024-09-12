@@ -62,7 +62,7 @@ export class ProfileController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const profile = await this.profileService.getUserProfile(req.user.email);
+      const profile = await this.profileService.getUserProfile(req.user.id);
       return res.send(profile);
     } catch (err) {
       return res
@@ -100,7 +100,7 @@ export class ProfileController {
         'Validation failed (expected max size is 5 kb) | (expected file type is png or jpeg)',
     },
   })
-  async addProfileImage(
+  async uploadAvatar(
     @Req() req: Request & { user: PayloadDto },
     @UploadedFile(new MaxSizeAvatarPipe(), new TypeAvatarPipe())
     avatarDto: AvatarDto,
@@ -110,11 +110,7 @@ export class ProfileController {
       return res
         .status(HttpStatus.OK)
         .send(
-          await this.profileService.uploadAvatar(
-            req.user.email,
-            avatarDto.avatar.buffer,
-            avatarDto.avatar.originalname,
-          ),
+          await this.profileService.uploadAvatar(req.user.id, avatarDto.avatar),
         );
     } catch (err) {
       return res.status(500).send('Internal server error');

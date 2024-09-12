@@ -1,3 +1,3 @@
 export class PayloadDto {
-  email: string;
+  id: string;
 }

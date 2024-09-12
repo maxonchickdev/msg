@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import { Strategy } from 'passport-local';
@@ -28,7 +27,7 @@ export class LocalStrategy
     });
   }
 
-  async validate(email: string, password: string): Promise<User> {
+  async validate(email: string, password: string): Promise<boolean> {
     const user = await this.usersService.findUser({ email: email });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -43,7 +42,7 @@ export class LocalStrategy
         HttpStatus.UNAUTHORIZED,
       );
     }
-    return user;
+    return true;
   }
 
   async generateSigninTokens(
@@ -53,7 +52,7 @@ export class LocalStrategy
       email: signinUserDto.email,
     });
     const payload: PayloadDto = {
-      email: user.email,
+      id: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
@@ -63,6 +62,7 @@ export class LocalStrategy
       secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: `${process.env.JWT_REFRESH_EXPIRES_IN}s`,
     });
+    await this.usersService.setCurrntRefreshToken(refreshToken, user.id);
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,

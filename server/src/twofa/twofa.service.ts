@@ -11,25 +11,24 @@ dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 export class TwofaService {
   constructor(private readonly usersService: UserService) {}
 
-  async generateTwoFactorAuthenticationSecret(
-    payload: PayloadDto,
-  ): Promise<string> {
+  async generateTwoFactorAuthenticationSecret(userId: string): Promise<string> {
     const secret = authenticator.generateSecret();
 
     const otpauthUrl = authenticator.keyuri(
-      payload.email,
+      userId,
       process.env.GOOGLE_AUTHENTICATOR_APP_NAME,
       secret,
     );
 
     await this.usersService.updateUser({
       where: {
-        email: payload.email,
+        id: userId,
       },
       data: {
         twoFactorAuthenticationSecret: secret,
       },
     });
+
     return otpauthUrl;
   }
 
@@ -41,7 +40,7 @@ export class TwofaService {
     twoFactorAuthenticationCode: string,
     payload: PayloadDto,
   ): Promise<boolean> {
-    const user = await this.usersService.findUser({ email: payload.email });
+    const user = await this.usersService.findUser({ id: payload.id });
     const isCodeValid = authenticator.verify({
       token: twoFactorAuthenticationCode,
       secret: user.twoFactorAuthenticationSecret,
@@ -52,7 +51,7 @@ export class TwofaService {
 
     await this.usersService.updateUser({
       where: {
-        email: payload.email,
+        id: payload.id,
       },
       data: {
         isTwoFactorAuthenticationEnabled: true,

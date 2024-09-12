@@ -49,7 +49,9 @@ export class TwofaController {
   ) {
     try {
       const otpauthUrl =
-        await this.twofaService.generateTwoFactorAuthenticationSecret(req.user);
+        await this.twofaService.generateTwoFactorAuthenticationSecret(
+          req.user.id,
+        );
       return res
         .status(HttpStatus.OK)
         .send(await this.twofaService.generateQrCodeData(otpauthUrl));

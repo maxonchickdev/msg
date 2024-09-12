@@ -33,9 +33,11 @@ export class GoogleStrategy
     profile: Profile,
     done: VerifyCallback,
   ): Promise<void> {
-    const { _json } = profile;
+    const user = await this.usersService.findUser({
+      email: profile._json.email,
+    });
 
-    done(null, _json.email);
+    done(null, user.id);
   }
 
   async generateSigninTokens(
@@ -50,7 +52,7 @@ export class GoogleStrategy
       },
     });
     const payload: PayloadDto = {
-      email: user.email,
+      id: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET,

@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -19,9 +18,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
-import { PayloadDto } from './dto/payload.dto';
 import { SigninUserDto } from './dto/signin.user.dto';
 import { GithubAuthGuard } from './guards/github.auth.guard';
 import { GoogleOAuthGuard } from './guards/google.oauth.guard';
@@ -75,19 +73,13 @@ export class SigninController {
       const { accessToken, refreshToken } =
         await this.authService.localAuth(loginUserDTO);
       return res
-        .cookie('accessToken', accessToken, {
+        .cookie('access', accessToken, {
           httpOnly: true,
           path: '/',
-          expires: new Date(
-            Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
-          ),
         })
-        .cookie('refreshToken', refreshToken, {
+        .cookie('refresh', refreshToken, {
           httpOnly: true,
           path: '/',
-          expires: new Date(
-            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
-          ),
         })
         .send(true);
     } catch (err) {
@@ -97,6 +89,7 @@ export class SigninController {
     }
   }
 
+  @UseGuards(LocalSigninGuard)
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -114,52 +107,52 @@ export class SigninController {
   })
   async googleAuth(): Promise<void> {}
 
-  @Get('google-redirect')
-  @UseGuards(GoogleOAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get jwt token' })
-  @ApiOkResponse({
-    description: 'Access token is active',
-  })
-  @ApiNotFoundResponse({
-    description: 'User not found',
-    type: HttpExceptionDto,
-    example: {
-      statusCode: HttpStatus.NOT_FOUND,
-      message: 'User not found',
-    },
-  })
-  async googleAuthRedirect(
-    @Req() req: Request & { user: PayloadDto },
-    @Res() res: Response,
-  ): Promise<void> {
-    try {
-      const { email } = req.user;
-      const { accessToken, refreshToken } = await this.authService.googleAuth({
-        email,
-      });
-      return res
-        .cookie('accessToken', accessToken, {
-          httpOnly: true,
-          path: '/',
-          expires: new Date(
-            Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
-          ),
-        })
-        .cookie('refreshToken', refreshToken, {
-          httpOnly: true,
-          path: '/',
-          expires: new Date(
-            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
-          ),
-        })
-        .redirect(process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_PROFILE);
-    } catch (err) {
-      return res.redirect(
-        process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_REGISTRATE,
-      );
-    }
-  }
+  // @Get('google-redirect')
+  // @UseGuards(GoogleOAuthGuard)
+  // @HttpCode(HttpStatus.OK)
+  // @ApiOperation({ summary: 'Get jwt token' })
+  // @ApiOkResponse({
+  //   description: 'Access token is active',
+  // })
+  // @ApiNotFoundResponse({
+  //   description: 'User not found',
+  //   type: HttpExceptionDto,
+  //   example: {
+  //     statusCode: HttpStatus.NOT_FOUND,
+  //     message: 'User not found',
+  //   },
+  // })
+  // async googleAuthRedirect(
+  //   @Req() req: Request & { user: PayloadDto },
+  //   @Res() res: Response,
+  // ): Promise<void> {
+  //   try {
+  //     const { id } = req.user;
+  //     const { accessToken, refreshToken } = await this.authService.googleAuth({
+  //       id,
+  //     });
+  //     return res
+  //       .cookie('accessToken', accessToken, {
+  //         httpOnly: true,
+  //         path: '/',
+  //         expires: new Date(
+  //           Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
+  //         ),
+  //       })
+  //       .cookie('refreshToken', refreshToken, {
+  //         httpOnly: true,
+  //         path: '/',
+  //         expires: new Date(
+  //           Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
+  //         ),
+  //       })
+  //       .redirect(process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_PROFILE);
+  //   } catch (err) {
+  //     return res.redirect(
+  //       process.env.CLIENT_ORIGIN + process.env.CLIENT_TO_REGISTRATE,
+  //     );
+  //   }
+  // }
 
   @Get('github')
   @UseGuards(GithubAuthGuard)
@@ -178,56 +171,56 @@ export class SigninController {
   })
   async githubAuth(): Promise<void> {}
 
-  @Get('github-redirect')
-  @UseGuards(GithubAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get jwt token' })
-  @ApiOkResponse({
-    description: 'Access token is active',
-  })
-  @ApiNotFoundResponse({
-    description: 'User not found',
-    type: HttpExceptionDto,
-    example: {
-      statusCode: HttpStatus.NOT_FOUND,
-      message: 'User not found',
-    },
-  })
-  async githubAuthRedirect(
-    @Req() req: Request & { user: PayloadDto },
-    @Res() res: Response,
-  ): Promise<Response> {
-    try {
-      const { email } = req.user;
-      const { accessToken, refreshToken } = await this.authService.githubAuth({
-        email,
-      });
-      return res
-        .cookie('accessToken', accessToken, {
-          httpOnly: true,
-          path: '/',
-          expires: new Date(
-            Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
-          ),
-        })
-        .cookie('refreshToken', refreshToken, {
-          httpOnly: true,
-          path: '/',
-          expires: new Date(
-            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
-          ),
-        });
-      // .redirect(
-      //   this.configService
-      //     .get<string>('CLIENT_ORIGIN')
-      //     .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
-      // );
-    } catch (err) {
-      // return res.redirect(
-      //   this.configService
-      //     .get<string>('CLIENT_ORIGIN')
-      //     .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
-      // );
-    }
-  }
+  // @Get('github-redirect')
+  // @UseGuards(GithubAuthGuard)
+  // @HttpCode(HttpStatus.OK)
+  // @ApiOperation({ summary: 'Get jwt token' })
+  // @ApiOkResponse({
+  //   description: 'Access token is active',
+  // })
+  // @ApiNotFoundResponse({
+  //   description: 'User not found',
+  //   type: HttpExceptionDto,
+  //   example: {
+  //     statusCode: HttpStatus.NOT_FOUND,
+  //     message: 'User not found',
+  //   },
+  // })
+  // async githubAuthRedirect(
+  //   @Req() req: Request & { user: PayloadDto },
+  //   @Res() res: Response,
+  // ): Promise<Response> {
+  //   try {
+  //     const { id } = req.user;
+  //     const { accessToken, refreshToken } = await this.authService.githubAuth({
+  //       id,
+  //     });
+  //     return res
+  //       .cookie('accessToken', accessToken, {
+  //         httpOnly: true,
+  //         path: '/',
+  //         expires: new Date(
+  //           Date.now() + parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
+  //         ),
+  //       })
+  //       .cookie('refreshToken', refreshToken, {
+  //         httpOnly: true,
+  //         path: '/',
+  //         expires: new Date(
+  //           Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
+  //         ),
+  //       });
+  //     // .redirect(
+  //     //   this.configService
+  //     //     .get<string>('CLIENT_ORIGIN')
+  //     //     .concat(this.configService.get<string>('CLIENT_TO_PROFILE')),
+  //     // );
+  //   } catch (err) {
+  //     // return res.redirect(
+  //     //   this.configService
+  //     //     .get<string>('CLIENT_ORIGIN')
+  //     //     .concat(this.configService.get<string>('CLIENT_TO_REGISTRATE')),
+  //     // );
+  //   }
+  // }
 }

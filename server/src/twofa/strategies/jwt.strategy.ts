@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT_QR_KEY) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          return req.cookies['accessToken'];
+          return req.cookies['access'];
         },
       ]),
       ignoreExpiration: false,
@@ -25,12 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT_QR_KEY) {
   }
 
   async validate(payloadDto: PayloadDto): Promise<PayloadDto> {
-    const user = await this.usersService.findUser({ email: payloadDto.email });
+    const user = await this.usersService.findUser({ id: payloadDto.id });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return {
-      email: payloadDto.email,
+      id: payloadDto.id,
     };
   }
 }
