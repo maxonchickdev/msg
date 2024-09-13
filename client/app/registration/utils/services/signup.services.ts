@@ -1,4 +1,5 @@
-import axios, { AxiosError } from "axios";
+import { axiosInstance } from "@/app/axios/axios.setup";
+import { AxiosError } from "axios";
 import { IRegistrate } from "../interfaces/signup.interfaces";
 
 export const Services = {
@@ -6,13 +7,9 @@ export const Services = {
     registrateUser: IRegistrate
   ): Promise<{ status: number }> => {
     try {
-      const res = await axios({
+      const res = await axiosInstance({
         url: process.env.SERVER_BASIC_SIGNUP,
         method: "post",
-        baseURL: process.env.SERVER_ORIGIN,
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: registrateUser,
       });
       return { status: res.status };

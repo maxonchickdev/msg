@@ -1,18 +1,14 @@
-import axios, { AxiosError } from "axios";
+import { axiosInstance } from "@/app/axios/axios.setup";
+import { AxiosError } from "axios";
 import { ILogin } from "../interfaces/signin.interfaces";
 
 export const Services = {
   login: async (loginUser: ILogin): Promise<{ status: number }> => {
     try {
-      const res = await axios({
+      const res = await axiosInstance({
         url: process.env.SERVER_BASIC_SIGNIN,
         method: "post",
-        baseURL: process.env.SERVER_ORIGIN,
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: loginUser,
-        withCredentials: true,
       });
       return { status: res.status };
     } catch (err) {

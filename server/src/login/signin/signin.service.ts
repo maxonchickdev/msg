@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import * as dotenv from 'dotenv';
 import { SigninTokensDto } from './dto/signin.tokens.dto';
 import { SigninUserDto } from './dto/signin.user.dto';
@@ -17,6 +18,8 @@ export class SigninService {
     private readonly githubStrategy: GithubStrategy,
     private readonly jwtService: JwtService,
   ) {}
+
+  private readonly logger = new Logger(SigninService.name);
 
   async localAuth(signinUserDTO: SigninUserDto): Promise<SigninTokensDto> {
     return this.localAuthStrategy.generateSigninTokens(signinUserDTO);
@@ -39,5 +42,10 @@ export class SigninService {
       },
     );
     return newAccessToken;
+  }
+
+  @Cron(CronExpression.EVERY_5_SECONDS)
+  handleCron() {
+    this.logger.debug('Called when the current hour is 0');
   }
 }

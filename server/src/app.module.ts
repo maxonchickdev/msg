@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { SigninModule } from './login/signin/signin.module';
 import { TwofaModule } from './login/twofa/twofa.module';
 import { ProfileModule } from './profile/profile.module';
@@ -9,6 +10,7 @@ import { RedisModule } from './utils/redis/redis.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     RedisModule,
     MailModule,
     SignupModule,

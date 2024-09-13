@@ -1,17 +1,13 @@
-import axios, { AxiosError } from "axios";
+import { axiosInstance } from "@/app/axios/axios.setup";
+import { AxiosError } from "axios";
 import { TwofaCode } from "../interfaces/2fa.interfaces";
 
 export const Services = {
   qr: async (): Promise<string> => {
     try {
-      const res = await axios({
+      const res = await axiosInstance({
         url: process.env.SERVER_QR,
         method: "post",
-        baseURL: process.env.SERVER_ORIGIN,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
       });
       return res.data;
     } catch (err) {
@@ -24,15 +20,10 @@ export const Services = {
 
   turnOnTwofa: async (code: TwofaCode): Promise<boolean> => {
     try {
-      const res = await axios({
+      const res = await axiosInstance({
         url: process.env.SERVER_TWO_FA_ON,
         method: "post",
-        baseURL: process.env.SERVER_ORIGIN,
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: code,
-        withCredentials: true,
       });
       return res.data;
     } catch (err) {
