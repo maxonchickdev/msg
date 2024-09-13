@@ -14,7 +14,7 @@ import { SyntheticEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginForm } from "./components/form/signin.form";
 import { ILogin } from "./utils/interfaces/signin.interfaces";
-import { Services } from "./utils/services/signup.services";
+import { Services } from "./utils/services/signin.services";
 
 export default function Login() {
   const router = useRouter();

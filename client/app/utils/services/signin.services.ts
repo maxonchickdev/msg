@@ -18,4 +18,19 @@ export const Services = {
       throw new Error("Internal server error").message;
     }
   },
+
+  refresh: async (): Promise<void> => {
+    try {
+      const res = await axiosInstance({
+        url: process.env.SERVER_REFRESH,
+        method: "get",
+      });
+      return res.data;
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        throw new Error(err.response.data.message).message;
+      }
+      throw new Error("Internal server error").message;
+    }
+  },
 };

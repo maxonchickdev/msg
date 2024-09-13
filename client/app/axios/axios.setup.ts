@@ -1,7 +1,5 @@
-"use server";
-
 import axios from "axios";
-import { cookies } from "next/headers";
+import { Services } from "../utils/services/signin.services";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.SERVER_ORIGIN,
@@ -12,20 +10,18 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error) => {
-    const cookieStore = cookies();
-    const originalRequest = error.config;
-    if (
-      error.response.status === 401 &&
-      error.config &&
-      !error.config._isRetry
-    ) {
-      originalRequest._isRetry = true;
-      const refreshToken = cookieStore.get("refresh");
-      console.log(refreshToken);
-    } else {
-      console.log("ping");
+    if (error.response?.status === 401 && !error.config._retry) {
+      try {
+        error.config._retry = true;
+        await Services.refresh();
+        return axiosInstance(error.config);
+      } catch (e) {
+        return Promise.reject(error);
+      }
     }
   }
 );
