@@ -1,4 +1,4 @@
-# MESSANGER
+# MSG
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
@@ -14,12 +14,13 @@ MAILER_HOST=
 MAILER_PORT=
 MAILER_PASS=
 
-NESTJS_APP_LOCAL_PORT=
-NESTJS_APP_DOCKER_PORT=
+SERVER_HOST=
+SERVER_APP_PORT=
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_CALL_BACK_URL=
+GOOGLE_AUTHENTICATOR_APP_NAME=
 
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
@@ -32,17 +33,17 @@ CLIENT_TO_PROFILE=
 
 REDIS_HOST=
 REDIS_LOCAL_PORT=
+REDIS_TTl=
+REDIS_MAX=
 
 SALT_OR_ROUNDS=
 
-SWAGGER_PASSWORD=
-
 DATABASE_URL=
 
-JWT_SECRET=
-JWT_EXPIRES_IN=
-
-GOOGLE_AUTHENTICATOR_APP_NAME=
+JWT_ACCESS_SECRET=
+JWT_ACCESS_EXPIRES_IN=
+JWT_REFRESH_SECRET=
+JWT_REFRESH_EXPIRES_IN=
 
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -72,6 +73,7 @@ NEXT_PUBLIC_CLIENT_REG=
 NEXT_PUBLIC_CLIENT_CONFIRMATION=
 NEXT_PUBLIC_CLIENT_PROFILE=
 NEXT_PUBLIC_CLIENT_TWOFA=
+NEST_PUBLIC_SERVER_REFRESH=
 ```
 
 ## 2. Up with docker-compose
@@ -79,7 +81,7 @@ NEXT_PUBLIC_CLIENT_TWOFA=
 #### Pull images and up containers
 
 ```sh
-docker-compose --env-file ./server/.env ./client/.env up --build
+docker-compose --env-file ./server/development.env ./client/.env up --build
 ```
 
 ## 3. Server tree
@@ -87,35 +89,52 @@ docker-compose --env-file ./server/.env ./client/.env up --build
 ```sh
 src
 ├── app.module.ts
+├── login
+│   ├── signin
+│   │   ├── dto
+│   │   │   ├── payload.dto.ts
+│   │   │   ├── signin.tokens.dto.ts
+│   │   │   ├── signin.user.dto.ts
+│   │   │   └── two.factor.authentication.code.dto.ts
+│   │   ├── guards
+│   │   │   ├── github.auth.guard.ts
+│   │   │   ├── google.oauth.guard.ts
+│   │   │   ├── jwt.refresh.guard.ts
+│   │   │   └── local.signin.guard.ts
+│   │   ├── signin.controller.ts
+│   │   ├── signin.module.ts
+│   │   ├── signin.service.ts
+│   │   └── strategies
+│   │       ├── github.signin.strategy.ts
+│   │       ├── google.signin.strategy.ts
+│   │       ├── jwt.refresh.token.strategy.ts
+│   │       ├── local.signin.strategy.ts
+│   │       └── signin.strategy.ts
+│   └── twofa
+│       ├── dto
+│       │   └── two.factor.authentication.code.dto.ts
+│       ├── guards
+│       │   └── jwt.twofa.guard.ts
+│       ├── strategies
+│       │   └── jwt.twofa.strategy.ts
+│       ├── twofa.controller.ts
+│       ├── twofa.module.ts
+│       └── twofa.service.ts
 ├── main.ts
 ├── profile
 │   ├── dto
+│   │   ├── avatar.dto.ts
 │   │   └── user.profile.dto.ts
 │   ├── guards
-│   │   └── jwt.2fa.guard.ts
+│   │   └── jwt.main.guard.ts
+│   ├── pipes
+│   │   ├── max.size.avatar.pipe.ts
+│   │   └── type.avatar.pipe.ts
 │   ├── profile.controller.ts
 │   ├── profile.module.ts
 │   ├── profile.service.ts
 │   └── strategies
-│       └── jwt.2fa.strategy.ts
-├── signin
-│   ├── dto
-│   │   ├── access.token.dto.ts
-│   │   ├── payload.dto.ts
-│   │   ├── signin.user.dto.ts
-│   │   └── two.factor.authentication.code.dto.ts
-│   ├── guards
-│   │   ├── github.auth.guard.ts
-│   │   ├── google.oauth.guard.ts
-│   │   └── local.signin.guard.ts
-│   ├── signin.controller.ts
-│   ├── signin.module.ts
-│   ├── signin.service.ts
-│   └── strategies
-│       ├── github.signin.strategy.ts
-│       ├── google.signin.strategy.ts
-│       ├── local.signin.strategy.ts
-│       └── signin.strategy.ts
+│       └── jwt.main.strategy.ts
 ├── signup
 │   ├── dto
 │   │   ├── create.user.dto.ts
@@ -128,22 +147,7 @@ src
 │   ├── signup.controller.ts
 │   ├── signup.module.ts
 │   └── signup.service.ts
-├── twofa
-│   ├── dto
-│   │   ├── access.token.dto.ts
-│   │   └── two.factor.authentication.code.dto.ts
-│   ├── guards
-│   │   └── jwt.guard.ts
-│   ├── strategies
-│   │   └── jwt.strategy.ts
-│   ├── twofa.controller.ts
-│   ├── twofa.module.ts
-│   └── twofa.service.ts
 └── utils
-    ├── config
-    │   ├── mailer.config.ts
-    │   ├── redis.config.ts
-    │   └── swagger.config.ts
     ├── mail
     │   ├── dto
     │   │   └── send.mail.dto.ts
@@ -170,19 +174,21 @@ src
 ## 4. Client tree
 
 ```sh
-app
+app/
 ├── 2fa
 │   ├── components
 │   │   └── err.tsx
 │   ├── page.tsx
 │   └── utils
 │       ├── interfaces
-│       │   └── index.ts
+│       │   └── 2fa.interfaces.ts
 │       └── services
-│           └── index.ts
+│           └── 2fa.services.ts
+├── axios
+│   └── axios.setup.ts
 ├── components
 │   └── form
-│       └── index.tsx
+│       └── signin.form.tsx
 ├── favicon.ico
 ├── global.css
 ├── layout.tsx
@@ -192,34 +198,34 @@ app
 │   ├── page.tsx
 │   └── utils
 │       ├── interfaces
-│       │   └── index.ts
+│       │   └── profile.interfaces.ts
 │       └── services
-│           └── index.ts
+│           └── profile.services.ts
 ├── registration
 │   ├── components
 │   │   └── form
-│   │       └── index.tsx
+│   │       └── signup.form.tsx
 │   ├── confirmation
 │   │   ├── components
 │   │   │   └── form
-│   │   │       └── index.tsx
+│   │   │       └── email.confirmation.form.tsx
 │   │   ├── page.tsx
 │   │   └── utils
 │   │       ├── interfaces
-│   │       │   └── index.ts
+│   │       │   └── email.confirmation.interfaces.ts
 │   │       └── services
-│   │           └── index.ts
+│   │           └── email.confirmation.services.ts
 │   ├── page.tsx
 │   └── utils
 │       ├── interfaces
-│       │   └── index.ts
+│       │   └── signup.interfaces.ts
 │       └── services
-│           └── index.ts
+│           └── signup.services.ts
 └── utils
     ├── interfaces
-    │   └── index.ts
+    │   └── signin.interfaces.ts
     └── services
-        └── index.ts
+        └── signin.services.ts
 ```
 
 ## 5. Support
