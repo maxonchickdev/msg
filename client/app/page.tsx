@@ -12,7 +12,7 @@ import Stack from "@mui/material/Stack"
 import { useRouter } from "next/navigation"
 import { SyntheticEvent, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { SigninForm } from './SigninUtils/SigninComponents/SigninForm/signinForm.component'
+import { SigninForm } from './SigninUtils/SigninComponents/SigninForm/SigninForm.component'
 import { ILogin } from "./SigninUtils/SigninInterfaces/Signin.interfaces"
 import { SigninServices } from "./SigninUtils/SigninServices/Signin.services"
 

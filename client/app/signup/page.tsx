@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { SyntheticEvent, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import secureLocalStorage from "react-secure-storage"
+import { SignupForm } from './SignupUtils/SignupComponents/SignupForm/SignupForm.component'
 import { IRegistrate } from "./SignupUtils/SignupInterfaces/Signup.interfaces"
 import { SignupServices } from './SignupUtils/SignupServices/Signup.services'
 
@@ -46,7 +47,7 @@ export default function Page() {
         <h1 className="font-bold text-2xl text-center pb-2">
           Join to <span className="text-green-700">MSG</span>
         </h1>
-        <RegistrationForm onSubmitUserInfo={onSubmitUserInfo} />
+        <SignupForm onSubmitUserInfo={onSubmitUserInfo} />
         {regError ? (
           <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
             <Alert

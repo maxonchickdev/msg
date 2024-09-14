@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IProfile } from './ProfileUtils/ProfileInterfaces/Profile.interfaces'
-import { ProfileServices } from './ProfileUtils/ProfileServices/profile.services'
+import { ProfileServices } from './ProfileUtils/ProfileServices/Profile.services'
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);

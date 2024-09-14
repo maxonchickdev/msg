@@ -10,11 +10,11 @@ export interface ILoginFormProps {
   onSubmitLogin: SubmitHandler<ILogin>;
 }
 
-export interface ISigninSubmitButton {
+export interface ISigninSubmitButtonProps {
   content: string
 }
 
-export interface ISigninFormController {
+export interface ISigninFormControllerProps {
   control: Control<ILogin>
   required: string
   label: string

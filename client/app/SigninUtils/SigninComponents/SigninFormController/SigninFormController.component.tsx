@@ -1,9 +1,9 @@
 import { TextField } from '@mui/material'
 import { FC } from 'react'
 import { Controller } from 'react-hook-form'
-import { ISigninFormController } from '../../SigninInterfaces/Signin.interfaces'
+import { ISigninFormControllerProps } from '../../SigninInterfaces/Signin.interfaces'
 
-export const SigninFormController: FC<ISigninFormController> = ({control, required, label, type}) => {
+export const SigninFormController: FC<ISigninFormControllerProps> = ({control, required, label, type}) => {
 	return (
 		<Controller
         control={control}

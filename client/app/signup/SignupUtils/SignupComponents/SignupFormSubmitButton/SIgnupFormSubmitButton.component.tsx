@@ -1,10 +1,9 @@
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import { Button } from '@mui/material'
 import { FC } from 'react'
-import { ISigninSubmitButtonProps } from '../../SigninInterfaces/Signin.interfaces'
+import { ISignupSubmitButtonProps } from '../../SignupInterfaces/Signup.interfaces'
 
-
-export const SigninSubmitButton: FC<ISigninSubmitButtonProps> = ({content}) => {
+export const SignupFormSubmitButton: FC<ISignupSubmitButtonProps> = ({content}) => {
 	return (
 		<Button
         type="submit"
@@ -15,4 +14,4 @@ export const SigninSubmitButton: FC<ISigninSubmitButtonProps> = ({content}) => {
         {content}
       </Button>
 	)
-}
+} 

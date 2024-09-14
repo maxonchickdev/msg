@@ -1,12 +1,11 @@
 import { Err } from '@/app/twofa/TwofaUtils/TwofaComponents/err'
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
-import Button from "@mui/material/Button"
-import TextField from "@mui/material/TextField"
 import { FC } from "react"
-import { Controller, useForm } from "react-hook-form"
-import { IRegistrate, RegistrationFormProps } from '../../SignupInterfaces/Signup.interfaces'
+import { useForm } from "react-hook-form"
+import { IRegistrate, IRegistrationFormProps } from '../../SignupInterfaces/Signup.interfaces'
+import { SignupFormController } from '../SignupFormController/SignupFormController.component'
+import { SignupFormSubmitButton } from '../SignupFormSubmitButton/SIgnupFormSubmitButton.component'
 
-export const SignupForm: FC<RegistrationFormProps> = ({
+export const SignupForm: FC<IRegistrationFormProps> = ({
   onSubmitUserInfo,
 }) => {
   const {
@@ -18,49 +17,11 @@ export const SignupForm: FC<RegistrationFormProps> = ({
   });
   return (
     <form onSubmit={handleSubmit(onSubmitUserInfo)}>
-      <Controller
-        control={control}
-        rules={{
-          required: "Username is required",
-        }}
-        name="username"
-        render={({ field: { value, onChange } }) => (
-          <TextField
-            id="outlined-password-input"
-            label="Username"
-            type="text"
-            defaultValue={value}
-            onChange={onChange}
-            sx={{ margin: "4px 0" }}
-            fullWidth
-            size="small"
-          />
-        )}
-      />
+      <SignupFormController control={control} required='Username is required' name='username' label='Username' type='text' />
       {errors.username && <Err msg={errors.username.message!} />}
-      <Controller
-        control={control}
-        rules={{
-          required: "Email is required",
-        }}
-        name="email"
-        render={({ field: { value, onChange } }) => (
-          <TextField
-            id="outlined-password-input"
-            label="Email"
-            type="email"
-            defaultValue={value}
-            onChange={onChange}
-            sx={{ margin: "4px 0" }}
-            fullWidth
-            size="small"
-          />
-        )}
-      />
+      <SignupFormController control={control} required='Email is required' name='email' label='Email' type='email' />
       {errors.email && <Err msg={errors.email.message!} />}
-      <Controller
-        control={control}
-        rules={{
+      <SignupFormController control={control} required='Password is required' name='password' label='Password' type='password' rules={{
           required: "Password is required",
           validate: {
             noWhitespace: (value) =>
@@ -81,30 +42,9 @@ export const SignupForm: FC<RegistrationFormProps> = ({
               /^.{8,16}$/.test(value) ||
               "Password must be 8-16 characters long",
           },
-        }}
-        name="password"
-        render={({ field: { value, onChange } }) => (
-          <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
-            defaultValue={value}
-            onChange={onChange}
-            sx={{ margin: "4px 0" }}
-            fullWidth
-            size="small"
-          />
-        )}
-      />
+        }} />
       {errors.password && <Err msg={errors.password.message!} />}
-      <Button
-        type="submit"
-        fullWidth
-        variant="outlined"
-        endIcon={<KeyboardArrowUpIcon color="info" />}
-      >
-        Submit
-      </Button>
+      <SignupFormSubmitButton content='Submit' />
     </form>
   );
 };
