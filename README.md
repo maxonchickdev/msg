@@ -51,29 +51,31 @@ AWS_REGION=
 AWS_PUBLIC_BUCKET_NAME=
 ```
 
-- create **.env** file of the client directory
+- create **development.env** file of the client directory
 
 ```.env
-NEXT_PUBLIC_SECURE_LOCAL_STORAGE_HASH_KEY=
-NEXT_PUBLIC_SECURE_LOCAL_STORAGE_PREFIX=
-NEST_PUBLIC_SERVER_BASE=
-NEST_PUBLIC_SERVER_BASIC_SIGNUP=
-SERVER_BASIC_SIGNUP_CONFIRM=
-NEST_PUBLIC_SERVER_BASIC_SIGNUP_CONFIRM=
-SERVER_BASIC_SIGNUP_RESEND=
-NEST_PUBLIC_SERVER_BASIC_SIGNUP_RESEND=
-NEST_PUBLIC_SERVER_BASIC_SIGNIN=
-NEST_PUBLIC_SERVER_GOOGLE_SIGNIN=
-NEST_PUBLIC_SERVER_GITHUB_SIGNIN=
-NEST_PUBLIC_SERVER_QR=
-NEST_PUBLIC_SERVER_TWO_FA_ON=
-NEST_PUBLIC_SERVER_PROFILE=
-NEST_PUBLIC_SERVER_UPLOAD_AVATAR=
-NEXT_PUBLIC_CLIENT_REG=
-NEXT_PUBLIC_CLIENT_CONFIRMATION=
-NEXT_PUBLIC_CLIENT_PROFILE=
-NEXT_PUBLIC_CLIENT_TWOFA=
-NEST_PUBLIC_SERVER_REFRESH=
+CLIENT_LS_HASH=
+CLIENT_LS_PREFIX=
+
+SERVER_HOST=
+SERVER_PORT=
+SERVER_SIGNUP=
+SERVER_SIGNUP_CONFIRM=
+SERVER_SIGNUP_RESEND_CODE=
+SERVER_SIGNIN_BASIC=
+SERVER_SIGNIN_GOOGLE=
+SERVER_SIGNIN_GITHUB=
+SERVER_SIGNIN_REFRESH=
+SERVER_TWOFA_QR=
+SERVER_TWOFA_TURN_ON=
+SERVER_PROFILE=
+SERVER_UPLOAD_AVATAR=
+
+CLIENT_SIGNUP=
+CLIENT_SIGNUP_CONFIRM=
+CLIENT_SIGNIN=
+CLIENT_SIGNIN_TWOFA=
+CLIENT_PROFILE=
 ```
 
 ## 2. Up with docker-compose
@@ -81,7 +83,7 @@ NEST_PUBLIC_SERVER_REFRESH=
 #### Pull images and up containers
 
 ```sh
-docker-compose --env-file ./server/development.env ./client/.env up --build
+docker-compose --env-file ./server/development.env --env-file ./client/development.env up --build
 ```
 
 ## 3. Server tree
@@ -174,58 +176,67 @@ src
 ## 4. Client tree
 
 ```sh
-app/
-├── 2fa
-│   ├── components
-│   │   └── err.tsx
-│   ├── page.tsx
-│   └── utils
-│       ├── interfaces
-│       │   └── 2fa.interfaces.ts
-│       └── services
-│           └── 2fa.services.ts
+app
+├── SigninUtils
+│   ├── SigninComponents
+│   │   ├── SigninForm
+│   │   │   └── SigninForm.component.tsx
+│   │   ├── SigninFormController
+│   │   │   └── SigninFormController.component.tsx
+│   │   └── SigninSubmitButton
+│   │       └── SigninSubmitButton.component.tsx
+│   ├── SigninInterfaces
+│   │   └── Signin.interfaces.ts
+│   └── SigninServices
+│       └── Signin.services.ts
 ├── axios
 │   └── axios.setup.ts
-├── components
-│   └── form
-│       └── signin.form.tsx
 ├── favicon.ico
 ├── global.css
 ├── layout.tsx
 ├── not-found.tsx
 ├── page.tsx
 ├── profile
-│   ├── page.tsx
-│   └── utils
-│       ├── interfaces
-│       │   └── profile.interfaces.ts
-│       └── services
-│           └── profile.services.ts
-├── registration
-│   ├── components
-│   │   └── form
-│   │       └── signup.form.tsx
-│   ├── confirmation
-│   │   ├── components
-│   │   │   └── form
-│   │   │       └── email.confirmation.form.tsx
-│   │   ├── page.tsx
-│   │   └── utils
-│   │       ├── interfaces
-│   │       │   └── email.confirmation.interfaces.ts
-│   │       └── services
-│   │           └── email.confirmation.services.ts
-│   ├── page.tsx
-│   └── utils
-│       ├── interfaces
-│       │   └── signup.interfaces.ts
-│       └── services
-│           └── signup.services.ts
-└── utils
-    ├── interfaces
-    │   └── signin.interfaces.ts
-    └── services
-        └── signin.services.ts
+│   ├── ProfileUtils
+│   │   ├── ProfileComponents
+│   │   ├── ProfileInterfaces
+│   │   │   └── Profile.interfaces.ts
+│   │   └── ProfileServices
+│   │       └── Profile.services.ts
+│   └── page.tsx
+├── signup
+│   ├── SignupUtils
+│   │   ├── SignupComponents
+│   │   │   ├── SignupForm
+│   │   │   │   └── SignupForm.component.tsx
+│   │   │   ├── SignupFormController
+│   │   │   │   └── SignupFormController.component.tsx
+│   │   │   └── SignupFormSubmitButton
+│   │   │       └── SIgnupFormSubmitButton.component.tsx
+│   │   ├── SignupInterfaces
+│   │   │   └── Signup.interfaces.ts
+│   │   └── SignupServices
+│   │       └── Signup.services.ts
+│   ├── confirm
+│   │   ├── ConfirmUtils
+│   │   │   ├── ConfirmComponents
+│   │   │   │   └── ConfirmForm
+│   │   │   │       └── ConfirmForm.form.tsx
+│   │   │   ├── ConfirmInterfaces
+│   │   │   │   └── Confirm.interfaces.ts
+│   │   │   └── ConfirmServices
+│   │   │       └── Confirm.services.ts
+│   │   └── page.tsx
+│   └── page.tsx
+└── twofa
+    ├── TwofaUtils
+    │   ├── TwofaComponents
+    │   │   └── err.tsx
+    │   ├── TwofaInterfaces
+    │   │   └── Twofa.interfaces.ts
+    │   └── TwofaServices
+    │       └── Twofa.services.ts
+    └── page.tsx
 ```
 
 ## 5. Support
