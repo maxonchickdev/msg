@@ -1,9 +1,9 @@
-import { INestApplication, Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cookieParser from 'cookie-parser';
-import * as dotenv from 'dotenv';
-import { AppModule } from './app.module';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import * as cookieParser from 'cookie-parser'
+import * as dotenv from 'dotenv'
+import { AppModule } from './app.module'
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -18,6 +18,8 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('MSG api')

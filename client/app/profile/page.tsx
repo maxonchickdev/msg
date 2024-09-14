@@ -1,12 +1,11 @@
 "use client";
 
-import { Link } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IProfile } from "./utils/interfaces/profile.interfaces";
-import { Services } from "./utils/services/profile.services";
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { IProfile } from './ProfileUtils/ProfileInterfaces/Profile.interfaces'
+import { ProfileServices } from './ProfileUtils/ProfileServices/profile.services'
 
-export default function Registrate() {
+export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
   const [profile, setProfile] = useState<IProfile | null>(null);
@@ -14,7 +13,7 @@ export default function Registrate() {
 
   const getProfileDetails = async () => {
     try {
-      const { data } = await Services.profile();
+      const { data } = await ProfileServices.profile();
       setProfile(data);
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "An error occurred");
@@ -29,14 +28,6 @@ export default function Registrate() {
 
   if (loading) return <>Loading...</>;
 
-  if (!profile)
-    return (
-      <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] text-center">
-        <p className="text-4xl font-bold">{message}</p>
-        <Link href={process.env.NEXT_PUBLIC_CLIENT_ROOT}>Come back</Link>
-      </div>
-    );
-
   const onSubmit = async (data: { file: FileList }) => {
     if (data.file.length > 0) {
       const file = data.file[0];
@@ -44,7 +35,7 @@ export default function Registrate() {
       formData.append("file", file);
 
       try {
-        await Services.uploadAvatar(formData);
+        await ProfileServices.uploadAvatar(formData);
         setMessage("Avatar uploaded successfully!");
       } catch (err) {
         setMessage(err instanceof Error ? err.message : "Upload failed");
@@ -53,6 +44,8 @@ export default function Registrate() {
       setMessage("Please select a file to upload.");
     }
   };
+
+  if(!profile) return
 
   return (
     <>

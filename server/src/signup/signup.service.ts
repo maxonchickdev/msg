@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import * as dotenv from 'dotenv';
-import { ResendCodeDto } from 'src/signup/dto/resend.code.dto';
-import { RedisService } from 'src/utils/redis/redis.service';
-import { UserService } from 'src/utils/repositories/user/user.service';
-import { v4 as uuidv4 } from 'uuid';
-import { MailService } from '../utils/mail/mail.service';
-import { CreateUserDto } from './dto/create.user.dto';
-import { EmailConfirmationDto } from './dto/email.confirmation.dto';
+import { Injectable } from '@nestjs/common'
+import * as bcrypt from 'bcrypt'
+import * as dotenv from 'dotenv'
+import { ResendCodeDto } from 'src/signup/dto/resend.code.dto'
+import { RedisService } from 'src/utils/redis/redis.service'
+import { UserService } from 'src/utils/repositories/user/user.service'
+import { v4 as uuidv4 } from 'uuid'
+import { MailService } from '../utils/mail/mail.service'
+import { CreateUserDto } from './dto/create.user.dto'
+import { EmailConfirmationDto } from './dto/email.confirmation.dto'
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -24,7 +24,7 @@ export class RegistrationService {
 
     await this.mailService.sendMail({
       to: createUserDto.email,
-      subject: 'Email from MESSANGER',
+      subject: 'Email from MSG',
       text: 'Your email confirmation code',
       value: confirmationCode,
     });
@@ -72,7 +72,7 @@ export class RegistrationService {
 
     await this.mailService.sendMail({
       to: resendCodeDto.email,
-      subject: 'Email from MESSANGER',
+      subject: 'Email from MSG',
       text: 'Your email confirmation code',
       value: confirmationCode,
     });

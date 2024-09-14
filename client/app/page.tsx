@@ -1,30 +1,30 @@
 "use client";
 
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
-import { Divider } from "@mui/material";
-import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
-import Snackbar from "@mui/material/Snackbar";
-import Stack from "@mui/material/Stack";
-import { useRouter } from "next/navigation";
-import { SyntheticEvent, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { LoginForm } from "./components/form/signin.form";
-import { ILogin } from "./utils/interfaces/signin.interfaces";
-import { Services } from "./utils/services/signin.services";
+import GitHubIcon from "@mui/icons-material/GitHub"
+import GoogleIcon from "@mui/icons-material/Google"
+import { Divider } from "@mui/material"
+import Alert from "@mui/material/Alert"
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import Link from "@mui/material/Link"
+import Snackbar from "@mui/material/Snackbar"
+import Stack from "@mui/material/Stack"
+import { useRouter } from "next/navigation"
+import { SyntheticEvent, useState } from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { SigninForm } from './SigninUtils/SigninComponents/SigninForm/signinForm.component'
+import { ILogin } from "./SigninUtils/SigninInterfaces/Signin.interfaces"
+import { SigninServices } from "./SigninUtils/SigninServices/Signin.services"
 
-export default function Login() {
+export default function Page() {
   const router = useRouter();
   const [error, setError] = useState<string>("");
   const [open, setOpen] = useState(false);
   const { reset } = useForm<ILogin>();
   const onSubmitLogin: SubmitHandler<ILogin> = async (data) => {
     try {
-      const { status } = await Services.login(data);
-      router.push(process.env.CLIENT_TWOFA as string);
+      const { status } = await SigninServices.login(data);
+      router.push(process.env.CLIENT_SIGNIN_TWOFA as string);
       reset();
     } catch (err) {
       setError(err as string);
@@ -48,17 +48,12 @@ export default function Login() {
     >
       <div className="max-w-[700px] w-full">
         <h1 className="font-bold text-2xl text-center pb-4">
-          Login to <span className="text-green-700">MESSANGER</span>
+          Login to <span className="text-green-700">MSG</span>
         </h1>
         <Button
           type="submit"
           onClick={() => {
-            router.push(
-              (process.env.SERVER_ORIGIN as string).concat(
-                process.env.SERVER_GOOGLE_AUTH as string
-              )
-            );
-          }}
+            router.push('http://' + process.env.SERVER_HOST as string + ":" + process.env.SERVER_PORT + process.env.SERVER_SIGNIN_GOOGLE as string)}}
           fullWidth
           endIcon={<GoogleIcon color="success" />}
           variant="outlined"
@@ -69,11 +64,7 @@ export default function Login() {
         <Button
           type="submit"
           onClick={() => {
-            router.push(
-              (process.env.SERVER_ORIGIN as string).concat(
-                process.env.SERVER_GOOGLE_AUTH as string
-              )
-            );
+            router.push('http://' + process.env.SERVER_HOST as string + ":" + process.env.SERVER_PORT + process.env.SERVER_SIGNIN_GITHUB as string);
           }}
           fullWidth
           endIcon={<GitHubIcon color="success" />}
@@ -83,7 +74,7 @@ export default function Login() {
           Login with github
         </Button>
         <Divider sx={{ padding: "10px 0" }}>Or</Divider>
-        <LoginForm onSubmitLogin={onSubmitLogin} />
+        <SigninForm onSubmitLogin={onSubmitLogin} />
         <Box
           sx={{
             textAlign: "center",
@@ -95,9 +86,9 @@ export default function Login() {
           }}
         >
           <p>
-            New to <span className="text-green-700">MESSANGER</span>?
+            New to <span className="text-green-700">MSG</span>?
           </p>
-          <Link href={process.env.CLIENT_REG}>Create account</Link>
+          <Link href={process.env.CLIENT_SIGNUP}>Create account</Link>
         </Box>
       </div>
       {error ? (

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { AvatarService } from 'src/utils/repositories/avatar/avatar.service';
-import { UserService } from 'src/utils/repositories/user/user.service';
-import { S3Service } from 'src/utils/s3/s3.service';
-import { UserProfileDto } from './dto/user.profile.dto';
+import { Injectable } from '@nestjs/common'
+import { AvatarService } from 'src/utils/repositories/avatar/avatar.service'
+import { UserService } from 'src/utils/repositories/user/user.service'
+import { S3Service } from 'src/utils/s3/s3.service'
+import { UserProfileDto } from './dto/user.profile.dto'
 
 @Injectable()
 export class ProfileService {

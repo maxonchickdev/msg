@@ -1,12 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import * as dotenv from 'dotenv';
-import { SigninTokensDto } from './dto/signin.tokens.dto';
-import { SigninUserDto } from './dto/signin.user.dto';
-import { GithubStrategy } from './strategies/github.signin.strategy';
-import { GoogleStrategy } from './strategies/google.signin.strategy';
-import { LocalStrategy } from './strategies/local.signin.strategy';
+import { Injectable, Logger } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import * as dotenv from 'dotenv'
+import { SigninTokensDto } from './dto/signin.tokens.dto'
+import { SigninUserDto } from './dto/signin.user.dto'
+import { GithubStrategy } from './strategies/github.signin.strategy'
+import { GoogleStrategy } from './strategies/google.signin.strategy'
+import { LocalStrategy } from './strategies/local.signin.strategy'
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -42,10 +41,5 @@ export class SigninService {
       },
     );
     return newAccessToken;
-  }
-
-  @Cron(CronExpression.EVERY_5_SECONDS)
-  handleCron() {
-    this.logger.debug('Called when the current hour is 0');
   }
 }

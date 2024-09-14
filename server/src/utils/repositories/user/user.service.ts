@@ -1,8 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
-import * as dotenv from 'dotenv';
-import { PrismaService } from 'src/utils/prisma/prisma.service';
+import { Injectable } from '@nestjs/common'
+import { Prisma, User } from '@prisma/client'
+import * as bcrypt from 'bcrypt'
+import * as dotenv from 'dotenv'
+import { PrismaService } from 'src/utils/prisma/prisma.service'
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -11,28 +11,21 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findUserById(id: string): Promise<User> {
-    const user = await this.prismaService.user.findUnique({
+    return  await this.prismaService.user.findUnique({
       where: { id },
     });
-
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    return user;
   }
 
   async findUserByEmail(email: string): Promise<User> {
-    const user = await this.prismaService.user.findUnique({
+    return await this.prismaService.user.findUnique({
       where: { email },
     });
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    return user;
   }
 
   async findUserByUsername(username: string): Promise<User> {
-    const user = await this.prismaService.user.findUnique({
+    return await this.prismaService.user.findUnique({
       where: { username },
     });
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    return user;
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {

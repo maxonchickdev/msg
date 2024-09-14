@@ -4,9 +4,9 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-} from '@nestjs/common';
-import { CreateUserDto } from 'src/signup/dto/create.user.dto';
-import { UserService } from 'src/utils/repositories/user/user.service';
+} from '@nestjs/common'
+import { CreateUserDto } from 'src/signup/dto/create.user.dto'
+import { UserService } from 'src/utils/repositories/user/user.service'
 
 @Injectable()
 export class ValidationUserGuard implements CanActivate {
@@ -20,21 +20,17 @@ export class ValidationUserGuard implements CanActivate {
   }
 
   async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
-    const isSameUsername = await this.usersSerice.findUserByUsername(
+    const user = await this.usersSerice.findUserByUsername(
       createUserDto.username,
     );
 
-    if (isSameUsername)
+    if (user.username === createUserDto.username)
       throw new HttpException(
         'User with the same username exists',
         HttpStatus.CONFLICT,
       );
 
-    const isSameEmail = await this.usersSerice.findUserByEmail(
-      createUserDto.email,
-    );
-
-    if (isSameEmail)
+    if (user.email === createUserDto.email)
       throw new HttpException(
         'User with the same email exists',
         HttpStatus.CONFLICT,

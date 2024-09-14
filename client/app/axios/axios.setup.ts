@@ -1,8 +1,9 @@
-import axios from "axios";
-import { Services } from "../utils/services/signin.services";
+import axios from "axios"
+import { SigninServices } from '../SigninUtils/SigninServices/Signin.services'
+
 
 export const axiosInstance = axios.create({
-  baseURL: process.env.SERVER_ORIGIN,
+  baseURL: 'http://' + process.env.SERVER_HOST + ':' + process.env.SERVER_PORT + '/',
   headers: {
     "Content-Type": "application/json",
   },
@@ -17,7 +18,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !error.config._retry) {
       try {
         error.config._retry = true;
-        await Services.refresh();
+        await SigninServices.refresh();
         return axiosInstance(error.config);
       } catch (e) {
         return Promise.reject(error);

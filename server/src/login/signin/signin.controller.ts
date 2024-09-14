@@ -8,7 +8,7 @@ import {
   Req,
   Res,
   UseGuards,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   ApiBody,
   ApiForbiddenResponse,
@@ -17,16 +17,16 @@ import {
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
-import { Response } from 'express';
-import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto';
-import { PayloadDto } from './dto/payload.dto';
-import { SigninUserDto } from './dto/signin.user.dto';
-import { GithubAuthGuard } from './guards/github.auth.guard';
-import { GoogleOAuthGuard } from './guards/google.oauth.guard';
-import { JwtRefreshGuard } from './guards/jwt.refresh.guard';
-import { LocalSigninGuard } from './guards/local.signin.guard';
-import { SigninService } from './signin.service';
+} from '@nestjs/swagger'
+import { Response } from 'express'
+import { HttpExceptionDto } from 'src/signup/dto/http.exception.dto'
+import { PayloadDto } from './dto/payload.dto'
+import { SigninUserDto } from './dto/signin.user.dto'
+import { GithubAuthGuard } from './guards/github.auth.guard'
+import { GoogleOAuthGuard } from './guards/google.oauth.guard'
+import { JwtRefreshGuard } from './guards/jwt.refresh.guard'
+import { LocalSigninGuard } from './guards/local.signin.guard'
+import { SigninService } from './signin.service'
 
 @ApiTags('signin')
 @Controller('signin')
@@ -66,12 +66,12 @@ export class SigninController {
     },
   })
   async localAuth(
-    @Body() loginUserDTO: SigninUserDto,
+    @Body() loginUserDto: SigninUserDto,
     @Res() res: Response,
   ): Promise<Response> {
     try {
       const { accessToken, refreshToken } =
-        await this.authService.localAuth(loginUserDTO);
+        await this.authService.localAuth(loginUserDto);
       return res
         .cookie('access', accessToken, {
           httpOnly: true,

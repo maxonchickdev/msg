@@ -33,7 +33,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "dist/types/**/*.ts"
-  ],
+, "app/SigninUtils/SigninInterfaces/Signin.interfaces.ts"  ],
   "exclude": [
     "node_modules"
   ]
