@@ -69,7 +69,7 @@ export class SignupController {
       this.logger.log(`User ${JSON.stringify(createUserDto)} successfully created`);
       return res.send(response);
     } catch (err) {
-      this.logger.error(`Error during user creation (status: ${err.status}, message: ${err.response})`);
+      this.logger.error('Error during user creation');
       return res
         .status(err.status)
         .json({ status: err.status, message: err.response });
@@ -109,12 +109,15 @@ export class SignupController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
+      this.logger.log('Start executing signup/validation-confirmation-code endpoint');
       const response =
         await this.registrationService.validateConfirmationCode(
           emailConfirmationDto,
         );
+        this.logger.log(`User with code ${JSON.stringify(emailConfirmationDto)} is validated successfully`);
       return res.send(response);
     } catch (err) {
+      this.logger.error('Error during validation confirmation code');
       return res
         .status(err.status)
         .json({ status: err.status, message: err.response });
@@ -142,10 +145,13 @@ export class SignupController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
+      this.logger.log(`Start executing signup/resend-confirmation-code endpoint`);
       const response =
         await this.registrationService.resendConfirmationCode(resendCodeDto);
+        this.logger.log(`Code for ${JSON.stringify(resendCodeDto)} is resended successfully`);
       return res.send(response);
     } catch (err) {
+      this.logger.error('Error during resending confirmation code');
       return res
         .status(err.status)
         .json({ status: 200, message: 'Internal server error' });

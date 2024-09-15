@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   Post,
   Req,
   Res,
@@ -31,6 +32,8 @@ import { SigninService } from './signin.service'
 @ApiTags('signin')
 @Controller('signin')
 export class SigninController {
+  private readonly logger = new Logger(SigninController.name);
+
   constructor(private readonly authService: SigninService) {}
 
   @Post('basic')
@@ -70,8 +73,10 @@ export class SigninController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
+      this.logger.log('Start executing signin/basic endpoint');
       const { accessToken, refreshToken } =
         await this.authService.localAuth(signinUserDto);
+        this.logger.log(`User ${JSON.stringify(signinUserDto)} is signed in successfully`);
       return res
         .cookie('access', accessToken, {
           httpOnly: true,
@@ -83,6 +88,7 @@ export class SigninController {
         })
         .send(true);
     } catch (err) {
+      this.logger.error(`User ${JSON.stringify(signinUserDto)} is not signed in`);
       return res
         .status(err.status)
         .json({ status: err.status, message: err.response });
@@ -252,9 +258,11 @@ export class SigninController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
+      this.logger.log('Start executing signin/refresh endpoint');
       const newAccessToken = await this.authService.getNewAccessToken(
         req.user.userId,
       );
+      this.logger.log(`New access token is avalible for user ${req.user.userId}`);
       return res
         .cookie('access', newAccessToken, {
           httpOnly: true,
@@ -262,6 +270,7 @@ export class SigninController {
         })
         .send(true);
     } catch (err) {
+      this.logger.error('Error during refresh access token');
       return res
         .status(err.status)
         .json({ status: err.status, message: err.response });
