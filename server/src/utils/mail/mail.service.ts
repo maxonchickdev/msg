@@ -1,6 +1,6 @@
-import { MailerService } from '@nestjs-modules/mailer';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SendMailDto } from './dto/send.mail.dto';
+import { MailerService } from '@nestjs-modules/mailer'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { SendMailDto } from './dto/send.mail.dto'
 
 @Injectable()
 export class MailService {

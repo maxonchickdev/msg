@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config'
 import * as dotenv from 'dotenv'
 import { v4 as uuidv4 } from 'uuid'
 
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 @Injectable()
 export class S3Service {

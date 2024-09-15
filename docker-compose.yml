@@ -6,7 +6,7 @@ services:
     image: mysql:8.4.0
     restart: unless-stopped
     env_file:
-      - ./server/production.env
+      - ./server/.env.production
     volumes:
       - mysql:/var/lib/mysql
     environment:
@@ -21,7 +21,7 @@ services:
     container_name: msg-server
     image: ghcr.io/plinom/nest-server:0.0.1
     env_file:
-      - ./server/production.env
+      - ./server/.env.production
     build:
       context: ./server/
       target: production
@@ -39,7 +39,7 @@ services:
     container_name: msg-client
     image: ghcr.io/plinom/nest-client:0.0.1
     env_file:
-      - ./client/production.env
+      - ./client/.env.production
     build:
       context: ./client/
       target: runner
@@ -57,7 +57,7 @@ services:
     volumes:
       - redis:/var/lib/redis
     env_file:
-      - ./server/production.env
+      - ./server/.env.production
     environment:
       REDIS_PASSWORD: $REDIS_PASSWORD
       REDIS_USER: $REDIS_USER

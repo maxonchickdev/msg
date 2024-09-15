@@ -7,7 +7,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PayloadDto } from 'src/login/signin/dto/payload.dto'
 import { UserService } from 'src/utils/repositories/user/user.service'
 
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 export const JWT_QR_KEY = 'jwt-2fa-turn-on';
 

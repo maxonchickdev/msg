@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config'
 import * as dotenv from 'dotenv'
 
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 export default registerAs('jwt', () => ({
 	secret: process.env.JWT_SECRET,

@@ -66,12 +66,12 @@ export class SigninController {
     },
   })
   async localAuth(
-    @Body() loginUserDto: SigninUserDto,
+    @Body() signinUserDto: SigninUserDto,
     @Res() res: Response,
   ): Promise<Response> {
     try {
       const { accessToken, refreshToken } =
-        await this.authService.localAuth(loginUserDto);
+        await this.authService.localAuth(signinUserDto);
       return res
         .cookie('access', accessToken, {
           httpOnly: true,

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { SigninTokensDto } from './dto/signin.tokens.dto'
@@ -16,8 +16,6 @@ export class SigninService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
-
-  private readonly logger = new Logger(SigninService.name);
 
   async localAuth(signinUserDTO: SigninUserDto): Promise<SigninTokensDto> {
     return this.localAuthStrategy.generateSigninTokens(signinUserDTO);

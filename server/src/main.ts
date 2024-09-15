@@ -6,9 +6,10 @@ import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
+  const logger = new Logger()
+
   const app = await NestFactory.create<INestApplication>(AppModule);
 
-  const logger = new Logger();
   const config = app.get<ConfigService>(ConfigService);
 
   app.enableCors({
@@ -34,7 +35,8 @@ async function bootstrap() {
   });
 
   await app.listen(config.get<number>('SERVER_APP_PORT'));
-  logger.log('🚀 Application running in port ' + config.get<number>('SERVER_APP_PORT'));
+
+  logger.log('Server is running on port ' + config.get<number>('SERVER_APP_PORT'));
 }
 
 bootstrap();

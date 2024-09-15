@@ -4,11 +4,11 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-## 1. Setup .env
+## 1. Setup environment variables
 
-- create **development.env** file of the server directory
+- create **.env.development** file of the server directory
 
-```.env
+```.env.development
 MAILER_USER=
 MAILER_HOST=
 MAILER_PORT=
@@ -51,9 +51,9 @@ AWS_REGION=
 AWS_PUBLIC_BUCKET_NAME=
 ```
 
-- create **development.env** file of the client directory
+- create **.env.development** file of the client directory
 
-```.env
+```.env.development
 CLIENT_LS_HASH=
 CLIENT_LS_PREFIX=
 
@@ -80,10 +80,8 @@ CLIENT_PROFILE=
 
 ## 2. Up with docker-compose
 
-#### Pull images and up containers
-
 ```sh
-docker-compose --env-file ./server/development.env --env-file ./client/development.env up --build
+docker-compose --env-file ./server/.env.development --env-file ./client/.env.development up --build
 ```
 
 ## 3. Server tree

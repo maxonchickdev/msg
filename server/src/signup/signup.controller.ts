@@ -3,10 +3,11 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Logger,
   Post,
   Res,
   UseGuards,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   ApiBody,
   ApiConflictResponse,
@@ -14,19 +15,21 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-} from '@nestjs/swagger';
-import { Response } from 'express';
-import { CreateUserDto } from './dto/create.user.dto';
-import { EmailConfirmationDto } from './dto/email.confirmation.dto';
-import { HttpExceptionDto } from './dto/http.exception.dto';
-import { ResendCodeDto } from './dto/resend.code.dto';
-import { ConfirmationEmailGuard } from './guards/confirmation.email.guard';
-import { ValidationUserGuard } from './guards/validate.new.user.guard';
-import { RegistrationService } from './signup.service';
+} from '@nestjs/swagger'
+import { Response } from 'express'
+import { CreateUserDto } from './dto/create.user.dto'
+import { EmailConfirmationDto } from './dto/email.confirmation.dto'
+import { HttpExceptionDto } from './dto/http.exception.dto'
+import { ResendCodeDto } from './dto/resend.code.dto'
+import { ConfirmationEmailGuard } from './guards/confirmation.email.guard'
+import { ValidationUserGuard } from './guards/validate.new.user.guard'
+import { RegistrationService } from './signup.service'
 
 @ApiTags('signup')
 @Controller('signup')
 export class SignupController {
+  private readonly logger = new Logger(SignupController.name);
+
   constructor(private readonly registrationService: RegistrationService) {}
 
   @Post()
@@ -61,9 +64,12 @@ export class SignupController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
+      this.logger.log('Start executing signup endpoint');
       const response = await this.registrationService.signupUser(createUserDto);
+      this.logger.log(`User ${JSON.stringify(createUserDto)} successfully created`);
       return res.send(response);
     } catch (err) {
+      this.logger.error(`Error during user creation (status: ${err.status}, message: ${err.response})`);
       return res
         .status(err.status)
         .json({ status: err.status, message: err.response });

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 import * as dotenv from "dotenv"
 
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const nextConfig = {
   output: "standalone",
