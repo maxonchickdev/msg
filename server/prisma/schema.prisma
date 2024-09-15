@@ -34,3 +34,17 @@ model Avatar {
   key  String @unique @default("") @db.VarChar(255)
   user User?
 }
+
+// model Room {
+//   name   String @id @unique @db.VarChar(255)
+//   users  User[]
+//   userId String
+// }
+
+// model Message {
+//   user     User     @relation(fields: [userId], references: [id])
+//   timeSent DateTime @default(now())
+//   message  String
+//   roomname String
+//   userId   String
+// }

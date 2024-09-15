@@ -1,15 +1,19 @@
-import { CacheModule } from '@nestjs/cache-manager';
-import { Module } from '@nestjs/common';
-import * as dotenv from 'dotenv';
-import { RedisService } from './redis.service';
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+import { CacheModule } from '@nestjs/cache-manager'
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import redisConfig from '../configs/redis.config'
+import { RedisService } from './redis.service'
 
 @Module({
   imports: [
-    CacheModule.register({
-      ttl: parseInt(process.env.REDIS_TTL) || 60000,
-      max: parseInt(process.env.REDIS_MAX) || 100,
+    ConfigModule.forFeature(redisConfig),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ttl: configService.get<number>('redis.ttl'),
+        max: configService.get<number>('redis.max')
+      }),
+      inject: [ConfigService],
     }),
   ],
   providers: [RedisService],

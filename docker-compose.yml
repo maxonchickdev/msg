@@ -39,7 +39,7 @@ services:
     container_name: msg-client
     image: ghcr.io/plinom/nest-client:0.0.1
     env_file:
-      - ./client/.env
+      - ./client/production.env
     build:
       context: ./client/
       target: runner

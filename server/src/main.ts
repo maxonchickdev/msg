@@ -1,18 +1,18 @@
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
-import * as dotenv from 'dotenv'
 import { AppModule } from './app.module'
 
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
-
 async function bootstrap() {
-  const logger = new Logger();
   const app = await NestFactory.create<INestApplication>(AppModule);
 
+  const logger = new Logger();
+  const config = app.get<ConfigService>(ConfigService);
+
   app.enableCors({
-    origin: [process.env.CLIENT_ORIGIN.toString()],
+    origin: [config.get<string>('CLIENT_ORIGIN')],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   });
@@ -21,22 +21,22 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('MSG api')
     .setDescription('MSG api description')
     .setVersion('0.0.1')
     .addServer(
-      `http://${process.env.SERVER_HOST}:${process.env.SERVER_APP_PORT}/`,
+      `http://${config.get<string>('SERVER_HOST')}:${config.get<string>('SERVER_APP_PORT')}/`,
       'Local environment',
     )
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document, {
     customSiteTitle: 'MSG api',
   });
 
-  await app.listen(parseInt(process.env.SERVER_APP_PORT));
-  logger.log('🚀 Application running');
+  await app.listen(config.get<number>('SERVER_APP_PORT'));
+  logger.log('🚀 Application running in port ' + config.get<number>('SERVER_APP_PORT'));
 }
 
 bootstrap();
