@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import * as bcrypt from 'bcrypt';
-import { Request } from 'express';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PayloadDto } from 'src/login/signin/dto/payload.dto';
-import { UserService } from 'src/utils/repositories/user/user.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { PassportStrategy } from '@nestjs/passport'
+import * as bcrypt from 'bcrypt'
+import { Request } from 'express'
+import { ExtractJwt, Strategy } from 'passport-jwt'
+import { PayloadDto } from 'src/login/signin/dto/payload.dto'
+import { UserService } from 'src/utils/repositories/user/user.service'
 
 export const JWT_REFRESH_TOKEN = 'jwt-refresh';
 
@@ -13,7 +14,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   Strategy,
   JWT_REFRESH_TOKEN,
 ) {
-  constructor(private readonly userService: UserService) {
+  constructor(private readonly userService: UserService, private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
@@ -21,7 +22,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_ACCESS_SECRET,
+      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
       passReqToCallback: true,
     });
   }

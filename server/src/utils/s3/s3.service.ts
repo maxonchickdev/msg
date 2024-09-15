@@ -3,11 +3,12 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { Injectable } from '@nestjs/common';
-import * as dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
+} from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import * as dotenv from 'dotenv'
+import { v4 as uuidv4 } from 'uuid'
 
 dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
@@ -16,14 +17,14 @@ export class S3Service {
   private client: S3Client;
   private bucketName = process.env.AWS_PUBLIC_BUCKET_NAME;
 
-  constructor() {
-    const s3Region = process.env.AWS_REGION;
+  constructor(private readonly configService: ConfigService) {
+    const s3Region = configService.get<string>('AWS_REGION');
 
     this.client = new S3Client({
       region: s3Region,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY'),
       },
       forcePathStyle: true,
     });

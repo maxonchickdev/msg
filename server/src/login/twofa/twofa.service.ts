@@ -1,22 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as dotenv from 'dotenv';
-import { authenticator } from 'otplib';
-import { toDataURL } from 'qrcode';
-import { PayloadDto } from 'src/login/signin/dto/payload.dto';
-import { UserService } from 'src/utils/repositories/user/user.service';
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { authenticator } from 'otplib'
+import { toDataURL } from 'qrcode'
+import { PayloadDto } from 'src/login/signin/dto/payload.dto'
+import { UserService } from 'src/utils/repositories/user/user.service'
 
 @Injectable()
 export class TwofaService {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly usersService: UserService, private readonly configService: ConfigService) {}
 
   async generateTwoFactorAuthenticationSecret(userId: string): Promise<string> {
     const secret = authenticator.generateSecret();
 
     const otpauthUrl = authenticator.keyuri(
       userId,
-      process.env.GOOGLE_AUTHENTICATOR_APP_NAME,
+      this.configService.get<string>('GOOGLE_AUTHENTICATOR_APP_NAME'),
       secret,
     );
 

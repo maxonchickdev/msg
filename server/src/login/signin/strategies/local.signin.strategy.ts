@@ -1,16 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import * as bcrypt from 'bcrypt';
-import * as dotenv from 'dotenv';
-import { Strategy } from 'passport-local';
-import { UserService } from 'src/utils/repositories/user/user.service';
-import { PayloadDto } from '../dto/payload.dto';
-import { SigninTokensDto } from '../dto/signin.tokens.dto';
-import { SigninUserDto } from '../dto/signin.user.dto';
-import { SingInStrategy } from './signin.strategy';
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
+import { PassportStrategy } from '@nestjs/passport'
+import * as bcrypt from 'bcrypt'
+import { Strategy } from 'passport-local'
+import { UserService } from 'src/utils/repositories/user/user.service'
+import { PayloadDto } from '../dto/payload.dto'
+import { SigninTokensDto } from '../dto/signin.tokens.dto'
+import { SigninUserDto } from '../dto/signin.user.dto'
+import { SingInStrategy } from './signin.strategy'
 
 @Injectable()
 export class LocalStrategy
@@ -20,6 +18,7 @@ export class LocalStrategy
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {
     super({
       usernameField: 'email',
@@ -54,12 +53,13 @@ export class LocalStrategy
       userId: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_ACCESS_SECRET,
-      expiresIn: `${process.env.JWT_ACCESS_EXPIRES_IN}s`,
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: `${this.configService.get<string>('JWT_ACCESS_EXPIRES_IN')
+      }s`,
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: `${process.env.JWT_REFRESH_EXPIRES_IN}s`,
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: `${this.configService.get<string>('JWT_REFRESH_EXPIRES_IN')}s`,
     });
     await this.usersService.setCurrntRefreshToken(refreshToken, user.id);
     return {

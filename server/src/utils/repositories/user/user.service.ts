@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Prisma, User } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
-import * as dotenv from 'dotenv'
 import { PrismaService } from 'src/utils/prisma/prisma.service'
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService, private readonly configService: ConfigService) {}
 
   async findUserById(id: string): Promise<User> {
     return  await this.prismaService.user.findUnique({
@@ -50,8 +48,7 @@ export class UserService {
     userId: string,
   ): Promise<User> {
     const currentHashRefreshToken = await bcrypt.hash(
-      refreshToken,
-      parseInt(process.env.SALT_OR_ROUNDS, 10),
+      refreshToken, this.configService.get<number>('SALT_OR_ROUNDS'),
     );
     return await this.updateUser({
       where: { id: userId },

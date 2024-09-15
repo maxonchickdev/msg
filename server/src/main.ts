@@ -1,4 +1,4 @@
-import { INestApplication, Logger, ValidationPipe } from '@nestjs/common'
+import { INestApplication, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -18,8 +18,6 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
-
-  app.useGlobalPipes(new ValidationPipe());
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('MSG api')

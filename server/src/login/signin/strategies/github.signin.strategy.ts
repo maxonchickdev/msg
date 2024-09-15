@@ -1,16 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import * as dotenv from 'dotenv';
-import { Profile, Strategy } from 'passport-github';
-import { VerifyCallback } from 'passport-google-oauth20';
-import { UserService } from 'src/utils/repositories/user/user.service';
-import { PayloadDto } from '../dto/payload.dto';
-import { SigninTokensDto } from '../dto/signin.tokens.dto';
-import { SigninUserDto } from '../dto/signin.user.dto';
-import { SingInStrategy } from './signin.strategy';
-
-dotenv.config({ path: `${process.env.NODE_ENV}.env` });
+import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
+import { PassportStrategy } from '@nestjs/passport'
+import { Profile, Strategy } from 'passport-github'
+import { VerifyCallback } from 'passport-google-oauth20'
+import { UserService } from 'src/utils/repositories/user/user.service'
+import { PayloadDto } from '../dto/payload.dto'
+import { SigninTokensDto } from '../dto/signin.tokens.dto'
+import { SigninUserDto } from '../dto/signin.user.dto'
+import { SingInStrategy } from './signin.strategy'
 
 interface GithubProfile extends Profile {
   _json: {
@@ -26,11 +24,12 @@ export class GithubStrategy
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {
     super({
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: process.env.GITHUB_CALL_BACK_URL,
+      clientID: configService.get<string>('GITHUB_CLIENT_ID'),
+      clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET'),
+      callbackURL: configService.get<string>('GITHUB_CALL_BACK_URL'),
       scope: 'user:email',
     });
   }
@@ -59,12 +58,12 @@ export class GithubStrategy
       userId: user.id,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_ACCESS_SECRET,
-      expiresIn: `${process.env.JWT_ACCESS_EXPIRES_IN}s`,
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: `${this.configService.get<string>('JWT_ACCESS_EXPIRES_IN')}s`,
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: `${process.env.JWT_REFRESH_EXPIRES_IN}s`,
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: `${this.configService.get<string>('JWT_REFRESH_EXPIRES_IN')}s`,
     });
     return { accessToken: accessToken, refreshToken: refreshToken };
   }
