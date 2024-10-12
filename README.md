@@ -1,252 +1,82 @@
-# MSG
+# MsgMonorepo
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-## 1. Setup environment variables
+✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
 
-- create **.env.development** file of the server directory
+[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
-```.env.development
-MAILER_USER=
-MAILER_HOST=
-MAILER_PORT=
-MAILER_PASS=
+## Finish your remote caching setup
 
-SERVER_HOST=
-SERVER_APP_PORT=
+[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/ZYMUiTVX90)
 
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_CALL_BACK_URL=
-GOOGLE_AUTHENTICATOR_APP_NAME=
 
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-GITHUB_CALL_BACK_URL=
+## Run tasks
 
-CLIENT_ORIGIN=
-CLIENT_TO_LOGIN=
-CLIENT_TO_REGISTRATE=
-CLIENT_TO_PROFILE=
-
-REDIS_HOST=
-REDIS_LOCAL_PORT=
-REDIS_TTl=
-REDIS_MAX=
-
-SALT_OR_ROUNDS=
-
-DATABASE_URL=
-
-JWT_ACCESS_SECRET=
-JWT_ACCESS_EXPIRES_IN=
-JWT_REFRESH_SECRET=
-JWT_REFRESH_EXPIRES_IN=
-
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=
-AWS_PUBLIC_BUCKET_NAME=
-```
-
-- create **.env.development** file of the client directory
-
-```.env.development
-CLIENT_LS_HASH=
-CLIENT_LS_PREFIX=
-
-SERVER_HOST=
-SERVER_PORT=
-SERVER_SIGNUP=
-SERVER_SIGNUP_CONFIRM=
-SERVER_SIGNUP_RESEND_CODE=
-SERVER_SIGNIN_BASIC=
-SERVER_SIGNIN_GOOGLE=
-SERVER_SIGNIN_GITHUB=
-SERVER_SIGNIN_REFRESH=
-SERVER_TWOFA_QR=
-SERVER_TWOFA_TURN_ON=
-SERVER_PROFILE=
-SERVER_UPLOAD_AVATAR=
-
-CLIENT_SIGNUP=
-CLIENT_SIGNUP_CONFIRM=
-CLIENT_SIGNIN=
-CLIENT_SIGNIN_TWOFA=
-CLIENT_PROFILE=
-```
-
-## 2. Up with docker-compose
+To run the dev server for your app, use:
 
 ```sh
-docker-compose --env-file ./server/.env.development --env-file ./client/.env.development up --build
+npx nx dev client
 ```
 
-## 3. Server tree
+To create a production bundle:
 
 ```sh
-src
-├── app.module.ts
-├── login
-│   ├── signin
-│   │   ├── dto
-│   │   │   ├── payload.dto.ts
-│   │   │   ├── signin.tokens.dto.ts
-│   │   │   ├── signin.user.dto.ts
-│   │   │   └── two.factor.authentication.code.dto.ts
-│   │   ├── guards
-│   │   │   ├── github.auth.guard.ts
-│   │   │   ├── google.oauth.guard.ts
-│   │   │   ├── jwt.refresh.guard.ts
-│   │   │   └── local.signin.guard.ts
-│   │   ├── signin.controller.ts
-│   │   ├── signin.module.ts
-│   │   ├── signin.service.ts
-│   │   └── strategies
-│   │       ├── github.signin.strategy.ts
-│   │       ├── google.signin.strategy.ts
-│   │       ├── jwt.refresh.token.strategy.ts
-│   │       ├── local.signin.strategy.ts
-│   │       └── signin.strategy.ts
-│   └── twofa
-│       ├── dto
-│       │   └── two.factor.authentication.code.dto.ts
-│       ├── guards
-│       │   └── jwt.twofa.guard.ts
-│       ├── strategies
-│       │   └── jwt.twofa.strategy.ts
-│       ├── twofa.controller.ts
-│       ├── twofa.module.ts
-│       └── twofa.service.ts
-├── main.ts
-├── profile
-│   ├── dto
-│   │   ├── avatar.dto.ts
-│   │   └── user.profile.dto.ts
-│   ├── guards
-│   │   └── jwt.main.guard.ts
-│   ├── pipes
-│   │   ├── max.size.avatar.pipe.ts
-│   │   └── type.avatar.pipe.ts
-│   ├── profile.controller.ts
-│   ├── profile.module.ts
-│   ├── profile.service.ts
-│   └── strategies
-│       └── jwt.main.strategy.ts
-├── signup
-│   ├── dto
-│   │   ├── create.user.dto.ts
-│   │   ├── email.confirmation.dto.ts
-│   │   ├── http.exception.dto.ts
-│   │   └── resend.code.dto.ts
-│   ├── guards
-│   │   ├── confirmation.email.guard.ts
-│   │   └── validate.new.user.guard.ts
-│   ├── signup.controller.ts
-│   ├── signup.module.ts
-│   └── signup.service.ts
-└── utils
-    ├── mail
-    │   ├── dto
-    │   │   └── send.mail.dto.ts
-    │   ├── mail.module.ts
-    │   └── mail.service.ts
-    ├── prisma
-    │   ├── prisma.module.ts
-    │   └── prisma.service.ts
-    ├── redis
-    │   ├── redis.module.ts
-    │   └── redis.service.ts
-    ├── repositories
-    │   ├── avatar
-    │   │   ├── avatar.module.ts
-    │   │   └── avatar.service.ts
-    │   └── user
-    │       ├── user.module.ts
-    │       └── user.service.ts
-    └── s3
-        ├── s3.module.ts
-        └── s3.service.ts
+npx nx build client
 ```
 
-## 4. Client tree
+To see all available targets to run for a project, run:
 
 ```sh
-app
-├── SigninUtils
-│   ├── SigninComponents
-│   │   ├── SigninForm
-│   │   │   └── SigninForm.component.tsx
-│   │   ├── SigninFormController
-│   │   │   └── SigninFormController.component.tsx
-│   │   └── SigninSubmitButton
-│   │       └── SigninSubmitButton.component.tsx
-│   ├── SigninInterfaces
-│   │   └── Signin.interfaces.ts
-│   └── SigninServices
-│       └── Signin.services.ts
-├── axios
-│   └── axios.setup.ts
-├── favicon.ico
-├── global.css
-├── layout.tsx
-├── not-found.tsx
-├── page.tsx
-├── profile
-│   ├── ProfileUtils
-│   │   ├── ProfileComponents
-│   │   ├── ProfileInterfaces
-│   │   │   └── Profile.interfaces.ts
-│   │   └── ProfileServices
-│   │       └── Profile.services.ts
-│   └── page.tsx
-├── signup
-│   ├── SignupUtils
-│   │   ├── SignupComponents
-│   │   │   ├── SignupForm
-│   │   │   │   └── SignupForm.component.tsx
-│   │   │   ├── SignupFormController
-│   │   │   │   └── SignupFormController.component.tsx
-│   │   │   └── SignupFormSubmitButton
-│   │   │       └── SIgnupFormSubmitButton.component.tsx
-│   │   ├── SignupInterfaces
-│   │   │   └── Signup.interfaces.ts
-│   │   └── SignupServices
-│   │       └── Signup.services.ts
-│   ├── confirm
-│   │   ├── ConfirmUtils
-│   │   │   ├── ConfirmComponents
-│   │   │   │   └── ConfirmForm
-│   │   │   │       └── ConfirmForm.form.tsx
-│   │   │   ├── ConfirmInterfaces
-│   │   │   │   └── Confirm.interfaces.ts
-│   │   │   └── ConfirmServices
-│   │   │       └── Confirm.services.ts
-│   │   └── page.tsx
-│   └── page.tsx
-└── twofa
-    ├── TwofaUtils
-    │   ├── TwofaComponents
-    │   │   └── err.tsx
-    │   ├── TwofaInterfaces
-    │   │   └── Twofa.interfaces.ts
-    │   └── TwofaServices
-    │       └── Twofa.services.ts
-    └── page.tsx
+npx nx show project client
 ```
 
-## 5. Support
+These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## 6. Stay in touch
+## Add new projects
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
 
-## 7. License
+Use the plugin's generator to create new projects.
 
-Nest is [MIT licensed](LICENSE).
+To generate a new application, use:
+
+```sh
+npx nx g @nx/next:app demo
+```
+
+To generate a new library, use:
+
+```sh
+npx nx g @nx/react:lib mylib
+```
+
+You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+
+[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+
+
+[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+
+## Install Nx Console
+
+Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+
+[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+
+## Useful links
+
+Learn more:
+
+- [Learn more about this workspace setup](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
+- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+
+And join the Nx community:
+- [Discord](https://go.nx.dev/community)
+- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
+- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
+- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
