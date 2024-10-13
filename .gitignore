@@ -4,9 +4,12 @@ __pycache__/
 *$py.class
 .nx
 apps/.DS_store
+apps/client/.DS_store
 apps/client/.next
 apps/server/.env*
 apps/client/.env*
+.DS_store
+package-lock.json
 
 client/node_modules/
 server/node_modules/
