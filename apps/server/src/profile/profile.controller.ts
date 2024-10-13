@@ -34,7 +34,7 @@ import { ProfileService } from './profile.service'
 @ApiTags('profile')
 @Controller('profile')
 export class ProfileController {
-  private readonly logger = new Logger(ProfileController.name);
+  private readonly logger = new Logger(ProfileController.name)
 
   constructor(private readonly profileService: ProfileService) {}
 
@@ -62,18 +62,18 @@ export class ProfileController {
   })
   async getUserProfile(
     @Req() req: Request & { user: PayloadDto },
-    @Res() res: Response,
+    @Res() res: Response
   ): Promise<Response> {
     try {
-      this.logger.log(`User ${req.user.userId} requested profile`);
-      const profile = await this.profileService.getUserProfile(req.user.userId);
-      this.logger.log(`User ${req.user.userId} received profile`);
-      return res.send(profile);
+      this.logger.log(`User ${req.user.userId} requested profile`)
+      const profile = await this.profileService.getUserProfile(req.user.userId)
+      this.logger.log(`User ${req.user.userId} received profile`)
+      return res.send(profile)
     } catch (err) {
-      this.logger.error('Error during profile request');
+      this.logger.error('Error during profile request')
       return res
         .status(err.status)
-        .json({ status: err.status, message: err.response });
+        .json({ status: err.status, message: err.response })
     }
   }
 
@@ -110,21 +110,19 @@ export class ProfileController {
     @Req() req: Request & { user: PayloadDto },
     @UploadedFile(new MaxSizeAvatarPipe(), new TypeAvatarPipe())
     avatarDto: AvatarDto,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     try {
-      this.logger.log(`User ${req.user.userId} requested to upload avatar`);
+      this.logger.log(`User ${req.user.userId} requested to upload avatar`)
       const avatarUrl = await this.profileService.uploadAvatar(
         req.user.userId,
         avatarDto.avatar
-      );
-      this.logger.log(`User ${req.user.userId} uploaded avatar successfully`);
-      return res
-        .status(HttpStatus.OK)
-        .send(avatarUrl);
+      )
+      this.logger.log(`User ${req.user.userId} uploaded avatar successfully`)
+      return res.status(HttpStatus.OK).send(avatarUrl)
     } catch (err) {
-      this.logger.error('Error during avatar upload');
-      return res.status(500).send('Internal server error');
+      this.logger.error('Error during avatar upload')
+      return res.status(500).send(`Internal server error ${err}`)
     }
   }
 }

@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 .nx
+apps/.DS_store
+apps/client/.next
+apps/server/.env*
+apps/client/.env*
 
 client/node_modules/
 server/node_modules/

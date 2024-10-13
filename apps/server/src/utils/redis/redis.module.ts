@@ -11,7 +11,7 @@ import { RedisService } from './redis.service'
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         ttl: configService.get<number>('redis.ttl'),
-        max: configService.get<number>('redis.max')
+        max: configService.get<number>('redis.max'),
       }),
       inject: [ConfigService],
     }),

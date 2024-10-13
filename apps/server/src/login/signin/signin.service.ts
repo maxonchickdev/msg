@@ -14,29 +14,31 @@ export class SigninService {
     private readonly localAuthStrategy: LocalStrategy,
     private readonly githubStrategy: GithubStrategy,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {}
+    private readonly configService: ConfigService
+  ) {
+    console.log(this.configService.get<string>('jwt.accessSecret'))
+  }
 
   async localAuth(signinUserDTO: SigninUserDto): Promise<SigninTokensDto> {
-    return this.localAuthStrategy.generateSigninTokens(signinUserDTO);
+    return this.localAuthStrategy.generateSigninTokens(signinUserDTO)
   }
 
   async googleAuth(signinUserDTO: SigninUserDto): Promise<SigninTokensDto> {
-    return this.googleAuthStrategy.generateSigninTokens(signinUserDTO);
+    return this.googleAuthStrategy.generateSigninTokens(signinUserDTO)
   }
 
   async githubAuth(signinUserDTO: SigninUserDto): Promise<SigninTokensDto> {
-    return this.githubStrategy.generateSigninTokens(signinUserDTO);
+    return this.githubStrategy.generateSigninTokens(signinUserDTO)
   }
 
   async getNewAccessToken(userId: string): Promise<string> {
     const newAccessToken = this.jwtService.sign(
       { userId },
       {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: `${this.configService.get<string>('JWT_ACCESS_EXPIRES_IN')}s`,
-      },
-    );
-    return newAccessToken;
+        secret: this.configService.get<string>('jwt.accessSecret'),
+        expiresIn: this.configService.get<string>('jwt.accessExpiresIn'),
+      }
+    )
+    return newAccessToken
   }
 }
