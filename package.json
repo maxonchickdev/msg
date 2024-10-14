@@ -78,7 +78,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.5",
-    "eslint-config-next": "15.0.0",
+    "eslint-config-next": "15.0.0-rc.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jsx-a11y": "6.7.1",

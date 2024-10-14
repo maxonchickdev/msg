@@ -15,9 +15,7 @@ export class SigninService {
     private readonly githubStrategy: GithubStrategy,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
-  ) {
-    console.log(this.configService.get<string>('jwt.accessSecret'))
-  }
+  ) {}
 
   async localAuth(signinUserDTO: SigninUserDto): Promise<SigninTokensDto> {
     return this.localAuthStrategy.generateSigninTokens(signinUserDTO)
