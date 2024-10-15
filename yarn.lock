@@ -8252,6 +8252,11 @@ hosted-git-info@^7.0.0:
   dependencies:
     lru-cache "^10.0.1"
 
+hostname@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/hostname/-/hostname-1.0.5.tgz#d701157e7cdfbcdb5da2659de0bd475292ad03fb"
+  integrity sha512-xzRtPfVRXQsj+gAkYVDpY6a163nIkqSXb4WN3OO+RJi3t3rn2CZ6fvAsnSWTOJ2XxEjv8io0QidM2/wkTp8/6Q==
+
 hpack.js@^2.1.6:
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/hpack.js/-/hpack.js-2.1.6.tgz#87774c0949e513f42e84575b3c45681fade2a0b2"
