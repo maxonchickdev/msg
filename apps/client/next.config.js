@@ -10,7 +10,6 @@ const nextConfig = {
   nx: {
     svgr: false,
   },
-  output: 'standalone',
 }
 
 const plugins = [withNx]
