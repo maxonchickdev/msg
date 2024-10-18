@@ -1,9 +1,11 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsString } from 'class-validator'
 
 export class SigninTokensDto {
   @IsNotEmpty()
-  accessToken: string;
+  @IsString()
+  accessToken: string
 
   @IsNotEmpty()
-  refreshToken: string;
+  @IsString()
+  refreshToken: string
 }

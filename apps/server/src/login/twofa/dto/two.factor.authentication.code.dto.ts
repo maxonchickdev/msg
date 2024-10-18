@@ -1,6 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty, IsString } from 'class-validator'
 
 export class TwoFactorAuthenticationCodeDto {
+  @IsNotEmpty()
+  @IsString()
   @ApiProperty({
     type: 'string',
     name: 'code',
@@ -8,5 +11,5 @@ export class TwoFactorAuthenticationCodeDto {
     example: '111111',
     description: 'The two factor authentication code',
   })
-  code: string;
+  code: string
 }
