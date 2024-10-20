@@ -24,6 +24,7 @@ node_modules
 /libpeerconnection.log
 npm-debug.log
 yarn-error.log
+yarn.lock
 testem.log
 /typings
 
@@ -31,11 +32,12 @@ testem.log
 Thumbs.db
 
 .nx/cache
+.nx/
 
 .next
 out
 
-.env
+.env.*
 
 node_modules/
 dist/
