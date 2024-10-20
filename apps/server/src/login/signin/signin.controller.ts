@@ -9,7 +9,7 @@ import {
   Req,
   Res,
   UseGuards,
-} from '@nestjs/common'
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiForbiddenResponse,
@@ -18,24 +18,40 @@ import {
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger'
-import { Response } from 'express'
-import { HttpExceptionDto } from '../../signup/dto/http.exception.dto'
-import { PayloadDto } from './dto/payload.dto'
-import { SigninUserDto } from './dto/signin.user.dto'
-import { GithubAuthGuard } from './guards/github.auth.guard'
-import { GoogleOAuthGuard } from './guards/google.oauth.guard'
-import { JwtRefreshGuard } from './guards/jwt.refresh.guard'
-import { LocalSigninGuard } from './guards/local.signin.guard'
-import { SigninService } from './signin.service'
-
+} from '@nestjs/swagger';
+import { Response } from 'express';
+import { HttpExceptionDto } from '../../signup/dto/http-exception.dto';
+import { PayloadDto } from './dto/payload.dto';
+import { SigninUserDto } from './dto/signin-user.dto';
+import { GithubAuthGuard } from './guards/github-auth.guard';
+import { GoogleOAuthGuard } from './guards/google-oauth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { LocalSigninGuard } from './guards/local-signin.guard';
+import { SigninService } from './signin.service';
+/**
+ *
+ *
+ * @export
+ * @class SigninController
+ */
 @ApiTags('sign-in')
 @Controller('sign-in')
 export class SigninController {
-  private readonly logger = new Logger(SigninController.name)
-
+  private readonly logger = new Logger(SigninController.name);
+  /**
+   * Creates an instance of SigninController.
+   * @param {SigninService} authService
+   * @memberof SigninController
+   */
   constructor(private readonly authService: SigninService) {}
-
+  /**
+   *
+   *
+   * @param {SigninUserDto} signinUserDto
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SigninController
+   */
   @Post('basic')
   @UseGuards(LocalSigninGuard)
   @HttpCode(HttpStatus.OK)
@@ -73,13 +89,13 @@ export class SigninController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      this.logger.log('Start executing signin/basic endpoint')
+      this.logger.log('Start executing signin/basic endpoint');
       const { accessToken, refreshToken } = await this.authService.localAuth(
         signinUserDto
-      )
+      );
       this.logger.log(
         `User ${JSON.stringify(signinUserDto)} is signed in successfully`
-      )
+      );
       return res
         .cookie('access', accessToken, {
           httpOnly: true,
@@ -89,17 +105,22 @@ export class SigninController {
           httpOnly: true,
           path: '/',
         })
-        .send(true)
+        .send(true);
     } catch (err) {
       this.logger.error(
         `User ${JSON.stringify(signinUserDto)} is not signed in`
-      )
+      );
       return res
         .status(err.status)
-        .json({ status: err.status, message: err.response })
+        .json({ status: err.status, message: err.response });
     }
   }
-
+  /**
+   *
+   *
+   * @return {*}  {Promise<void>}
+   * @memberof SigninController
+   */
   @UseGuards(LocalSigninGuard)
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
@@ -165,7 +186,12 @@ export class SigninController {
   //     );
   //   }
   // }
-
+  /**
+   *
+   *
+   * @return {*}  {Promise<void>}
+   * @memberof SigninController
+   */
   @Get('github')
   @UseGuards(GithubAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -236,7 +262,14 @@ export class SigninController {
   //     // );
   //   }
   // }
-
+  /**
+   *
+   *
+   * @param {(Request & { user: PayloadDto })} req
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SigninController
+   */
   @Get('refresh')
   @UseGuards(JwtRefreshGuard)
   @HttpCode(HttpStatus.OK)
@@ -265,24 +298,24 @@ export class SigninController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      this.logger.log('Start executing signin/refresh endpoint')
+      this.logger.log('Start executing signin/refresh endpoint');
       const newAccessToken = await this.authService.getNewAccessToken(
         req.user.userId
-      )
+      );
       this.logger.log(
         `New access token is avalible for user ${req.user.userId}`
-      )
+      );
       return res
         .cookie('access', newAccessToken, {
           httpOnly: true,
           path: '/',
         })
-        .send(true)
+        .send(true);
     } catch (err) {
-      this.logger.error('Error during refresh access token')
+      this.logger.error('Error during refresh access token');
       return res
         .status(err.status)
-        .json({ status: err.status, message: err.response })
+        .json({ status: err.status, message: err.response });
     }
   }
 }

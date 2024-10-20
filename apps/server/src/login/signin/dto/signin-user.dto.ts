@@ -1,7 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
-
-export class SigninUserDto {
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { SigninUserInterface } from '@msg-monorepo/dto';
+/**
+ *
+ *
+ * @export
+ * @class SigninUserDto
+ * @implements {SigninUserInterface}
+ */
+export class SigninUserDto implements SigninUserInterface {
   @IsEmail()
   @IsNotEmpty()
   @IsString()
@@ -12,7 +19,7 @@ export class SigninUserDto {
     example: 'testUser@gmail.com',
     description: 'The email of the user',
   })
-  email: string
+  email: string;
 
   @IsNotEmpty()
   @IsString()
@@ -23,5 +30,5 @@ export class SigninUserDto {
     example: 'testPassword',
     description: 'The password of the user',
   })
-  password?: string
+  password?: string;
 }

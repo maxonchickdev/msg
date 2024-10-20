@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@msg-monorepo/dto": ["libs/shared/src/dto/index.ts"]
+    }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }

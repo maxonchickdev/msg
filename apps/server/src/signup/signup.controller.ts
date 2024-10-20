@@ -7,7 +7,7 @@ import {
   Post,
   Res,
   UseGuards,
-} from '@nestjs/common'
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiConflictResponse,
@@ -15,23 +15,39 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-} from '@nestjs/swagger'
-import { Response } from 'express'
-import { CreateUserDto } from './dto/create.user.dto'
-import { EmailConfirmationDto } from './dto/email.confirmation.dto'
-import { HttpExceptionDto } from './dto/http.exception.dto'
-import { ResendCodeDto } from './dto/resend.code.dto'
-import { ConfirmationEmailGuard } from './guards/confirmation.email.guard'
-import { ValidationUserGuard } from './guards/validate.new.user.guard'
-import { RegistrationService } from './signup.service'
-
+} from '@nestjs/swagger';
+import { Response } from 'express';
+import { CreateUserDto } from './dto/create-user.dto';
+import { EmailConfirmationDto } from './dto/email-confirmation.dto';
+import { HttpExceptionDto } from './dto/http-exception.dto';
+import { ResendCodeDto } from './dto/resend-code.dto';
+import { ConfirmationEmailGuard } from './guards/confirmation-email.guard';
+import { ValidationUserGuard } from './guards/validate-new-user.guard';
+import { RegistrationService } from './signup.service';
+/**
+ *
+ *
+ * @export
+ * @class SignupController
+ */
 @ApiTags('sign-up')
 @Controller('sign-up')
 export class SignupController {
-  private readonly logger = new Logger(SignupController.name)
-
+  private readonly logger = new Logger(SignupController.name);
+  /**
+   * Creates an instance of SignupController.
+   * @param {RegistrationService} registrationService
+   * @memberof SignupController
+   */
   constructor(private readonly registrationService: RegistrationService) {}
-
+  /**
+   *
+   *
+   * @param {CreateUserDto} createUserDto
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SignupController
+   */
   @Post()
   @HttpCode(HttpStatus.OK)
   @UseGuards(ValidationUserGuard)
@@ -64,20 +80,27 @@ export class SignupController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      this.logger.log('Start executing signup endpoint')
-      const response = await this.registrationService.signupUser(createUserDto)
+      this.logger.log('Start executing signup endpoint');
+      const response = await this.registrationService.signupUser(createUserDto);
       this.logger.log(
         `User ${JSON.stringify(createUserDto)} successfully created`
-      )
-      return res.send(response)
+      );
+      return res.send(response);
     } catch (err) {
-      this.logger.error('Error during user creation')
+      this.logger.error('Error during user creation');
       return res
         .status(err.status)
-        .json({ status: err.status, message: err.response })
+        .json({ status: err.status, message: err.response });
     }
   }
-
+  /**
+   *
+   *
+   * @param {EmailConfirmationDto} emailConfirmationDto
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SignupController
+   */
   @Post('check-confirm-code')
   @HttpCode(HttpStatus.OK)
   @UseGuards(ConfirmationEmailGuard)
@@ -113,24 +136,31 @@ export class SignupController {
     try {
       this.logger.log(
         'Start executing signup/validation-confirmation-code endpoint'
-      )
+      );
       const response = await this.registrationService.validateConfirmationCode(
         emailConfirmationDto
-      )
+      );
       this.logger.log(
         `User with code ${JSON.stringify(
           emailConfirmationDto
         )} is validated successfully`
-      )
-      return res.send(response)
+      );
+      return res.send(response);
     } catch (err) {
-      this.logger.error('Error during validation confirmation code')
+      this.logger.error('Error during validation confirmation code');
       return res
         .status(err.status)
-        .json({ status: err.status, message: err.response })
+        .json({ status: err.status, message: err.response });
     }
   }
-
+  /**
+   *
+   *
+   * @param {ResendCodeDto} resendCodeDto
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SignupController
+   */
   @Post('resend-confirm-code')
   @HttpCode(HttpStatus.OK)
   @ApiBody({ type: ResendCodeDto, description: 'Resend confirmation code' })
@@ -154,19 +184,19 @@ export class SignupController {
     try {
       this.logger.log(
         `Start executing signup/resend-confirmation-code endpoint`
-      )
+      );
       const response = await this.registrationService.resendConfirmationCode(
         resendCodeDto
-      )
+      );
       this.logger.log(
         `Code for ${JSON.stringify(resendCodeDto)} is resended successfully`
-      )
-      return res.send(response)
+      );
+      return res.send(response);
     } catch (err) {
-      this.logger.error('Error during resending confirmation code')
+      this.logger.error('Error during resending confirmation code');
       return res
         .status(err.status)
-        .json({ status: 200, message: 'Internal server error' })
+        .json({ status: 200, message: 'Internal server error' });
     }
   }
 }

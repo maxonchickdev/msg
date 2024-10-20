@@ -1,9 +1,14 @@
-import { CacheModule } from '@nestjs/cache-manager'
-import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import redisConfig from '../configs/redis.config'
-import { RedisService } from './redis.service'
-
+import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import redisConfig from '../configs/redis.config';
+import { RedisService } from './redis.service';
+/**
+ *
+ *
+ * @export
+ * @class RedisModule
+ */
 @Module({
   imports: [
     ConfigModule.forFeature(redisConfig),

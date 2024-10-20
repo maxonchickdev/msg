@@ -10,8 +10,8 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
-} from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -20,24 +20,40 @@ import {
   ApiOperation,
   ApiTags,
   ApiUnprocessableEntityResponse,
-} from '@nestjs/swagger'
-import { Response } from 'express'
-import { PayloadDto } from '../login/signin/dto/payload.dto'
-import { HttpExceptionDto } from '../signup/dto/http.exception.dto'
-import { AvatarDto } from './dto/avatar.dto'
-import { UserProfileDto } from './dto/user.profile.dto'
-import { JwtMainGuard } from './guards/jwt.main.guard'
-import { MaxSizeAvatarPipe } from './pipes/max.size.avatar.pipe'
-import { TypeAvatarPipe } from './pipes/type.avatar.pipe'
-import { ProfileService } from './profile.service'
-
+} from '@nestjs/swagger';
+import { Response } from 'express';
+import { PayloadDto } from '../login/signin/dto/payload.dto';
+import { HttpExceptionDto } from '../signup/dto/http-exception.dto';
+import { AvatarDto } from './dto/avatar.dto';
+import { UserProfileDto } from './dto/user.profile.dto';
+import { JwtMainGuard } from './guards/jwt-main.guard';
+import { MaxSizeAvatarPipe } from './pipes/max-size-avatar.pipe';
+import { TypeAvatarPipe } from './pipes/type-avatar.pipe';
+import { ProfileService } from './profile.service';
+/**
+ *
+ *
+ * @export
+ * @class ProfileController
+ */
 @ApiTags('profile')
 @Controller('profile')
 export class ProfileController {
-  private readonly logger = new Logger(ProfileController.name)
-
+  private readonly logger = new Logger(ProfileController.name);
+  /**
+   * Creates an instance of ProfileController.
+   * @param {ProfileService} profileService
+   * @memberof ProfileController
+   */
   constructor(private readonly profileService: ProfileService) {}
-
+  /**
+   *
+   *
+   * @param {(Request & { user: PayloadDto })} req
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof ProfileController
+   */
   @Get()
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtMainGuard)
@@ -65,18 +81,26 @@ export class ProfileController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      this.logger.log(`User ${req.user.userId} requested profile`)
-      const profile = await this.profileService.getUserProfile(req.user.userId)
-      this.logger.log(`User ${req.user.userId} received profile`)
-      return res.send(profile)
+      this.logger.log(`User ${req.user.userId} requested profile`);
+      const profile = await this.profileService.getUserProfile(req.user.userId);
+      this.logger.log(`User ${req.user.userId} received profile`);
+      return res.send(profile);
     } catch (err) {
-      this.logger.error('Error during profile request')
+      this.logger.error('Error during profile request');
       return res
         .status(err.status)
-        .json({ status: err.status, message: err.response })
+        .json({ status: err.status, message: err.response });
     }
   }
-
+  /**
+   *
+   *
+   * @param {(Request & { user: PayloadDto })} req
+   * @param {AvatarDto} avatarDto
+   * @param {Response} res
+   * @return {*}
+   * @memberof ProfileController
+   */
   @Post('avatar')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
@@ -113,16 +137,16 @@ export class ProfileController {
     @Res() res: Response
   ) {
     try {
-      this.logger.log(`User ${req.user.userId} requested to upload avatar`)
+      this.logger.log(`User ${req.user.userId} requested to upload avatar`);
       const avatarUrl = await this.profileService.uploadAvatar(
         req.user.userId,
         avatarDto.avatar
-      )
-      this.logger.log(`User ${req.user.userId} uploaded avatar successfully`)
-      return res.status(HttpStatus.OK).send(avatarUrl)
+      );
+      this.logger.log(`User ${req.user.userId} uploaded avatar successfully`);
+      return res.status(HttpStatus.OK).send(avatarUrl);
     } catch (err) {
-      this.logger.error('Error during avatar upload')
-      return res.status(500).send(`Internal server error ${err}`)
+      this.logger.error('Error during avatar upload');
+      return res.status(500).send(`Internal server error ${err}`);
     }
   }
 }
