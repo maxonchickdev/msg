@@ -1,4 +1,4 @@
-import { INestApplication, Logger } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -11,6 +11,8 @@ async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule);
 
   const config = app.get<ConfigService>(ConfigService);
+
+  app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
     origin: [config.get<string>('CLIENT_ORIGIN')],
@@ -31,6 +33,7 @@ async function bootstrap() {
       'Local environment'
     )
     .build();
+
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document, {
     customSiteTitle: 'MSG api',

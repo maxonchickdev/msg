@@ -17,17 +17,33 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { PayloadDto } from '../signin/dto/payload.dto';
-import { TwoFactorAuthenticationCodeDto } from './dto/two.factor.authentication.code.dto';
-import { JwtTwofaGuard } from './guards/jwt.twofa.guard';
+import { TwoFactorAuthenticationCodeDto } from './dto/two-factor-authentication-code.dto';
+import { JwtTwofaGuard } from './guards/jwt-twofa.guard';
 import { TwofaService } from './twofa.service';
-
-@ApiTags('twofa')
-@Controller('twofa')
+/**
+ *
+ *
+ * @export
+ * @class TwofaController
+ */
+@ApiTags('two-fa')
+@Controller('two-fa')
 export class TwofaController {
   private readonly logger = new Logger(TwofaController.name);
-
+  /**
+   * Creates an instance of TwofaController.
+   * @param {TwofaService} twofaService
+   * @memberof TwofaController
+   */
   constructor(private readonly twofaService: TwofaService) {}
-
+  /**
+   *
+   *
+   * @param {Response} res
+   * @param {(Request & { user: PayloadDto })} req
+   * @return {*}
+   * @memberof TwofaController
+   */
   @Post('generate-qr')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTwofaGuard)
@@ -65,7 +81,15 @@ export class TwofaController {
       return res.status(500).send(`Internal server error ${err}`);
     }
   }
-
+  /**
+   *
+   *
+   * @param {(Request & { user: PayloadDto })} req
+   * @param {TwoFactorAuthenticationCodeDto} twoFactorAuthenticationCodeDTO
+   * @param {Response} res
+   * @return {*}
+   * @memberof TwofaController
+   */
   @Post('turn-on')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtTwofaGuard)
@@ -91,7 +115,7 @@ export class TwofaController {
     try {
       this.logger.log(`User ${req.user.userId} requested to turn on 2fa`);
       await this.twofaService.isTwoFactorAuthenticationCodeValid(
-        twoFactorAuthenticationCodeDTO.code,
+        twoFactorAuthenticationCodeDTO.twoFactorAuthenticationCode,
         req.user
       );
       this.logger.log(`User ${req.user.userId} turned on 2fa successfully`);

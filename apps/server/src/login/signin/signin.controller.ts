@@ -20,22 +20,38 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { HttpExceptionDto } from '../../signup/dto/http.exception.dto';
+import { HttpExceptionDto } from '../../signup/dto/http-exception.dto';
 import { PayloadDto } from './dto/payload.dto';
-import { SigninUserDto } from './dto/signin.user.dto';
-import { GithubAuthGuard } from './guards/github.auth.guard';
-import { GoogleOAuthGuard } from './guards/google.oauth.guard';
-import { JwtRefreshGuard } from './guards/jwt.refresh.guard';
-import { LocalSigninGuard } from './guards/local.signin.guard';
+import { SigninUserDto } from './dto/signin-user.dto';
+import { GithubAuthGuard } from './guards/github-auth.guard';
+import { GoogleOAuthGuard } from './guards/google-oauth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { LocalSigninGuard } from './guards/local-signin.guard';
 import { SigninService } from './signin.service';
-
-@ApiTags('signin')
-@Controller('signin')
+/**
+ *
+ *
+ * @export
+ * @class SigninController
+ */
+@ApiTags('sign-in')
+@Controller('sign-in')
 export class SigninController {
   private readonly logger = new Logger(SigninController.name);
-
+  /**
+   * Creates an instance of SigninController.
+   * @param {SigninService} authService
+   * @memberof SigninController
+   */
   constructor(private readonly authService: SigninService) {}
-
+  /**
+   *
+   *
+   * @param {SigninUserDto} signinUserDto
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SigninController
+   */
   @Post('basic')
   @UseGuards(LocalSigninGuard)
   @HttpCode(HttpStatus.OK)
@@ -99,7 +115,12 @@ export class SigninController {
         .json({ status: err.status, message: err.response });
     }
   }
-
+  /**
+   *
+   *
+   * @return {*}  {Promise<void>}
+   * @memberof SigninController
+   */
   @UseGuards(LocalSigninGuard)
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
@@ -165,7 +186,12 @@ export class SigninController {
   //     );
   //   }
   // }
-
+  /**
+   *
+   *
+   * @return {*}  {Promise<void>}
+   * @memberof SigninController
+   */
   @Get('github')
   @UseGuards(GithubAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -236,7 +262,14 @@ export class SigninController {
   //     // );
   //   }
   // }
-
+  /**
+   *
+   *
+   * @param {(Request & { user: PayloadDto })} req
+   * @param {Response} res
+   * @return {*}  {Promise<Response>}
+   * @memberof SigninController
+   */
   @Get('refresh')
   @UseGuards(JwtRefreshGuard)
   @HttpCode(HttpStatus.OK)

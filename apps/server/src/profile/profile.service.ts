@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common'
-import { AvatarService } from '../utils/repositories/avatar/avatar.service'
-import { UserService } from '../utils/repositories/user/user.service'
-import { S3Service } from '../utils/s3/s3.service'
-import { UserProfileDto } from './dto/user.profile.dto'
-
+import { Injectable } from '@nestjs/common';
+import { AvatarService } from '../utils/repositories/avatar/avatar.service';
+import { UserService } from '../utils/repositories/user/user.service';
+import { S3Service } from '../utils/s3/s3.service';
+import { UserProfileDto } from './dto/user.profile.dto';
+/**
+ *
+ *
+ * @export
+ * @class ProfileService
+ */
 @Injectable()
 export class ProfileService {
   constructor(
@@ -11,23 +16,36 @@ export class ProfileService {
     private readonly avatarService: AvatarService,
     private readonly s3Service: S3Service
   ) {}
-
+  /**
+   *
+   *
+   * @param {string} id
+   * @return {*}  {Promise<UserProfileDto>}
+   * @memberof ProfileService
+   */
   async getUserProfile(id: string): Promise<UserProfileDto> {
-    const user = await this.usersService.findUserById(id)
+    const user = await this.usersService.findUserById(id);
 
     return {
       username: user.username,
       email: user.email,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-    }
+    };
   }
-
+  /**
+   *
+   *
+   * @param {string} userId
+   * @param {Express.Multer.File} avatar
+   * @return {*}  {Promise<string>}
+   * @memberof ProfileService
+   */
   async uploadAvatar(
     userId: string,
     avatar: Express.Multer.File
   ): Promise<string> {
-    const user = await this.usersService.findUserById(userId)
+    const user = await this.usersService.findUserById(userId);
     // const userAvatar = await this.avatarService.deleteAvatar(user.);
     // await this.avatarService.deleteAvatar(user.avatarId);
     // await this.s3Service.delteFile(userAvatar.key);
@@ -41,6 +59,6 @@ export class ProfileService {
 
     // user.avatarId = newAvatar.id;
 
-    return ''
+    return '';
   }
 }

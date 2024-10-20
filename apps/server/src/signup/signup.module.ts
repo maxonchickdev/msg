@@ -4,7 +4,12 @@ import { RedisModule } from '../utils/redis/redis.module';
 import { UserModule } from '../utils/repositories/user/user.module';
 import { SignupController } from './signup.controller';
 import { RegistrationService } from './signup.service';
-
+/**
+ *
+ *
+ * @export
+ * @class SignupModule
+ */
 @Module({
   imports: [UserModule, MailModule, RedisModule],
   providers: [RegistrationService],

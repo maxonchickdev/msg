@@ -4,10 +4,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import jwtConfig from '../../utils/configs/jwt.config';
 import { UserModule } from '../../utils/repositories/user/user.module';
-import { JwtTwofaStrategy } from './strategies/jwt.twofa.strategy';
+import { JwtTwofaStrategy } from './strategies/jwt-twofa.strategy';
 import { TwofaController } from './twofa.controller';
 import { TwofaService } from './twofa.service';
-
+/**
+ *
+ *
+ * @export
+ * @class TwofaModule
+ */
 @Module({
   imports: [
     ConfigModule.forFeature(jwtConfig),
