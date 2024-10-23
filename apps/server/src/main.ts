@@ -35,7 +35,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document, {
+  SwaggerModule.setup('/', app, document, {
     customSiteTitle: 'MSG api',
   });
 
