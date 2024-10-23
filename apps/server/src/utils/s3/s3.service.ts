@@ -7,7 +7,6 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import 'Multer';
 import { v4 as uuidv4 } from 'uuid';
 /**
  *
@@ -39,22 +38,26 @@ export class S3Service {
   /**
    *
    *
-   * @param {Express.Multer.File} file
+   * @param {string} originalname
+   * @param {Buffer} buffer
+   * @param {string} mimetype
    * @return {*}  {Promise<{ url: string; key: string }>}
    * @memberof S3Service
    */
   async uploadFile(
-    file: Express.Multer.File
+    originalname: string,
+    buffer: Buffer,
+    mimetype: string
   ): Promise<{ url: string; key: string }> {
     const key = `${uuidv4()}`;
     new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      Body: buffer,
+      ContentType: mimetype,
       ACL: 'private',
       Metadata: {
-        originalName: file.originalname,
+        originalName: originalname,
       },
     });
 

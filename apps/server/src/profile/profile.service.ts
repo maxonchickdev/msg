@@ -3,6 +3,7 @@ import { AvatarService } from '../utils/repositories/avatar/avatar.service';
 import { UserService } from '../utils/repositories/user/user.service';
 import { S3Service } from '../utils/s3/s3.service';
 import { UserProfileDto } from './dto/user.profile.dto';
+import { AvatarDto } from './dto/avatar.dto';
 /**
  *
  *
@@ -41,10 +42,7 @@ export class ProfileService {
    * @return {*}  {Promise<string>}
    * @memberof ProfileService
    */
-  async uploadAvatar(
-    userId: string,
-    avatar: Express.Multer.File
-  ): Promise<string> {
+  async uploadAvatar(userId: string, avatar: AvatarDto): Promise<string> {
     const user = await this.usersService.findUserById(userId);
     // const userAvatar = await this.avatarService.deleteAvatar(user.);
     // await this.avatarService.deleteAvatar(user.avatarId);

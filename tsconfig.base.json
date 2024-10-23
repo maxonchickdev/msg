@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "types": ["node", "Multer"],
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -15,7 +16,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@msg-monorepo/dto": ["libs/shared/src/dto/index.ts"]
+      "@msg-monorepo/dto": ["libs/shared/src/dto/index.ts"],
+      "@msg-monorepo/client": ["apps/client/src/*"],
+      "@msg-monorepo/server": ["apps/server/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"],

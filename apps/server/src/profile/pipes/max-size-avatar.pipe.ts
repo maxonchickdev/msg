@@ -16,16 +16,16 @@ export class MaxSizeAvatarPipe implements PipeTransform {
   /**
    *
    *
-   * @param {Express.Multer.File} value
+   * @param {number} size
    * @return {*}
    * @memberof MaxSizeAvatarPipe
    */
-  transform(value: Express.Multer.File): Express.Multer.File {
-    if (value.size > 5000)
+  transform(size: number): number {
+    if (size > 60000)
       throw new HttpException(
-        'Validation failed (expected max size is 5 kb)',
+        'Validation failed (expected max size is 60 kb)',
         HttpStatus.UNPROCESSABLE_ENTITY
       );
-    return value;
+    return size;
   }
 }

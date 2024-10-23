@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -27,8 +28,6 @@ import { HttpExceptionDto } from '../signup/dto/http-exception.dto';
 import { AvatarDto } from './dto/avatar.dto';
 import { UserProfileDto } from './dto/user.profile.dto';
 import { JwtMainGuard } from './guards/jwt-main.guard';
-import { MaxSizeAvatarPipe } from './pipes/max-size-avatar.pipe';
-import { TypeAvatarPipe } from './pipes/type-avatar.pipe';
 import { ProfileService } from './profile.service';
 /**
  *
@@ -104,7 +103,7 @@ export class ProfileController {
   @Post('avatar')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(JwtMainGuard)
+  // @UseGuards(JwtMainGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -131,19 +130,20 @@ export class ProfileController {
     },
   })
   async uploadAvatar(
-    @Req() req: Request & { user: PayloadDto },
-    @UploadedFile(new MaxSizeAvatarPipe(), new TypeAvatarPipe())
-    avatarDto: AvatarDto,
+    // @Req() req: Request & { user: PayloadDto },
+    @UploadedFile('file') avatarDto: AvatarDto,
     @Res() res: Response
-  ) {
+  ): Promise<Response> {
     try {
-      this.logger.log(`User ${req.user.userId} requested to upload avatar`);
-      const avatarUrl = await this.profileService.uploadAvatar(
-        req.user.userId,
-        avatarDto.avatar
-      );
-      this.logger.log(`User ${req.user.userId} uploaded avatar successfully`);
-      return res.status(HttpStatus.OK).send(avatarUrl);
+      // this.logger.log(`User ${req.user.userId} requested to upload avatar`);
+      // const avatarUrl = await this.profileService.uploadAvatar(
+      //   req.user.userId,
+      //   avatarDto.avatar
+      // );
+      console.log(avatarDto);
+
+      // this.logger.log(`User ${req.user.userId} uploaded avatar successfully`);
+      return res.status(HttpStatus.OK).send('Halo');
     } catch (err) {
       this.logger.error('Error during avatar upload');
       return res.status(500).send(`Internal server error ${err}`);
