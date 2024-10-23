@@ -13,7 +13,9 @@
     "migration:create": "prisma migrate dev --create-only",
     "migration:migrate:dev": "prisma migrate dev",
     "migration:migrate:prod": "prisma migrate deploy",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "build:docker:client": "docker build -f apps/client/Dockerfile .",
+    "build:docker:server": "docker build -f apps/server/Dockerfile ."
   },
   "private": true,
   "dependencies": {
@@ -21,6 +23,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.2",
     "cache-manager": "^5.7.4",
+    "class-transformer": "^0.5.1",
     "eslint": "~8.57.0",
     "next": "^14.2.15",
     "passport": "^0.7.0",

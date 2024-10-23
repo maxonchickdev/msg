@@ -1,5 +1,5 @@
 export interface AvatarInterface {
-  avatar: Express.Multer.File;
+  avatar: string;
 }
 
 export interface UserProfileInterface {

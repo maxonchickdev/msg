@@ -1,4 +1,5 @@
 import { AvatarInterface } from '@msg-monorepo/dto';
+import { IsNotEmpty, IsString } from 'class-validator';
 /**
  *
  *
@@ -7,5 +8,5 @@ import { AvatarInterface } from '@msg-monorepo/dto';
  * @implements {AvatarInterface}
  */
 export class AvatarDto implements AvatarInterface {
-  avatar: Express.Multer.File;
+  avatar: string;
 }
